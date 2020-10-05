@@ -1,0 +1,42 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/superres/perf/perf_main.cpp",
+			"labels" : 
+			[
+				"Main",
+				"opencv_superres",
+				"PerfTest"
+			]
+		},
+		{
+			"file" : "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/superres/perf/perf_superres.cpp",
+			"labels" : 
+			[
+				"Main",
+				"opencv_superres",
+				"PerfTest"
+			]
+		},
+		{
+			"file" : "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/superres/perf/perf_precomp.hpp",
+			"labels" : 
+			[
+				"Main",
+				"opencv_superres",
+				"PerfTest"
+			]
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"Main",
+			"opencv_superres",
+			"PerfTest"
+		],
+		"name" : "opencv_perf_superres"
+	}
+}

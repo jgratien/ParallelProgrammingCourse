@@ -1,0 +1,9 @@
+//user-defined headers
+#include "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/core/misc/python/pyopencv_async.hpp"
+#include "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/core/misc/python/pyopencv_umat.hpp"
+#include "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/flann/misc/python/pyopencv_flann.hpp"
+#include "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/ml/misc/python/pyopencv_ml.hpp"
+#include "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/dnn/misc/python/pyopencv_dnn.hpp"
+#include "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/features2d/misc/python/pyopencv_features2d.hpp"
+#include "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/videoio/misc/python/pyopencv_videoio.hpp"
+#include "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/stitching/misc/python/pyopencv_stitching.hpp"

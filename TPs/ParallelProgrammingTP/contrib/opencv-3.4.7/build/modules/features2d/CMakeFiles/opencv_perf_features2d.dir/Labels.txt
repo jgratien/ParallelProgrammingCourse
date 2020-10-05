@@ -1,0 +1,33 @@
+# Target labels
+ Main
+ opencv_features2d
+ PerfTest
+# Source files and their labels
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/features2d/perf/opencl/perf_brute_force_matcher.cpp
+ Main
+ opencv_features2d
+ PerfTest
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/features2d/perf/opencl/perf_feature2d.cpp
+ Main
+ opencv_features2d
+ PerfTest
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/features2d/perf/perf_batchDistance.cpp
+ Main
+ opencv_features2d
+ PerfTest
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/features2d/perf/perf_feature2d.cpp
+ Main
+ opencv_features2d
+ PerfTest
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/features2d/perf/perf_main.cpp
+ Main
+ opencv_features2d
+ PerfTest
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/features2d/perf/perf_feature2d.hpp
+ Main
+ opencv_features2d
+ PerfTest
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/features2d/perf/perf_precomp.hpp
+ Main
+ opencv_features2d
+ PerfTest
