@@ -30,7 +30,7 @@ INCLUDE(CMake/FindNUMA.cmake)
 INCLUDE(CMake/FindHWLOC.cmake)
 INCLUDE(CMake/FindPAPI.cmake)
 #INCLUDE(CMake/FindOpenCV.cmake)
-find_package(OpenCV)
+find_package(OpenCV COMPONENTS opencv_core opencv_highgui QUIET)
 #INCLUDE(CMake/FindGoogleTools.cmake)
 #INCLUDE(CMake/FindXML2.cmake)
 
@@ -179,6 +179,7 @@ ELSE(NOT OPENCV_FOUND)
   INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
   MESSAGE(STATUS "PACKAGE: OPENCV       : enabled with -DUSE_OPENCV")
   ADD_DEFINITIONS(-DUSE_OPENCV)
+  set(OPENCV_LIBRARIES ${OpenCV_LIBS})
   
 ENDIF(NOT OPENCV_FOUND)
 
