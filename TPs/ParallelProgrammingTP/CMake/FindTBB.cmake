@@ -13,7 +13,7 @@ if(NOT TBB_FOUND)
   find_library(TBB_LIBRARY_DEBUG
     NAMES tbb_debug
     HINTS ${TBB_ROOT} 
-		PATH_SUFFIXES lib lib/intel64/cc4.1.0_libc2.4_kernel2.6.16.21
+		PATH_SUFFIXES lib lib/intel64/gcc4.4 lib/intel64/cc4.1.0_libc2.4_kernel2.6.16.21
     ${_TBB_SEARCH_OPTS}
     )
   mark_as_advanced(TBB_LIBRARY_DEBUG)
@@ -21,7 +21,7 @@ if(NOT TBB_FOUND)
   find_library(TBB_LIBRARY_RELEASE
     NAMES tbb
     HINTS ${TBB_ROOT} 
-		PATH_SUFFIXES lib lib/intel64/cc4.1.0_libc2.4_kernel2.6.16.21
+		PATH_SUFFIXES lib lib/intel64/gcc4.4 lib/intel64/cc4.1.0_libc2.4_kernel2.6.16.21
     ${_TBB_SEARCH_OPTS}
     )
   mark_as_advanced(TBB_LIBRARY_RELEASE)
@@ -30,7 +30,7 @@ if(NOT TBB_FOUND)
   find_library(TBB_MAIN_LIBRARY_DEBUG
     NAMES tbb_main
     HINTS ${TBB_ROOT} 
-		PATH_SUFFIXES lib/Debug lib
+		PATH_SUFFIXES lib/Debug lib lib/intel64/gcc4.4
     ${_TBB_SEARCH_OPTS}
     )
   mark_as_advanced(TBB_MAIN_LIBRARY_DEBUG)
@@ -46,7 +46,7 @@ if(NOT TBB_FOUND)
   if(NOT TBB_LIBRARY_RELEASE)
     find_path(TBB_LIB_DIR libtbb.so
               HINTS ${TBB_ROOT} 
-              PATH_SUFFIXES lib
+              PATH_SUFFIXES lib lib/intel64/gcc4.4
               ${_TBB_SEARCH_OPTS}
               )
     if(TBB_LIB_DIR)
