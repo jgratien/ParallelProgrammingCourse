@@ -20,13 +20,15 @@ namespace PPTP
 	    {}
 		virtual ~KMeanAlgo() {}
 
-		void compute_centroid(cv::Mat const& image)
+		void compute_centroids(cv::Mat const& image)
 		{
+			using namespace cv ;
 
 		}
 
 		void compute_segmentation(cv::Mat& image)
 		{
+                      using namespace cv ;
 		      switch(nb_channels)
 		      {
 		        case 1:

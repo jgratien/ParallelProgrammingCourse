@@ -73,13 +73,13 @@ int main( int argc, char** argv )
       {
         case 1:
           {
-        	  KMeanAlgo algo(1,nb_centroids) ;
+		  PPTP::KMeanAlgo algo(1,nb_centroids) ;
         	  algo.process(image) ;
           }
           break ;
         case 3:
           {
-        	  KMeanAlgo algo(3,nb_centroids) ;
+		  PPTP::KMeanAlgo algo(3,nb_centroids) ;
         	  algo.process(image) ;
           }
           break ;
