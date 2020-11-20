@@ -66,7 +66,8 @@ int main( int argc, char** argv )
     cout<<"NCOLS       : "<<image.cols<<std::endl ;
     const int channels = image.channels();
 
-    int nb_centroids = vm["nb-centroids"].as<int>() ;
+    int nb_centroids = vm["kmean-value"].as<int>() ;
+    
     if(vm["seg"].as<int>()==1)
     {
       switch(channels)
@@ -74,18 +75,20 @@ int main( int argc, char** argv )
         case 1:
           {
 		  PPTP::KMeanAlgo algo(1,nb_centroids) ;
+		  std::cout << "starting processing ... " << std::endl;
         	  algo.process(image) ;
           }
           break ;
         case 3:
           {
 		  PPTP::KMeanAlgo algo(3,nb_centroids) ;
+		  std::cout << "starting processing ... " << std::endl;
         	  algo.process(image) ;
           }
           break ;
       }
 
-      imwrite("./Seg_Image.jpg",image) ;
+      imwrite("../Seg_Image.jpg",image) ;
     }
 
     return 0 ;
