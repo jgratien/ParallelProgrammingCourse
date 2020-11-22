@@ -22,6 +22,7 @@ namespace PPTP
         init(nrows) ;
       }
 
+
       virtual ~DenseMatrix() {}
       std::size_t nrows() const {
         return m_nrows ;
@@ -78,6 +79,11 @@ namespace PPTP
         return m_values[i*m_nrows+j] ;
       }
 
+      std::vector<double> const &get_values() const
+      {
+	return m_values;
+      } 
+
       void mult(VectorType const& x, VectorType& y) const
       {
         assert(x.size()>=m_nrows) ;
@@ -85,7 +91,9 @@ namespace PPTP
         double const* matrix_ptr = m_values.data() ;
         for(std::size_t irow =0; irow<m_nrows;++irow)
         {
-          double value = 0 ;
+          
+          double value = 0;
+
           for(std::size_t jcol =0; jcol<m_nrows;++jcol)
           {
             value += matrix_ptr[jcol]*x[jcol] ;
@@ -99,10 +107,20 @@ namespace PPTP
       {
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
-
-        {
-           // TODO OPENMP
-        }
+	
+        //double const* matrix_ptr = m_values.data() ;
+        #pragma omp parallel for shared(x,y)
+	        for(std::size_t irow=0; irow<m_nrows; irow++)
+	          {
+		       double const* matrix_ptr = m_values.data() + irow*m_nrows;
+		       double value = 0;
+                       for(std::size_t jcol=0; jcol<m_nrows; jcol++)
+			 {
+	                    value+=matrix_ptr[jcol]*x[jcol];
+	                 }
+		       y[irow]=value;
+		       //matrix_ptr+=m_nrows;
+	          }		  
       }
 
       void omptaskmult(VectorType const& x, VectorType& y) const
@@ -136,7 +154,16 @@ namespace PPTP
         assert(y.size()>=m_nrows) ;
 
         {
-            //TODO TBB
+		tbb::parallel_for(std::size_t(0), m_nrows, [&](std::size_t irow)
+		 					   {
+						        	double const* matrix_ptr = m_values.data() + irow*m_nrows;
+								double value = 0;
+								for(std::size_t jcol=0; jcol<m_nrows; jcol++)
+								{		
+								value+=matrix_ptr[jcol]*x[jcol];
+								}
+                        					y[irow]=value;
+		 	 					});
         }
       }
 
