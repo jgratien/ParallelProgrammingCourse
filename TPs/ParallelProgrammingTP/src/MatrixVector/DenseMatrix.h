@@ -95,6 +95,21 @@ namespace PPTP
         }
       }
 
+      void multNcols(VectorType const& x, VectorType& y, int cols) const
+      {
+        double const* matrix_ptr = m_values.data() ;
+        for(std::size_t irow =0; irow<m_nrows;irow++)
+        {
+          double value = 0 ;
+          for(std::size_t jcol =0; jcol<cols;jcol++)
+          {
+            value += matrix_ptr[jcol]*x[jcol] ;
+          }
+          y[irow] = value ;
+          matrix_ptr += cols ;
+        }
+      }
+
       void ompmult(VectorType const& x, VectorType& y) const
       {
         assert(x.size()>=m_nrows) ;
@@ -205,7 +220,7 @@ namespace PPTP
 
       // m_values mutators
       std::vector<double>* getValues() { return &m_values; }
-      void setValues(std::vector<double> vals) { m_values = vals; }
+      void setValues(std::vector<double>& vals) { m_values = vals; }
 
     private:
       // number of lines
