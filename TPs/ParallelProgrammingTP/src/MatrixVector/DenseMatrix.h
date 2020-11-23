@@ -37,7 +37,7 @@ namespace PPTP
         m_nrows = nrows ;
         if(m_nrows>0)
         {
-          m_values.resize(m_nrows*m_nrows) ;
+          // m_values.resize(m_nrows*m_nrows) ;
           m_values.assign(m_nrows*m_nrows,0.) ;
         }
       }
@@ -83,10 +83,10 @@ namespace PPTP
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
         double const* matrix_ptr = m_values.data() ;
-        for(std::size_t irow =0; irow<m_nrows;++irow)
+        for(std::size_t irow =0; irow<m_nrows;irow++)
         {
           double value = 0 ;
-          for(std::size_t jcol =0; jcol<m_nrows;++jcol)
+          for(std::size_t jcol =0; jcol<m_nrows;jcol++)
           {
             value += matrix_ptr[jcol]*x[jcol] ;
           }
@@ -100,8 +100,14 @@ namespace PPTP
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
 
-        {
-           // TODO OPENMP
+        #pragma omp parallel for
+        for (std::size_t irow = 0; irow < m_nrows; ++irow) {
+          double const* matrix_ptr = m_values.data() + irow * m_nrows;
+          double value = 0;
+          for(std::size_t jcol = 0; jcol < m_nrows; ++jcol) {
+            value += matrix_ptr[jcol]*x[jcol];
+          }
+          y[irow] = value;
         }
       }
 
@@ -109,10 +115,38 @@ namespace PPTP
       {
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
+        // uncomment below functions lines to see ordered and critical access demo
+        // int task_count = 0;
 
         std::size_t nb_task = (m_nrows+m_chunk_size-1)/m_chunk_size ;
+        #pragma omp parallel
         {
-            //TODO TASK OPENMP
+          #pragma omp single
+          {
+            for (std::size_t tsk = 0 ; tsk < nb_task ; tsk++) {
+              #pragma omp task
+              {
+                  std::size_t first = tsk * m_chunk_size;
+                  std::size_t end = std::min((tsk + 1) * m_chunk_size, m_nrows);
+                for (std::size_t irow = first; irow < end; ++irow) {
+                  double const* matrix_ptr = m_values.data() + irow * m_nrows;
+                  double value = 0;
+                  for(std::size_t jcol = 0; jcol < m_nrows; ++jcol) {
+                    value += matrix_ptr[jcol]*x[jcol];
+                  }
+                  y[irow] = value;
+                  /*
+                  #pragma omp critical
+                  {
+                    task_count += 1;
+                    std::cout << "RUNNING TASK" << task_count << std::endl;
+                  }
+                  */
+                }
+              }
+            }
+            // std::cout << "SINGLE SECTION" << std::endl;
+          }
         }
       }
 
@@ -135,9 +169,15 @@ namespace PPTP
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
 
-        {
-            //TODO TBB
-        }
+        parallel_for(size_t(0), m_nrows,
+                     [&] (size_t irow) {
+                          double const* matrix_ptr = m_values.data() + irow * m_nrows;
+                          double value = 0;
+                          for(std::size_t jcol = 0; jcol < m_nrows; ++jcol) {
+                            value += matrix_ptr[jcol]*x[jcol];
+                          }
+                          y[irow] = value;
+                     });
       }
 
 
@@ -158,6 +198,14 @@ namespace PPTP
                 // TODO TBB RANGE 2D
         }
       }
+
+      // nrows mutators
+      std::size_t getNrows() { return m_nrows; }
+      void setNrows(std::size_t nrows) { m_nrows = nrows; }
+
+      // m_values mutators
+      std::vector<double>* getValues() { return &m_values; }
+      void setValues(std::vector<double> vals) { m_values = vals; }
 
     private:
       // number of lines
