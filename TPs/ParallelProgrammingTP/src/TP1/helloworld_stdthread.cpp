@@ -44,18 +44,19 @@ int main(int argc, char** argv)
 
   int nb_threads = vm["nb-threads"].as<int>() ;
 
-  //std::vector<std::thread> thread_pool ;
+  std::vector<std::thread> thread_pool ;
   {
     PPTP::Timer::Sentry sentry(timer,"HelloWord") ;
     for(int i=0;i<nb_threads;++i)
     {
-      print_hello(nb_threads,i) ;
-      //create thread to call print_hello
+      // print_hello(nb_threads,i) ;
+      thread_pool.push_back(
+        std::thread(print_hello, nb_threads, i)
+        );
     }
+    for(auto& th : thread_pool) th.join() ;
   }
 
-  //for(auto& th : thread_pool)
-  //  th.join() ;
 
   timer.printInfo() ;
   return 0 ;

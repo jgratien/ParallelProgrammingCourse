@@ -22,6 +22,7 @@
 #include <Eigen/Sparse>
 #include <Eigen/LU>
 
+using namespace tbb;
 #include "MatrixVector/CSRMatrix.h"
 #include "MatrixVector/DenseMatrix.h"
 #include "MatrixVector/LinearAlgebra.h"

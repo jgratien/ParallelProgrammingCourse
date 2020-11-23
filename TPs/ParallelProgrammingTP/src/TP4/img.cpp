@@ -19,6 +19,8 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 
+#include "omp.h"
+
 using namespace cv;
 using namespace std;
 
@@ -27,13 +29,14 @@ int main( int argc, char** argv )
     using namespace boost::program_options ;
     options_description desc;
     desc.add_options()
-        ("help", "produce help")
-        ("file",value<std::string>(), "image file")
-        ("show",value<int>()->default_value(0), "show image")
-        ("add-noise",value<int>()->default_value(0), "add noise")
-        ("noise-density",value<int>()->default_value(0), "noise density")
-        ("filter",value<int>()->default_value(0), "filtre median")
-        ("to-gray",value<int>()->default_value(0), "create gray image") ;
+      ("help", "produce help")
+      ("file",value<std::string>()->default_value(""), "image file")
+      ("show",value<int>()->default_value(0), "show image")
+      ("add-noise",value<int>()->default_value(0), "add noise")
+      ("noise-density",value<int>()->default_value(0), "noise density")
+      ("filter",value<int>()->default_value(0), "filtre median")
+      ("to-gray",value<int>()->default_value(0), "create gray image")
+      ("nb-threads", value<int>()->default_value(0), "nb threads");
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
@@ -43,6 +46,14 @@ int main( int argc, char** argv )
         std::cout << desc << "\n";
         return 1;
     }
+
+    int nb_av_procs = omp_get_num_procs();
+    int nb_av_threads = omp_get_max_threads();
+    int nb_threads = vm["nb-threads"].as<int>();
+    if (nb_threads > 0) omp_set_num_threads(nb_threads);
+    std::cout << "AVAILABLE PROCS: " << nb_av_procs << std::endl;
+    std::cout << "AVAILABLE THREADS: " << nb_av_threads << std::endl;
+    std::cout << "RUNNING THREADS: " << nb_threads << std::endl;
 
     std::string img_file = vm["file"].as<std::string>() ;
     Mat image;
@@ -113,6 +124,7 @@ int main( int argc, char** argv )
       switch(channels)
       {
         case 1:
+          #pragma omp parallel for
           for(std::size_t i=1;i<image.rows-1;++i)
           {
             for(int j=1;j<image.cols-1;++j)
@@ -130,6 +142,7 @@ int main( int argc, char** argv )
           break ;
         case 3:
           Mat_<Vec3b> _I = image;
+          #pragma omp parallel for
           for(std::size_t i=1;i<image.rows-1;++i)
           {
             for(int j=1;j<image.cols-1;++j)

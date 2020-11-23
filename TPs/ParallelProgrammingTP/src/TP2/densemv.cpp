@@ -22,6 +22,7 @@
 #include <Eigen/Sparse>
 #include <Eigen/LU>
 
+using namespace tbb;
 #include "MatrixVector/DenseMatrix.h"
 #include "MatrixVector/CSRMatrix.h"
 #include "MatrixVector/LinearAlgebra.h"
@@ -105,7 +106,7 @@ int main(int argc, char** argv)
     else
     {
       int nx = vm["nx"].as<int>() ;
-      generator.genLaplacian(nx,matrix) ;
+      generator.genLaplacian<DenseMatrix>(nx,matrix) ;
     }
 
 
