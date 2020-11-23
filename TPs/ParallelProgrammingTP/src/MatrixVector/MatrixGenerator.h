@@ -69,26 +69,29 @@ class MatrixGenerator
     void genLaplacian(int nx,MatrixT& matrix)
     {
       typedef typename MatrixT::MatrixEntryType MatrixEntryType ;
-      std::vector<MatrixEntryType> entries;
+      std::vector<MatrixEntryType>* entries =
+        new std::vector<MatrixEntryType>();
       double diag = 1. ;
       double offdiag = -0.1 ;
-      int nrows = nx*nx ;
-      entries.reserve(nrows*5) ;
-      for(int i=0;i<nx;++i)
-        for(int j=0;j<nx;++j)
+      int nrows = nx;
+      entries->reserve(nrows*nrows) ;
+      for(int i=0;i<nx;i++) {
+        for(int j=0;j<nx;j++)
         {
-          int irow = j*nx+i ;
-          entries.push_back(MatrixEntryType(irow,irow,diag)) ;
-          if(i>0)
-            entries.push_back(MatrixEntryType(irow,irow-1,offdiag)) ;
-          if(i<nx-1)
-            entries.push_back(MatrixEntryType(irow,irow+1,offdiag)) ;
-          if(j>0)
-            entries.push_back(MatrixEntryType(irow,irow-nx,offdiag)) ;
-          if(j<nx-1)
-            entries.push_back(MatrixEntryType(irow,irow+nx,offdiag)) ;
+          // int irow = i*nx+j;
+          entries->push_back(
+            MatrixEntryType(i,j,(i == j) ? diag : offdiag));
+          // if(i>0)
+          //   entries.push_back(MatrixEntryType(irow,irow-1,offdiag));
+          // if(i<nx-1)
+          //   entries.push_back(MatrixEntryType(irow,irow+1,offdiag));
+          // if(j>0)
+          //   entries.push_back(MatrixEntryType(irow,irow-nx,offdiag));
+          // if(j<nx-1)
+          //   entries.push_back(MatrixEntryType(irow,irow+nx,offdiag));
         }
-      matrix.setFromTriplets(nrows,entries) ;
+      }
+      matrix.setFromTriplets(nrows,*entries) ;
     }
 
     void readFromFile(std::string const& file,Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>& matrix)
