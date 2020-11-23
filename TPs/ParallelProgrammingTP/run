@@ -15,7 +15,7 @@
 ### usage : oarsub -l core=32 -S ./job_exemple.sh
 
 ### indiquer votre executable
-MONPROG=/gext/jean-marc.gratien/ParallelProgrammingTP/bin/densemv_mpi.exe
+MONPROG=/gext/rami.kader/hpcai/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
 ### indiquer votre fichier de donnees
 MYDATA=
 
@@ -44,7 +44,7 @@ if [ -f $MONPROG ] ; then
   do
     for nx in 50 100 150 200
     do
-    $MPIRUN -np ${np}  $MONPROG --nx $nx > log-NX${nx}-NPI${np}
+    $MPIRUN -np ${np}  $MONPROG --nx $nx > logs/log-NX${nx}-NPI${np}
     done
   done
   else
