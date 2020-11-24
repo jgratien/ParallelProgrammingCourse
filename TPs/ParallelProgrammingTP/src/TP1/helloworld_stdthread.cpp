@@ -20,7 +20,7 @@ void print_hello(int nb_threads,int id)
 {
   auto uid = std::this_thread::get_id();
   sleep(id) ;
-  std::cout<<"Hello Word ("<<id<<","<<nb_threads<<")"<<std::endl ;
+  std::cout<<"Hello Word ("<<uid <<"," <<id<<","<<nb_threads<<")"<<std::endl ;
 }
 
 int main(int argc, char** argv)
@@ -44,19 +44,22 @@ int main(int argc, char** argv)
 
   int nb_threads = vm["nb-threads"].as<int>() ;
 
-  //std::vector<std::thread> thread_pool ;
-  {
+  nb_threads = 8;
+  std::vector<std::thread> thread_pool ;
+  thread_pool.reserve(nb_threads); 
+  
     PPTP::Timer::Sentry sentry(timer,"HelloWord") ;
+  {
     for(int i=0;i<nb_threads;++i)
     {
-      print_hello(nb_threads,i) ;
       //create thread to call print_hello
+      thread_pool.emplace_back(print_hello, nb_threads, i);
     }
+  
+
+  for(auto& th : thread_pool){
+    th.join() ;}
   }
-
-  //for(auto& th : thread_pool)
-  //  th.join() ;
-
   timer.printInfo() ;
   return 0 ;
 }

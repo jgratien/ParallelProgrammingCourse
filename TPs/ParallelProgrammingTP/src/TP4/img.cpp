@@ -78,7 +78,7 @@ int main( int argc, char** argv )
       switch(channels)
       {
         case 1:
-          for(std::size_t i=0;i<image.rows;++i)
+          for(auto i=0;i<image.rows;++i)
           {
             for(int k=0;k<nsample;++k)
             {
@@ -89,7 +89,7 @@ int main( int argc, char** argv )
           break ;
         case 3:
           Mat_<Vec3b> _I = image;
-          for(std::size_t i=0;i<image.rows;++i)
+          for(auto i=0;i<image.rows;++i)
           {
             for(int k=0;k<nsample;++k)
             {
@@ -113,7 +113,7 @@ int main( int argc, char** argv )
       switch(channels)
       {
         case 1:
-          for(std::size_t i=1;i<image.rows-1;++i)
+          for(auto i=1;i<image.rows-1;++i)
           {
             for(int j=1;j<image.cols-1;++j)
             {
@@ -130,7 +130,7 @@ int main( int argc, char** argv )
           break ;
         case 3:
           Mat_<Vec3b> _I = image;
-          for(std::size_t i=1;i<image.rows-1;++i)
+          for(auto i=1;i<image.rows-1;++i)
           {
             for(int j=1;j<image.cols-1;++j)
             {

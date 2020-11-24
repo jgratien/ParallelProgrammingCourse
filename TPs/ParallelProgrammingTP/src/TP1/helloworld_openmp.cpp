@@ -32,26 +32,27 @@ int main(int argc, char** argv)
       return 1;
   }
 
-  PPTP::Timer timer ;
+  PPTP::Timer timer;
   int nb_threads = vm["nb-threads"].as<int>() ;
   if(nb_threads>0)
     omp_set_num_threads(nb_threads) ;
 
   int nb_procs     = omp_get_num_procs() ;
-  std::cout<<"NB PROCS     :"<<nb_procs<<std::endl ;
+  std::cout<<"NB PROCS     :"<<nb_procs<<std::endl;
   int nb_available_threads = omp_get_max_threads() ;
   std::cout<<"NB AVAILABLE_THREADS :"<<nb_available_threads<<std::endl ;
   {
     PPTP::Timer::Sentry sentry(timer,"HelloWord") ;
 
-
-    //#pragma omp ....CREATE PARALLEL SECTION
+    int nb_threads = 8;
+    #pragma omp parallel num_threads(nb_threads)
     {
-      int id = 0 ;
-      int nb_threads = 1 ;
+      int id = omp_get_thread_num();
       sleep(id) ;
+    #pragma omp critical
       std::cout<<"Hello world ("<<id<<","<<nb_threads<<")"<<std::endl ;
     }
+
   }
   timer.printInfo() ;
   return 0 ;

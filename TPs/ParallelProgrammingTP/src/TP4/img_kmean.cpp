@@ -25,6 +25,7 @@ using namespace std;
 
 int main( int argc, char** argv )
 {
+    
     using namespace boost::program_options ;
     options_description desc;
     desc.add_options()
@@ -32,7 +33,7 @@ int main( int argc, char** argv )
         ("file",value<std::string>(), "image file")
         ("show",value<int>()->default_value(0), "show image")
         ("seg",value<int>()->default_value(0), "kmean segmentation")
-        ("kmean-value",value<int>()->default_value(0), "KMean k value") ;
+        ("kmean-value",value<int>()->default_value(0), "KMean k value");
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
@@ -43,16 +44,20 @@ int main( int argc, char** argv )
         return 1;
     }
 
+    cout<<"just entered"<<endl;
     std::string img_file = vm["file"].as<std::string>() ;
+    cout<<"my image file : " <<img_file <<endl;
     Mat image;
     image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);   // Read the file
 
+    cout<<"just entered"<<endl;
     if(! image.data )                              // Check for invalid input
     {
         cout <<  "Could not open or find the image" << std::endl ;
         return -1;
     }
 
+    cout<<"image found good"<<endl;
     if(vm["show"].as<int>()==1)
     {
       namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
@@ -66,21 +71,24 @@ int main( int argc, char** argv )
     cout<<"NCOLS       : "<<image.cols<<std::endl ;
     const int channels = image.channels();
 
-    int nb_centroids = vm["nb-centroids"].as<int>() ;
+    int nb_centroids = vm["kmean-value"].as<int>() ;
+
     if(vm["seg"].as<int>()==1)
     {
       switch(channels)
       {
         case 1:
           {
+		  cout<<"=========GrayScale Kmeans=========" <<endl;
 		  PPTP::KMeanAlgo algo(1,nb_centroids) ;
-        	  algo.process(image) ;
+        	  algo.process(image);
           }
           break ;
         case 3:
           {
+		  cout<<"=========RGB Kmeans=========" <<endl;
 		  PPTP::KMeanAlgo algo(3,nb_centroids) ;
-        	  algo.process(image) ;
+        	  algo.process(image);
           }
           break ;
       }
