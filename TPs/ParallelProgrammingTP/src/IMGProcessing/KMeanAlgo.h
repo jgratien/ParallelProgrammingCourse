@@ -172,8 +172,8 @@ namespace PPTP
 
 			//Initializing pixel-centroid mapping vector and displacement vector
 			std::fill(m_mapping.begin(), m_mapping.end(), 0);
-
-			std::vector<double> displacement(m_nb_centroid, 0);
+			std::fill(m_cluster_sizes.begin(), m_cluster_sizes.end(), 0);
+			std::vector<double> displacement(m_nb_centroid, 0.0);
 
 			switch (m_nb_channels)
 			{
@@ -248,7 +248,7 @@ namespace PPTP
 								temp += ((int)pixel - (int)m_centroids[k * m_nb_channels + channel]) * ((int)pixel - (int)m_centroids[k * m_nb_channels + channel]);
 							}
 
-							if (temp <= distance)
+							if (temp < distance)
 							{
 								distance = temp;
 								c = k;
@@ -277,7 +277,7 @@ namespace PPTP
 					for (uint16_t channel = 0; channel < m_nb_channels; channel++)
 					{
 
-						m_new_centroids[k * m_nb_channels + channel] /= ((double)m_cluster_sizes[k] != 0 ? m_cluster_sizes[k] : 1);
+						m_new_centroids[k * m_nb_channels + channel] /= ((double)m_cluster_sizes[k] != 0 ? (double)m_cluster_sizes[k] : 1.0);
 						displacement[k] += (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]) * (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]);
 
 						m_centroids[k * m_nb_channels + channel] = (uchar)m_new_centroids[k * m_nb_channels + channel];
