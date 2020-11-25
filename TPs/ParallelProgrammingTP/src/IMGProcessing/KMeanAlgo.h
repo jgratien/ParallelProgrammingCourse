@@ -21,10 +21,10 @@ namespace PPTP
 	private:
 		uint16_t m_nb_channels = 3;
 		uint16_t m_nb_centroid = 1;
-		std::vector<uchar> m_centroids;   //Of size m_nb_centroid*m_nb_channels
-		std::vector<double> m_new_centroids;
-		std::vector<uint64_t> m_mapping;
-		std::vector<uint64_t> m_cluster_sizes;
+		std::vector<uchar> m_centroids;		   //Of size m_nb_centroid*m_nb_channels
+		std::vector<double> m_new_centroids;   //Stores temporary sums of pixels to compute barycentre later and evaluate centroid displacement
+		std::vector<uint64_t> m_mapping;	   //Of size rows * cols, indicates for each flattened index the corresponding centroid (or cluster) [0,0,1,1, etc..]
+		std::vector<uint64_t> m_cluster_sizes; //Of size m_nb_centroid : contains number of pixels for each cluser. Helps computing barycentre with m_new_centroids
 
 	public:
 		//Constructor
@@ -34,7 +34,7 @@ namespace PPTP
 			m_centroids.reserve(nb_centroids * nb_channels);
 			m_cluster_sizes.reserve(nb_centroids);
 			m_new_centroids.reserve(nb_centroids * nb_channels);
-			std::cout<<"KMeans algo constructed for nb channels = "<<m_nb_centroid <<std::endl;	
+			std::cout << "KMeans algo constructed for nb channels = " << m_nb_centroid << std::endl;
 		}
 		//Destructor
 		virtual ~KMeanAlgo() {}
@@ -44,79 +44,88 @@ namespace PPTP
 		void compute_centroids(cv::Mat const &image, int max_iterations, double epsilon)
 		{
 			using namespace cv;
-			
 
-			Mat_<Vec3b> _I = image;
-			//Testing whether the image is rgb or gs
-			bool isGS = false;
-			//for(int c = 0;c<((int)image.channels() - 1);c++)
-			//{
-			//	isGS &= ((int)_I(0,0)[c] == (int)_I(0,0)[c+1] ); 
-			//}
-			
-			m_nb_channels =isGS? 1 :  image.channels();
-
-			std::cout<<"Initialization started for "<<m_nb_channels <<" channels" <<std::endl;
+			m_nb_channels = image.channels(); //Setting image number of channels
 
 			init_centroids(image);
 
 			int n = 0;
 			std::vector<double> displacement(m_nb_centroid, 0);
 			double max_displacement = 0;
-			
+
 			do
 			{
 				displacement = update_centroid(image);
+
+				//We pick the max displacement from the returned per-cluster displacements vector
+				//The stop condition checks whether this max displacement is smaller than epsilon
+				//Which means that ALL centroids displacements were under this threshold.
 				max_displacement = 0;
-				for(auto &disp:displacement){
-					max_displacement = (disp>max_displacement)? disp :max_displacement;
+
+				for (auto &disp : displacement)
+				{
+					max_displacement = (disp > max_displacement) ? disp : max_displacement;
 				}
+
 				n += 1;
-				std::cout<<"+ Displacement at iteration " <<n <<" = "<<max_displacement <<std::endl;
-					
-				for(int i=0;i<m_nb_centroid;i++){
-					std::cout<<"++ Nb pixels for cluster" <<i <<" = " <<m_cluster_sizes[i] <<std::endl;
+				std::cout << "+ Displacement at iteration " << n << " = " << max_displacement << std::endl;
+
+				for (int i = 0; i < m_nb_centroid; i++)
+				{
+					std::cout << "++ Nb pixels for cluster" << i << " = " << m_cluster_sizes[i] << std::endl;
 				}
 
-				std::cout<<"----------------------------------------------------------\n"<<std::endl;
+				std::cout << "----------------------------------------------------------\n"
+						  << std::endl;
 
-			} while ((n<max_iterations) & (max_displacement> epsilon));
-			if(n==(max_iterations-1)){
-				std::cout<<"Optimal centroids computed after reaching max iterations : " <<n+1 <<std::endl;
+			} while ((n < max_iterations) & (max_displacement > epsilon));
+
+			//Recap of the training phase
+			//	1 - Displaying the nb of iterations the algorithm had before stopping
+			if (n == (max_iterations - 1))
+			{
+				std::cout << "Optimal centroids computed after reaching max iterations : " << n + 1 << std::endl;
 			}
-			else{
-				std::cout<<"Optimal centroids computed after reaching minimum displacement, and "<< n <<" iterations." <<std::endl;
+			else
+			{
+				std::cout << "Optimal centroids computed after reaching minimum displacement, and " << n << " iterations." << std::endl;
 			}
-			for(int k=0;k<m_nb_centroid;k++){
-				std::cout<<"Centroid [ " <<k <<" ] : \t (";
-				if(m_nb_channels==1){
-					std::cout<<(int)m_centroids[k] <<")" <<std::endl;
-				}	
-				else{
-					for(int c = 0;c<m_nb_channels-1;c++){
-						std::cout<<(int)m_centroids[k*m_nb_channels + c] << " , ";
+			//	2 - Displaying the resulting centroids values
+			for (int k = 0; k < m_nb_centroid; k++)
+			{
+				std::cout << "Centroid [ " << k << " ] : \t (";
+				if (m_nb_channels == 1)
+				{
+					std::cout << (int)m_centroids[k] << ")" << std::endl;
+				}
+				else
+				{
+					for (int c = 0; c < m_nb_channels - 1; c++)
+					{
+						std::cout << (int)m_centroids[k * m_nb_channels + c] << " , ";
 					}
-					std::cout<<(int)m_centroids[k*m_nb_channels + m_nb_channels - 1] << ") "<< std::endl;
+					std::cout << (int)m_centroids[k * m_nb_channels + m_nb_channels - 1] << ") " << std::endl;
 				}
 			}
-
-
 		}
 
 		//Random centroids initialization based on image dimensions
 		void init_centroids(cv::Mat const &image)
 		{
 			using namespace cv;
-			
-			time_t t;
 
-    			srand((unsigned)time(&t));
-			
+			std::cout << "Initialization started for " << m_nb_channels << " channels" << std::endl;
+
+			//Random seed for centroids random generation
+			time_t t;
+			srand((unsigned)time(&t));
+
 			int i, j;
 			uchar pixel;
 
 			switch (m_nb_channels)
 			{
+			//Grays Scale
 			case 1:
 
 				for (int k = 0; k < m_nb_centroid; k++)
@@ -128,6 +137,8 @@ namespace PPTP
 					m_new_centroids.push_back((double)pixel);
 				}
 				break;
+
+			//RGB
 			case 3:
 				Mat_<Vec3b> _I = image;
 
@@ -141,51 +152,50 @@ namespace PPTP
 						m_centroids.push_back(pixel);
 						m_new_centroids.push_back((double)pixel);
 					}
-
 				}
 
 				break;
 			}
-			std::cout<<"Initialization done" <<std::endl;
-			
+			std::cout << "Initialization done" << std::endl;
 		}
 
-		//Updating the centroid based on the surrounding closest pixels, returns the
-		//euclidean difference between old and new position (sum for all clusters)
- 		std::vector<double> update_centroid(cv::Mat const &image)
+		//Updating the centroids based on the surrounding closest pixels,
+		//Returns a vector of euclidean differences between old and new position for each centroid
+		std::vector<double> update_centroid(cv::Mat const &image)
 		{
 			using namespace cv;
 
 			uchar pixel;
-			double distance = MAX_UCHAR * MAX_UCHAR; //To be privatized
-			double temp = 0;						 //To be privatized
-			uint32_t c = 0;							 //To be privatized
+			double distance = 0;
+			double temp = 0;
+			uint32_t c = 0;
 
-			//Computing distances and selecting the closest centroid
-			std::fill(m_cluster_sizes.begin(), m_cluster_sizes.end(), 0);
+			//Initializing pixel-centroid mapping vector and displacement vector
 			std::fill(m_mapping.begin(), m_mapping.end(), 0);
+
 			std::vector<double> displacement(m_nb_centroid, 0);
 
 			switch (m_nb_channels)
 			{
+			//Grayscale images
 			case 1:
 
-
-				for(int i=0;i<m_nb_centroid;i++){
-					m_cluster_sizes[i] = 0; 
+				for (int i = 0; i < m_nb_centroid; i++)
+				{
+					m_cluster_sizes[i] = 0;
 				}
-				//Grayscale images
+
 				for (auto row = 0; row < image.rows; row++)
 				{
-					for (auto col = 0; col< image.cols; col++)
+					for (auto col = 0; col < image.cols; col++)
 					{
 						pixel = image.at<uchar>(row, col);
 
 						distance = ((int)pixel - (int)m_centroids[0]) * ((int)pixel - (int)m_centroids[0]);
-						
+
 						for (uint16_t k = 0; k < m_nb_centroid; k++)
 						{
-							temp = ((int)pixel -(int)m_centroids[k]) * ((int)pixel -(int)m_centroids[k]);
+							temp = ((int)pixel - (int)m_centroids[k]) * ((int)pixel - (int)m_centroids[k]);
 							if (temp < distance)
 							{
 								distance = temp;
@@ -194,13 +204,12 @@ namespace PPTP
 						}
 
 						m_mapping[row * image.cols + col] = c; //Pixel's Corresponding centroid
-						m_cluster_sizes[c] += 1;
-						m_new_centroids[c] += (double)pixel;
+						m_cluster_sizes[c] += 1;			   //One more pixel belonging to cluster c : increment by 1
+						m_new_centroids[c] += (double)pixel;   //Accumulating pixels value in the c position (helps computing barycentre later)
 					}
 				}
 
-				//Compute sum of displacements of all centroids (will serve as a stop condition)
-
+				//Computing barycentre, measuring displacement between old and new centroid & updating centroid values
 				std::fill(displacement.begin(), displacement.end(), 0);
 				for (uint16_t k = 0; k < m_nb_centroid; k++)
 				{
@@ -208,17 +217,20 @@ namespace PPTP
 					displacement[k] = fabs(m_new_centroids[k] - (double)m_centroids[k]);
 					m_centroids[k] = (uchar)m_new_centroids[k];
 				}
+				break;
 
+			//RGB images
 			case 3:
-				//RGB images
+
 				Mat_<Vec3b> _I = image;
-				for(int i=0;i<m_nb_centroid;i++){
-					m_cluster_sizes[i] = 0; 
+				for (int i = 0; i < m_nb_centroid; i++)
+				{
+					m_cluster_sizes[i] = 0;
 				}
 
 				for (auto row = 0; row < image.rows; row++)
 				{
-					for (auto col = 0; col<image.cols; col++)
+					for (auto col = 0; col < image.cols; col++)
 					{
 						for (uint16_t k = 0; k < m_nb_centroid; k++)
 						{
@@ -241,11 +253,15 @@ namespace PPTP
 								distance = temp;
 								c = k;
 							}
-						
 						}
-						
-						m_mapping[row * image.cols + col] = c; //Pixel's Corresponding centroid
+
+						//Pixel's Corresponding centroid
+						m_mapping[row * image.cols + col] = c;
+
+						//One more pixel belonging to cluster c : increment by 1
 						m_cluster_sizes[c] += 1;
+
+						//Accumulating pixels value in the c position (helps computing barycentre later)
 						for (uint16_t channel = 0; channel < m_nb_channels; channel++)
 						{
 							pixel = _I(row, col)[channel];
@@ -253,8 +269,9 @@ namespace PPTP
 						}
 					}
 				}
+
+				//Computing barycentre, measuring displacement between old and new centroid & updating centroid values
 				std::fill(displacement.begin(), displacement.end(), 0);
-				//Compute sum of displacements of all centroids (will serve as a stop condition)
 				for (uint16_t k = 0; k < m_nb_centroid; k++)
 				{
 					for (uint16_t channel = 0; channel < m_nb_channels; channel++)
@@ -262,19 +279,19 @@ namespace PPTP
 
 						m_new_centroids[k * m_nb_channels + channel] /= ((double)m_cluster_sizes[k] != 0 ? m_cluster_sizes[k] : 1);
 						displacement[k] += (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]) * (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]);
-				
-						m_centroids[k* m_nb_channels + channel] = (uchar)m_new_centroids[k*m_nb_channels + channel]; 
+
+						m_centroids[k * m_nb_channels + channel] = (uchar)m_new_centroids[k * m_nb_channels + channel];
 					}
-				
-					displacement[k] = sqrt(displacement[k]/m_nb_channels);
+
+					displacement[k] = sqrt(displacement[k] / m_nb_channels); //Divide by nb_channels since displacement accumulates sums for each channel
 				}
 
 				break;
 			}
-				return (displacement);
-			}
+			return (displacement);
+		}
 
-		//Segmentation 
+		//Segmentation
 		void compute_segmentation(cv::Mat &image)
 		{
 			using namespace cv;
@@ -283,6 +300,7 @@ namespace PPTP
 
 			switch (m_nb_channels)
 			{
+			//Grayscale image segmentation
 			case 1:
 				for (int row = 0; row < image.rows; row++)
 				{
@@ -293,8 +311,9 @@ namespace PPTP
 						pixel = (uchar)m_centroids[k];
 					}
 				}
-			case 3:
 
+			//RGB image segmentation
+			case 3:
 				for (int row = 0; row < image.rows; row++)
 				{
 					for (int col = 0; col < image.cols; col++)
@@ -309,10 +328,8 @@ namespace PPTP
 						}
 					}
 				}
-
 				break;
 			}
-
 		}
 
 		//Kmeans + Image segmentation
@@ -320,9 +337,9 @@ namespace PPTP
 		{
 			m_mapping.reserve(image.rows * image.cols);
 			compute_centroids(image, max_iterations, epsilon);
-			std::cout<<"Optimal centroids computed : Done" <<std::endl;
+			std::cout << "Optimal centroids computed : Done" << std::endl;
 			compute_segmentation(image);
-			std::cout<<"Output generated : Done" <<std::endl;
+			std::cout << "Output generated : Done" << std::endl;
 		}
 	};
 } // namespace PPTP
