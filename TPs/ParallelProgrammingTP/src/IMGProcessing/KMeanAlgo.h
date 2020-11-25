@@ -44,10 +44,19 @@ namespace PPTP
 		void compute_centroids(cv::Mat const &image, int max_iterations, double epsilon)
 		{
 			using namespace cv;
+			
 
-			m_nb_channels = image.channels();
+			Mat_<Vec3b> _I = image;
+			//Testing whether the image is rgb or gs
+			bool isGS = false;
+			//for(int c = 0;c<((int)image.channels() - 1);c++)
+			//{
+			//	isGS &= ((int)_I(0,0)[c] == (int)_I(0,0)[c+1] ); 
+			//}
+			
+			m_nb_channels =isGS? 1 :  image.channels();
 
-			std::cout<<"Initialization started" <<std::endl;
+			std::cout<<"Initialization started for "<<m_nb_channels <<" channels" <<std::endl;
 
 			init_centroids(image);
 
@@ -83,11 +92,12 @@ namespace PPTP
 				if(m_nb_channels==1){
 					std::cout<<(int)m_centroids[k] <<")" <<std::endl;
 				}	
-				for(int c = 0;c<m_nb_channels-1;c++){
-					std::cout<<(int)m_centroids[k*m_nb_channels + c] << " , ";
+				else{
+					for(int c = 0;c<m_nb_channels-1;c++){
+						std::cout<<(int)m_centroids[k*m_nb_channels + c] << " , ";
+					}
+					std::cout<<(int)m_centroids[k*m_nb_channels + m_nb_channels - 1] << ") "<< std::endl;
 				}
-				
-				std::cout<<(int)m_centroids[k*m_nb_channels + m_nb_channels - 1] << ") "<< std::endl;
 			}
 
 
@@ -159,6 +169,11 @@ namespace PPTP
 			switch (m_nb_channels)
 			{
 			case 1:
+
+
+				for(int i=0;i<m_nb_centroid;i++){
+					m_cluster_sizes[i] = 0; 
+				}
 				//Grayscale images
 				for (auto row = 0; row < image.rows; row++)
 				{
@@ -166,9 +181,11 @@ namespace PPTP
 					{
 						pixel = image.at<uchar>(row, col);
 
+						distance = ((int)pixel - (int)m_centroids[0]) * ((int)pixel - (int)m_centroids[0]);
+						
 						for (uint16_t k = 0; k < m_nb_centroid; k++)
 						{
-							temp = (pixel - m_centroids[k]) * (pixel - m_centroids[k]);
+							temp = ((int)pixel -(int)m_centroids[k]) * ((int)pixel -(int)m_centroids[k]);
 							if (temp < distance)
 							{
 								distance = temp;
@@ -183,10 +200,12 @@ namespace PPTP
 				}
 
 				//Compute sum of displacements of all centroids (will serve as a stop condition)
+
+				std::fill(displacement.begin(), displacement.end(), 0);
 				for (uint16_t k = 0; k < m_nb_centroid; k++)
 				{
-					m_new_centroids[k] /= (m_cluster_sizes[k] != 0 ? m_cluster_sizes[k] : 1);
-					displacement[k] = (m_new_centroids[k] - (double)m_centroids[k]) * (m_new_centroids[k] - (double)m_centroids[k]);
+					m_new_centroids[k] /= ((double)m_cluster_sizes[k] != 0 ? m_cluster_sizes[k] : 1);
+					displacement[k] = fabs(m_new_centroids[k] - (double)m_centroids[k]);
 					m_centroids[k] = (uchar)m_new_centroids[k];
 				}
 
@@ -259,11 +278,41 @@ namespace PPTP
 		void compute_segmentation(cv::Mat &image)
 		{
 			using namespace cv;
-			//for k in centroids
-			//Get that color
-			//for elements in the temp array [parallelizable]
-			//Give it centroid color
-			//Diggage
+
+			uint64_t k = 0; //Selected cluster id (retrieved from m_mapping)
+
+			switch (m_nb_channels)
+			{
+			case 1:
+				for (int row = 0; row < image.rows; row++)
+				{
+					for (int col = 0; col < image.cols; col++)
+					{
+						k = m_mapping[row * (image.cols) + col];
+						uchar &pixel = image.at<uchar>(row, col);
+						pixel = (uchar)m_centroids[k];
+					}
+				}
+			case 3:
+
+				for (int row = 0; row < image.rows; row++)
+				{
+					for (int col = 0; col < image.cols; col++)
+					{
+						k = m_mapping[row * (image.cols) + col];
+
+						Vec3b &pixel = image.at<Vec3b>(row, col);
+
+						for (int c = 0; c < m_nb_channels; c++)
+						{
+							pixel[c] = (uchar)m_centroids[k * m_nb_channels + c];
+						}
+					}
+				}
+
+				break;
+			}
+
 		}
 
 		//Kmeans + Image segmentation

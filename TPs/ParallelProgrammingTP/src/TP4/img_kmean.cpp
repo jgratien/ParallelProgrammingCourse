@@ -92,8 +92,9 @@ int main( int argc, char** argv )
           }
           break ;
       }
-
+      cout<<"Writing image" <<endl;
       imwrite("./Seg_Image.jpg",image) ;
+      cout<<"Image written at : ./Seg_Image.jpg" <<endl;
     }
 
     return 0 ;
