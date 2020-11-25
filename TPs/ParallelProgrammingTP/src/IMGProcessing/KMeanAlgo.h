@@ -55,6 +55,7 @@ namespace PPTP
 
 			do
 			{
+				std::cout << "-------------------- ITERATION "<<n+1 << "----------------------------\n" << std::endl;
 				displacement = update_centroid(image);
 
 				//We pick the max displacement from the returned per-cluster displacements vector
@@ -141,7 +142,7 @@ namespace PPTP
 			//RGB
 			case 3:
 				Mat_<Vec3b> _I = image;
-
+				
 				for (int k = 0; k < m_nb_centroid; k++)
 				{
 					i = rand() % image.cols;
@@ -156,7 +157,6 @@ namespace PPTP
 
 				break;
 			}
-			std::cout << "Initialization done" << std::endl;
 		}
 
 		//Updating the centroids based on the surrounding closest pixels,
@@ -232,23 +232,23 @@ namespace PPTP
 				{
 					for (auto col = 0; col < image.cols; col++)
 					{
+						for (uint16_t channel = 0; channel < m_nb_channels; channel++)
+						{
+							pixel = _I(row, col)[channel];
+							distance += ((int)pixel - (int)m_centroids[0 * m_nb_channels + channel]) * ((int)pixel - (int)m_centroids[0 * m_nb_channels + channel]);
+						}
+						
 						for (uint16_t k = 0; k < m_nb_centroid; k++)
 						{
 							temp = 0;
-							distance = 0;
-
-							for (uint16_t channel = 0; channel < m_nb_channels; channel++)
-							{
-								pixel = _I(row, col)[channel];
-								distance += ((int)pixel - (int)m_centroids[0 * m_nb_channels + channel]) * ((int)pixel - (int)m_centroids[0 * m_nb_channels + channel]);
-							}
+													
 							for (uint16_t channel = 0; channel < m_nb_channels; channel++)
 							{
 								pixel = _I(row, col)[channel];
 								temp += ((int)pixel - (int)m_centroids[k * m_nb_channels + channel]) * ((int)pixel - (int)m_centroids[k * m_nb_channels + channel]);
 							}
-
-							if (temp < distance)
+							
+							if (temp <= distance)
 							{
 								distance = temp;
 								c = k;
@@ -277,7 +277,7 @@ namespace PPTP
 					for (uint16_t channel = 0; channel < m_nb_channels; channel++)
 					{
 
-						m_new_centroids[k * m_nb_channels + channel] /= ((double)m_cluster_sizes[k] != 0 ? (double)m_cluster_sizes[k] : 1.0);
+						m_new_centroids[k * m_nb_channels + channel] /= (double)(m_cluster_sizes[k] != 0 ? (double)m_cluster_sizes[k] : 1.0);
 						displacement[k] += (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]) * (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]);
 
 						m_centroids[k * m_nb_channels + channel] = (uchar)m_new_centroids[k * m_nb_channels + channel];
