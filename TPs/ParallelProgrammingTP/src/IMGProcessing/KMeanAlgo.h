@@ -12,6 +12,7 @@
 #define MAX_UCHAR 255
 #include <iostream>
 #include <time.h>
+// #include <omp.h>
 
 namespace PPTP
 {
@@ -21,10 +22,10 @@ namespace PPTP
 	private:
 		uint16_t m_nb_channels = 3;
 		uint16_t m_nb_centroid = 1;
-		std::vector<uchar> m_centroids;		   //Of size m_nb_centroid*m_nb_channels
-		std::vector<double> m_new_centroids;   //Stores temporary sums of pixels to compute barycentre later and evaluate centroid displacement
-		std::vector<uint64_t> m_mapping;	   //Of size rows * cols, indicates for each flattened index the corresponding centroid (or cluster) [0,0,1,1, etc..]
-		std::vector<uint64_t> m_cluster_sizes; //Of size m_nb_centroid : contains number of pixels for each cluser. Helps computing barycentre with m_new_centroids
+		std::vector<uchar> m_centroids;		//Of size m_nb_centroid*m_nb_channels
+		double *m_new_centroids{nullptr};	//Stores temporary sums of pixels to compute barycentre later and evaluate centroid displacement
+		uint32_t *m_mapping{nullptr};		//Of size rows * cols, indicates for each flattened index the corresponding centroid (or cluster) [0,0,1,1, etc..]
+		uint32_t *m_cluster_sizes{nullptr}; //Of size m_nb_centroid : contains number of pixels for each cluser. Helps computing barycentre with m_new_centroids
 
 	public:
 		//Constructor
@@ -32,12 +33,17 @@ namespace PPTP
 			: m_nb_channels(nb_channels), m_nb_centroid(nb_centroids)
 		{
 			m_centroids.reserve(nb_centroids * nb_channels);
-			m_cluster_sizes.reserve(nb_centroids);
-			m_new_centroids.reserve(nb_centroids * nb_channels);
+			m_cluster_sizes = new uint32_t[nb_centroids];
+			m_new_centroids = new double[nb_centroids * nb_channels];
 			std::cout << "KMeans algo constructed for nb channels = " << m_nb_centroid << std::endl;
 		}
 		//Destructor
-		virtual ~KMeanAlgo() {}
+		virtual ~KMeanAlgo()
+		{
+			delete[] m_cluster_sizes;
+			delete[] m_mapping;
+			delete[] m_new_centroids;
+		}
 
 		//Main kmeans method : iterative computing & update of centroids positions & associated
 		//pixels of the image
@@ -55,7 +61,8 @@ namespace PPTP
 
 			do
 			{
-				std::cout << "-------------------- ITERATION "<<n+1 << "----------------------------\n" << std::endl;
+				std::cout << "-------------------- ITERATION " << n + 1 << "----------------------------\n"
+						  << std::endl;
 				displacement = update_centroid(image);
 
 				//We pick the max displacement from the returned per-cluster displacements vector
@@ -115,6 +122,8 @@ namespace PPTP
 		{
 			using namespace cv;
 
+			m_mapping = new uint32_t[image.rows * image.cols];
+
 			std::cout << "Initialization started for " << m_nb_channels << " channels" << std::endl;
 
 			//Random seed for centroids random generation
@@ -135,14 +144,14 @@ namespace PPTP
 					j = rand() % image.rows;
 					pixel = image.at<uchar>(i, j);
 					m_centroids.push_back(pixel);
-					m_new_centroids.push_back((double)pixel);
+					m_new_centroids[k] = (double)pixel;
 				}
 				break;
 
 			//RGB
 			case 3:
 				Mat_<Vec3b> _I = image;
-				
+
 				for (int k = 0; k < m_nb_centroid; k++)
 				{
 					i = rand() % image.cols;
@@ -151,7 +160,7 @@ namespace PPTP
 					{
 						pixel = _I(i, j)[c];
 						m_centroids.push_back(pixel);
-						m_new_centroids.push_back((double)pixel);
+						m_new_centroids[k*m_nb_channels + c] = (double)pixel;
 					}
 				}
 
@@ -171,19 +180,21 @@ namespace PPTP
 			uint32_t c = 0;
 
 			//Initializing pixel-centroid mapping vector and displacement vector
-			std::fill(m_mapping.begin(), m_mapping.end(), 0);
-			std::fill(m_cluster_sizes.begin(), m_cluster_sizes.end(), 0);
+			for (int i = 0; i < (image.rows * image.cols); i++)
+			{
+				m_mapping[i] = 0;
+			}
+			for (int i = 0; i < m_nb_centroid; i++)
+			{
+				m_cluster_sizes[i] = 0;
+			}
+
 			std::vector<double> displacement(m_nb_centroid, 0.0);
 
 			switch (m_nb_channels)
 			{
 			//Grayscale images
 			case 1:
-
-				for (int i = 0; i < m_nb_centroid; i++)
-				{
-					m_cluster_sizes[i] = 0;
-				}
 
 				for (auto row = 0; row < image.rows; row++)
 				{
@@ -223,10 +234,6 @@ namespace PPTP
 			case 3:
 
 				Mat_<Vec3b> _I = image;
-				for (int i = 0; i < m_nb_centroid; i++)
-				{
-					m_cluster_sizes[i] = 0;
-				}
 
 				for (auto row = 0; row < image.rows; row++)
 				{
@@ -237,17 +244,17 @@ namespace PPTP
 							pixel = _I(row, col)[channel];
 							distance += ((int)pixel - (int)m_centroids[0 * m_nb_channels + channel]) * ((int)pixel - (int)m_centroids[0 * m_nb_channels + channel]);
 						}
-						
+
 						for (uint16_t k = 0; k < m_nb_centroid; k++)
 						{
 							temp = 0;
-													
+
 							for (uint16_t channel = 0; channel < m_nb_channels; channel++)
 							{
 								pixel = _I(row, col)[channel];
 								temp += ((int)pixel - (int)m_centroids[k * m_nb_channels + channel]) * ((int)pixel - (int)m_centroids[k * m_nb_channels + channel]);
 							}
-							
+
 							if (temp <= distance)
 							{
 								distance = temp;
@@ -296,7 +303,7 @@ namespace PPTP
 		{
 			using namespace cv;
 
-			uint64_t k = 0; //Selected cluster id (retrieved from m_mapping)
+			uint32_t k = 0; //Selected cluster id (retrieved from m_mapping)
 
 			switch (m_nb_channels)
 			{
@@ -335,7 +342,6 @@ namespace PPTP
 		//Kmeans + Image segmentation
 		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1)
 		{
-			m_mapping.reserve(image.rows * image.cols);
 			compute_centroids(image, max_iterations, epsilon);
 			std::cout << "Optimal centroids computed : Done" << std::endl;
 			compute_segmentation(image);
@@ -345,3 +351,4 @@ namespace PPTP
 } // namespace PPTP
 
 #endif /* SRC_IMGPROCESSING_KMEANALGO_H_ */
+
