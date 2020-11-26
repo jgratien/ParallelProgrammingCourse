@@ -45,12 +45,72 @@ namespace PPTP
 					// CALCUL NEAREST CENTROID
 					centroid_id = calc_closest_centroid(image, i, j);
 					collection_centroid_id.emplace(std::make_tuple(i,j),centroid_id);
-					
 				}
 			}
-
+			
+			
 			return collection_centroid_id;
 		}
+
+		void update_centroids(cv::Mat& image, std::map<std::tuple<int,int>, int> collection_centroid_id)
+		{
+			using namespace cv;
+
+			std::vector<uchar> updated_centroids;
+			std::vector<int> centroids_occurences;
+			centroids_occurences.resize(m_nb_centroid);
+			updated_centroids.resize(m_nb_centroid*nb_channels);
+			int i,j;
+			switch(nb_channels)
+			{
+				case 1:
+					
+					for(auto& it : collection_centroid_id)
+					{
+						for(int c=0;c<m_nb_centroid;c++)
+						{
+							if( it.second == c){
+								tie(i, j)=it.first;
+								updated_centroids[c]+=image.at<uchar>(i,j);
+centroids_occurences[c]++;
+							}
+						}
+				
+					}
+					for(int c=0; c<m_nb_centroid; c++)
+					{
+						updated_centroids[c]/=centroids_occurences[c];
+					}
+					break;
+				case 3:
+					Mat_<Vec3b> _I = image;
+					for(auto& it : collection_centroid_id)
+					{
+						for(int c=0; c<m_nb_centroid; c++)
+						{
+							if(it.second == c){
+								tie(i,j)=it.first;
+								centroids_occurences[c]++;
+								for(int k=3*c;k<3*c +3;k++)
+								{
+
+									updated_centroids[k]+=_I(i,j)[k];
+								}
+							}
+						}
+					}
+					for(int c=0; c<m_nb_centroid; c++)
+					{
+						for(int k=0;k<nb_channels;k++){
+							updated_centroids[c+k]/=centroids_occurences[c];
+						}
+					}
+					break;
+
+			}
+			m_centroids.swap(updated_centroids);
+
+ 		}
 
 		void compute_segmentation(cv::Mat& image, std::map<std::tuple<int,int>, int>& collection_centroid_id)
 		{
@@ -101,7 +161,14 @@ namespace PPTP
 			
 			std::map<std::tuple<int,int>, int> collection_centroid_id;
 			std::cout<<"compute centroids"<<std::endl;
-			collection_centroid_id=compute_centroids(image) ;
+			int iterations=0;
+			
+			while(iterations<50){
+				std::cout<<"iteration number: "<<iterations<<std::endl;
+				collection_centroid_id=compute_centroids(image) ;
+				update_centroids(image, collection_centroid_id);
+				iterations++;
+			}
 			//Mat img_seg;
 			std::cout<<"compute segmentation"<<std::endl; 
 			compute_segmentation(image, collection_centroid_id) ;
@@ -149,7 +216,7 @@ namespace PPTP
 					for(int c=1; c<m_nb_centroid; c++)
 					{	
 						do{
-							std::cout<<"looping over "<<c<<std::endl;	
+							//std::cout<<"looping over "<<c<<std::endl;	
 							row_id=(int)(rand()%image.rows);
 							col_id=(int)(rand()%image.cols);
 							dist=0;
