@@ -78,6 +78,11 @@ namespace PPTP
         return m_values[i*m_nrows+j] ;
       }
 
+      std::vector<double> const &get_values() const{
+      	return m_values;
+      }
+
+
       void mult(VectorType const& x, VectorType& y) const
       {
         assert(x.size()>=m_nrows) ;
@@ -101,7 +106,19 @@ namespace PPTP
         assert(y.size()>=m_nrows) ;
 
         {
-           // TODO OPENMP
+           	// TODO OPENMP
+		#pragma omp parallel for
+		for (std::size_t irow =0; irow<m_nrows;++irow)
+		{	
+          		
+       			double const* matrix_ptr = m_values.data() + irow*m_nrows;
+			double value = 0 ;
+         		for(std::size_t jcol =0; jcol<m_nrows;++jcol)
+          		{
+            		value += matrix_ptr[jcol]*x[jcol] ;
+          		}
+          		y[irow] = value ;
+		}	
         }
       }
 
@@ -113,6 +130,31 @@ namespace PPTP
         std::size_t nb_task = (m_nrows+m_chunk_size-1)/m_chunk_size ;
         {
             //TODO TASK OPENMP
+	    	#pragma omp parallel
+		{
+			// PARALLEL SECTION
+			#pragma omp single
+			{
+				for(int itask=0;itask<nb_task;++itask)
+				{
+					int first_row = itask*m_chunk_size;
+					int last_row = std::min(m_nrows,(std::size_t)(itask+1)*m_chunk_size);
+					#pragma omp task
+					{
+						for(int irow=first_row;irow<last_row;++irow)
+						{
+							double const* matrix_ptr =m_values.data() + irow*m_nrows;
+							double value = 0 ;
+         						for(std::size_t jcol =0; jcol<m_nrows;++jcol)
+          						{
+            							value += matrix_ptr[jcol]*x[jcol] ;
+          						}
+          						y[irow] = value ;
+						}
+					}	
+				}
+			}
+		}
         }
       }
 
@@ -134,9 +176,19 @@ namespace PPTP
       {
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
-
+	using namespace tbb;
         {
-            //TODO TBB
+		tbb::parallel_for(size_t(0), m_nrows, [&] (size_t irow)
+						{				
+					
+       						double const* matrix_ptr = m_values.data() + irow*m_nrows;
+						double value = 0 ;
+         					for(std::size_t jcol =0; jcol<m_nrows;++jcol)
+       				  		{
+            						value += matrix_ptr[jcol]*x[jcol] ;
+          					}
+         					y[irow] = value ;
+						});
         }
       }
 

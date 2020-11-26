@@ -45,13 +45,11 @@ int main(int argc, char** argv)
     PPTP::Timer::Sentry sentry(timer,"HelloWord") ;
 
 
-    //#pragma omp ....CREATE PARALLEL SECTION
-    {
-      int id = 0 ;
-      int nb_threads = 1 ;
-      sleep(id) ;
-      std::cout<<"Hello world ("<<id<<","<<nb_threads<<")"<<std::endl ;
-    }
+    #pragma omp parallel for
+      for(int id=0;id<nb_threads;id++){
+      	sleep(id) ;
+      	std::cout<<"Hello world ("<<id<<","<<nb_threads<<")"<<std::endl ;
+      }
   }
   timer.printInfo() ;
   return 0 ;

@@ -19,6 +19,8 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 
+#include "omp.h"
+
 using namespace cv;
 using namespace std;
 
@@ -34,6 +36,7 @@ int main( int argc, char** argv )
         ("noise-density",value<int>()->default_value(0), "noise density")
         ("filter",value<int>()->default_value(0), "filtre median")
         ("to-gray",value<int>()->default_value(0), "create gray image") ;
+    	("nb_threads",value<int>()->default_value(0), "nb_threads");
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
@@ -44,6 +47,10 @@ int main( int argc, char** argv )
         return 1;
     }
 
+    int nb_threads= vm["nb_threads"].as<int>();
+    if(nb_threads>0)
+	    omp_set_num_threads(nb_threads);
+    
     std::string img_file = vm["file"].as<std::string>() ;
     Mat image;
     image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);   // Read the file
@@ -113,6 +120,7 @@ int main( int argc, char** argv )
       switch(channels)
       {
         case 1:
+	  #pragma omp parallel for
           for(std::size_t i=1;i<image.rows-1;++i)
           {
             for(int j=1;j<image.cols-1;++j)
@@ -130,7 +138,10 @@ int main( int argc, char** argv )
           break ;
         case 3:
           Mat_<Vec3b> _I = image;
+          
+	  #pragma omp parallel for
           for(std::size_t i=1;i<image.rows-1;++i)
+	  for(std::size_t i=1;i<image.rows-1;++i)
           {
             for(int j=1;j<image.cols-1;++j)
             {

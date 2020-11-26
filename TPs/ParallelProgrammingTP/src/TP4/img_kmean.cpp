@@ -32,7 +32,10 @@ int main( int argc, char** argv )
         ("file",value<std::string>(), "image file")
         ("show",value<int>()->default_value(0), "show image")
         ("seg",value<int>()->default_value(0), "kmean segmentation")
-        ("kmean-value",value<int>()->default_value(0), "KMean k value") ;
+        ("kmean-value",value<int>()->default_value(0), "KMean k value") 
+        ("nb-centroids",value<int>()->default_value(0), "nb centroids") ;
+    	
+    	
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
