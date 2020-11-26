@@ -18,6 +18,7 @@
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
+#include <omp.h>
 
 using namespace cv;
 using namespace std;
@@ -47,12 +48,23 @@ int main( int argc, char** argv )
     std::string img_file = vm["file"].as<std::string>() ;
     Mat image;
     image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);   // Read the file
+    
+  //PPTP::Timer timer ;
+  int nb_threads = vm["nb-threads"].as<int>() ;
+  if(nb_threads>0)
+    omp_set_num_threads(nb_threads) ;
+
+  int nb_procs     = omp_get_num_procs() ;
+  std::cout<<"NB PROCS     :"<<nb_procs<<std::endl ;
+  int nb_available_threads = omp_get_max_threads() ;
+  std::cout<<"NB AVAILABLE_THREADS :"<<nb_available_threads<<std::endl ;
 
     if(! image.data )                              // Check for invalid input
     {
         cout <<  "Could not open or find the image" << std::endl ;
         return -1;
     }
+
 
     if(vm["show"].as<int>()==1)
     {

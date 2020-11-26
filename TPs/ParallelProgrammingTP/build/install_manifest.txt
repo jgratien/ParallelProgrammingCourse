@@ -1,0 +1,15 @@
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_stdthread.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_openmp.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_task.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_tbb.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_mpi.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/lu.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/wave.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img2.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_mpi.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_kmean.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_kmean_mpi.exe

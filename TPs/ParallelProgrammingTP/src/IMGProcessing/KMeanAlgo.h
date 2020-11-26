@@ -5,17 +5,17 @@
  *      Author: gratienj
  */
 
-#ifndef SRC_IMGPROCESSING_KMEANALGO_H_
-#define SRC_IMGPROCESSING_KMEANALGO_H_
+//#ifndef SRC_IMGPROCESSING_KMEANALGO_H_
+//#define SRC_IMGPROCESSING_KMEANALGO_H_
 
-namespace PPTP
+/*namespace PPTP
 {
 
 	class KMeanAlgo
 	{
 	public:
 		KMeanAlgo(int nb_channels, int nb_centroids)
-	    : nb_channels(nb_channels)
+	        : nb_channels(nb_channels)
 		, m_nb_centroid(nb_centroids)
 	    {}
 		virtual ~KMeanAlgo() {}
@@ -23,6 +23,34 @@ namespace PPTP
 		void compute_centroids(cv::Mat const& image)
 		{
 			using namespace cv ;
+			m_centroids.resize(m_nb_centroids*m_nb_channels);
+
+
+			//INIT INITIAL CENTROID
+		
+
+
+			//COMPUTE NEAREST CENTROID
+			for(int i=0; i<image.nrows; i++)
+
+			{
+			   for(int j=1;j<image.cols-1;j++)
+			   {
+			   
+			     uchar pixel = image.at<uchar>(i,j) ;
+			     
+			     // CALCULATE NEAREST CENTROID
+
+
+			   
+			   
+			   
+			   
+			    }
+			
+			
+	
+
 
 		}
 
@@ -63,7 +91,7 @@ namespace PPTP
 		}
 
 	private :
-	    int nb_channels   = 3 ;
+	    int m_nb_channels = 3 ;
 		int m_nb_centroid = 0 ;
 		std::vector<uchar> m_centroids ;
 	};

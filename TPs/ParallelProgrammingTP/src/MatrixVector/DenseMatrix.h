@@ -1,7 +1,7 @@
 /*
  * DenseMatrix.h
  *
- *  Created on: Sep 24, 2018
+ *  Created on: Sep 
  *      Author: gratienj
  */
 
@@ -66,7 +66,7 @@ namespace PPTP
       {
         assert(m_nrows>0) ;
         assert(i<m_nrows) ;
-        assert(j<m_nrows) ;
+        assert(<m_nrows) ;
         return m_values[i*m_nrows+j] ;
       }
 
@@ -77,6 +77,16 @@ namespace PPTP
         assert(j<m_nrows) ;
         return m_values[i*m_nrows+j] ;
       }
+      
+
+      std::vector<double> const &get_values()const
+      {
+      
+      return m_values ;
+      
+      
+      }
+
 
       void mult(VectorType const& x, VectorType& y) const
       {
@@ -101,7 +111,22 @@ namespace PPTP
         assert(y.size()>=m_nrows) ;
 
         {
-           // TODO OPENMP
+           
+        #pragma omp parallel shared(x,y)
+        {
+          #pragma omp for schedule(dynamic,m_chunk_size) nowait  //static,dynamic,guided
+          for(std::size_t irow =0; irow<m_nrows;++irow)
+          {
+            double const* m_ptr = &m_values[irow*m_nrows] ;
+            double value = 0 ;
+            for(std::size_t jcol =0; jcol<m_nrows;++jcol)
+            {
+              value += m_ptr[jcol]*x[jcol] ;
+            }
+            y[irow] = value ;
+            m_ptr += m_nrows ;
+          }
+        }
         }
       }
 
@@ -111,10 +136,31 @@ namespace PPTP
         assert(y.size()>=m_nrows) ;
 
         std::size_t nb_task = (m_nrows+m_chunk_size-1)/m_chunk_size ;
+
+
+        #pragma omp parallel shared(x,y)
         {
-            //TODO TASK OPENMP
+          #pragma omp single
+          for(std::size_t i=0;i<nb_task;++i)
+          {
+            #pragma omp task
+            {
+              std::size_t begin = i*m_chunk_size ;
+              std::size_t end = std::min(begin+m_chunk_size,m_nrows) ;
+              for(std::size_t irow =begin; irow<end;++irow)
+              {
+                double const* matrix_ptr = &m_values[irow*m_nrows] ;
+                double value = 0 ;
+                for(std::size_t jcol =0; jcol<m_nrows;++jcol)
+                {
+                  value += matrix_ptr[jcol]*x[jcol] ;
+                }
+                y[irow] = value ;
+                matrix_ptr += m_nrows ;
+              }
+            }
         }
-      }
+      }}
 
       void omptilemult(VectorType const& x, VectorType& y) const
       {
@@ -161,14 +207,14 @@ namespace PPTP
 
     private:
       // number of lines
-      std::size_t         m_nrows = 0;
+      std::size_t         m_nrows = 5;
 
       // matrix values
       std::vector<double> m_values ;
 
       int m_chunk_size = 1 ;
 
-  };
+   };
 
 } /* namespace PPTP */
 

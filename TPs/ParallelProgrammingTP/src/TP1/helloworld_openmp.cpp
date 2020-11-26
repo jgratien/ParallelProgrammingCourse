@@ -41,18 +41,18 @@ int main(int argc, char** argv)
   std::cout<<"NB PROCS     :"<<nb_procs<<std::endl ;
   int nb_available_threads = omp_get_max_threads() ;
   std::cout<<"NB AVAILABLE_THREADS :"<<nb_available_threads<<std::endl ;
-  {
+  
     PPTP::Timer::Sentry sentry(timer,"HelloWord") ;
 
 
     //#pragma omp ....CREATE PARALLEL SECTION
     {
-      int id = 0 ;
-      int nb_threads = 1 ;
+      int id = omp_get_thread_num()  ;
+      int nb_threads = omp_get_num_threads() ;
       sleep(id) ;
-      std::cout<<"Hello world ("<<id<<","<<nb_threads<<")"<<std::endl ;
+      std::cout<<"Hell}o world ("<<id<<","<<nb_threads<<")"<<std::endl ;
     }
-  }
+
   timer.printInfo() ;
   return 0 ;
 }
