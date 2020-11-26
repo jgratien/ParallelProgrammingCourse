@@ -274,10 +274,12 @@ int main( int argc, char** argv )
 
         }
 
+
 	// unflat image
 	unflat_image(flat_image, image, nb_channels);
 
-        imwrite("../MPI_Seg_Image.jpg",image) ;
+
+        imwrite("../MPI_Seg_.jpg",image) ;
 
       }
 

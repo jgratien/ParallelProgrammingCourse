@@ -217,10 +217,10 @@ void unflat_image(std::vector<uchar> flat_image, cv::Mat& image, int nb_channels
 	      }
 	      case(3):
 	      {
-		Mat_<Vec3b> _I = image;
-		_I(i,j)[0] = 3*(i*image.cols+j);
-		_I(i,j)[1] = 3*(i*image.cols+j)+1;
-		_I(i,j)[2] = 3*(i*image.cols+j)+2;
+		//Mat_<Vec3b> _I = image;
+		image.at<Vec3b>(i,j)[0] = flat_image[3*(i*image.cols+j)];
+	        image.at<Vec3b>(i,j)[1] = flat_image[3*(i*image.cols+j)+1];
+		image.at<Vec3b>(i,j)[2] = flat_image[3*(i*image.cols+j)+2];
 		break;
 	      }
 	    }
