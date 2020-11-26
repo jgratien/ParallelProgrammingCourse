@@ -238,18 +238,13 @@ namespace PPTP
 
 #pragma omp parallel if (parallel)
 				{
-					if (parallel)
-					{
-						std::cout << "MAX NB OF THREADS : " << omp_get_max_threads() << std::endl;
-					}
-
 #pragma omp for collapse(2)                                \
 	firstprivate(pixel, distance, temp)                    \
 		schedule(static, 16)                               \
 			reduction(+                                    \
 					  : m_cluster_sizes [0:m_nb_centroid]) \
 				reduction(-                                \
-						  : m_new_centroids [0:(m_nb_centroid * m_nb_channels)]) if (parallel)
+						  : m_new_centroids [0:(m_nb_centroid * m_nb_channels)])
 
 					for (auto row = 0; row < image.rows; row++)
 
@@ -295,11 +290,11 @@ namespace PPTP
 							}
 						}
 					}
-#pragma omp single if (parallel)
+#pragma omp single
 					//Computing barycentre, measuring displacement between old and new centroid & updating centroid values
 					std::fill(displacement.begin(), displacement.end(), 0);
 
-#pragma omp for schedule(static, 8) if (parallel)
+#pragma omp for schedule(static, 8)
 					for (uint16_t k = 0; k < m_nb_centroid; k++)
 					{
 						for (uint16_t channel = 0; channel < m_nb_channels; channel++)
@@ -341,7 +336,10 @@ namespace PPTP
 
 			//RGB image segmentation
 			case 3:
-#pragma omp parallel for collapse(2) schedule(static, 32) if (parallel)
+
+#pragma omp parallel if(parallel)
+{
+#pragma for collapse(2) schedule(static, 32)
 				for (int row = 0; row < image.rows; row++)
 				{
 					for (int col = 0; col < image.cols; col++)
@@ -356,12 +354,13 @@ namespace PPTP
 						}
 					}
 				}
+}
 				break;
 			}
 		}
 
 		//Kmeans + Image segmentation
-		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool parallel = false)
+		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool parallel = true)
 		{
 			const clock_t begin_time = clock();
 			compute_centroids(image, max_iterations, epsilon, parallel);

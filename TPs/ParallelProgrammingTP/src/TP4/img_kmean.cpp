@@ -86,7 +86,6 @@ int main(int argc, char **argv)
     break;
     }
     cout << "Writing image" << endl;
-    s.resize(s.size() - 1);
     img_file.resize(img_file.size() - 4);
     string fileName = img_file + "_Segmented.jpg";
     imwrite(fileName, image);
