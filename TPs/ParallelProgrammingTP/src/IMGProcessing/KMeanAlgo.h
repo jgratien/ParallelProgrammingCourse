@@ -36,7 +36,7 @@ namespace PPTP
 		{
 			m_centroids.reserve(nb_centroids * nb_channels);
 			m_cluster_sizes = new uint32_t[nb_centroids];
-			m_new_centroids = new double[nb_centroids * nb_channels];
+			m_new_centroids = new double[m_nb_centroid * m_nb_channels];
 			std::cout << "KMeans algo constructed for nb channels = " << m_nb_centroid << std::endl;
 		}
 		//Destructor
@@ -56,6 +56,8 @@ namespace PPTP
 			m_nb_channels = image.channels(); //Setting image number of channels
 
 			init_centroids(image);
+			
+			std::cout<<"Init done" <<std::endl;
 
 			int n = 0;
 			std::vector<double> displacement(m_nb_centroid, 0);
@@ -142,8 +144,8 @@ namespace PPTP
 
 				for (int k = 0; k < m_nb_centroid; k++)
 				{
-					i = rand() % image.cols;
-					j = rand() % image.rows;
+					j = rand() % image.cols;
+					i = rand() % image.rows;
 					pixel = image.at<uchar>(i, j);
 					m_centroids.push_back(pixel);
 					m_new_centroids[k] = (double)pixel;
@@ -152,19 +154,22 @@ namespace PPTP
 
 			//RGB
 			case 3:
-				Mat_<Vec3b> _I = image;
-
+				Mat_<Vec3b> *_I = new Mat_<Vec3b>();
+				*_I = image;
+				std::cout<<"Image copied by pointer" <<std::endl;
 				for (int k = 0; k < m_nb_centroid; k++)
 				{
-					i = rand() % image.cols;
-					j = rand() % image.rows;
+
+					j = rand() % (image.cols-2) +1 ;
+					i = rand() % (image.rows-2) +1 ;
 					for (int c = 0; c < 3; c++)
-					{
-						pixel = _I(i, j)[c];
+					{	
+						pixel = (*_I)(i, j)[c];
 						m_centroids.push_back(pixel);
 						m_new_centroids[k * m_nb_channels + c] = (double)pixel;
 					}
 				}
+				delete _I;
 
 				break;
 			}
@@ -176,7 +181,7 @@ namespace PPTP
 		{
 			using namespace cv;
 
-			uchar pixel;
+			uchar pixel = 0;
 			double distance = 0;
 			double temp = 0;
 			uint32_t c = 0;
@@ -240,7 +245,7 @@ namespace PPTP
 				{
 #pragma omp for collapse(2)                                \
 	firstprivate(pixel, distance, temp)                    \
-		schedule(static, 16)                               \
+		schedule(static, 32)                               \
 			reduction(+                                    \
 					  : m_cluster_sizes [0:m_nb_centroid]) \
 				reduction(-                                \
@@ -339,7 +344,7 @@ namespace PPTP
 
 #pragma omp parallel if(parallel)
 {
-#pragma for collapse(2) schedule(static, 32)
+#pragma omp for collapse(2) schedule(static, 64)
 				for (int row = 0; row < image.rows; row++)
 				{
 					for (int col = 0; col < image.cols; col++)
@@ -360,7 +365,7 @@ namespace PPTP
 		}
 
 		//Kmeans + Image segmentation
-		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool parallel = true)
+		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool parallel = false)
 		{
 			const clock_t begin_time = clock();
 			compute_centroids(image, max_iterations, epsilon, parallel);
