@@ -19,7 +19,11 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <IMGProcessing/KMeanAlgo.h>
+#include <IMGProcessing/KMeanAlgoOpenMP.h>
+#include <IMGProcessing/KMeanAlgoTbb.h>
 #include <Utils/Timer.h>
+#include "omp.h"
+#include "tbb/tbb.h"
 
 using namespace cv;
 using namespace std;
@@ -30,9 +34,12 @@ int main( int argc, char** argv )
     options_description desc;
     desc.add_options()
         ("help", "produce help")
+	("nb-threads",value<int>()->default_value(0), "nb threads")
         ("file",value<std::string>(), "image file")
         ("show",value<int>()->default_value(0), "show image")
         ("seg",value<int>()->default_value(0), "kmean segmentation")
+	("seg-openmp",value<int>()->default_value(0), "Kmean segmentation using openmp")
+	("seg-tbb",value<int>()->default_value(0), "Kmean segmentation using tbb")
         ("kmean-value",value<int>()->default_value(0), "KMean k value") ;
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
@@ -42,6 +49,13 @@ int main( int argc, char** argv )
     {
         std::cout << desc << "\n";
         return 1;
+    }
+
+    int nb_threads = vm["nb-threads"].as<int>();
+    if(nb_threads>0)
+    {
+	omp_set_num_threads(nb_threads);
+	tbb::task_scheduler_init init(nb_threads);
     }
 
     using namespace PPTP;
@@ -95,6 +109,56 @@ int main( int argc, char** argv )
       }
       timer.printInfo();
       imwrite("../Seg_Image.jpg",image) ;
+    }
+
+    if(vm["seg-openmp"].as<int>()==1)
+    {
+      switch(channels)
+      {
+        case 1:
+          {
+		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION WITH OPENMP");
+		  KMeanAlgoOpenMP algo(1,nb_centroids) ;
+		  std::cout << "starting processing ... " << std::endl;
+        	  algo.process(image) ;
+          }
+          break ;
+        case 3:
+          {
+		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION WITH OPENMP");
+		  KMeanAlgoOpenMP algo(3,nb_centroids) ;
+		  std::cout << "starting processing ... " << std::endl;
+        	  algo.process(image) ;
+          }
+          break ;
+      }
+      timer.printInfo();
+      imwrite("../OpenMp_Seg_Image.jpg",image) ;
+    }
+
+    if(vm["seg-tbb"].as<int>()==1)
+    {
+      switch(channels)
+      {
+        case 1:
+          {
+		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION WITH TBB");
+		  KMeanAlgoTbb algo(1,nb_centroids) ;
+		  std::cout << "starting processing ... " << std::endl;
+        	  algo.process(image) ;
+          }
+          break ;
+        case 3:
+          {
+		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION WITH TBB");
+		  KMeanAlgoTbb algo(3,nb_centroids) ;
+		  std::cout << "starting processing ... " << std::endl;
+        	  algo.process(image) ;
+          }
+          break ;
+      }
+      timer.printInfo();
+      imwrite("../Tbb_Seg_Image.jpg",image) ;
     }
 
     return 0 ;
