@@ -273,13 +273,33 @@ int main( int argc, char** argv )
 	  }
 
         }
-
+/*
+	for(int i=0; i<flat_image.size();i++)
+	{
+		std::cout << (int) flat_image[i] << " ";
+	}
+	std::cout << " *****************************************************************************************************************************************************************************************************************************************************************************************************************************************************" << std::endl;
+*/
 
 	// unflat image
 	unflat_image(flat_image, image, nb_channels);
+	
+	// flatten image
+      std::vector<uchar> flat_image_; //(image.rows*image.cols*nb_channels);
+      if(image.isContinuous())
+      {
+	flat_image_.assign(image.datastart, image.dataend);
+      }
 
+/*	for(int i=0; i<flat_image_.size();i++)
+	{
+		std::cout << (int) flat_image_[i] << " ";
+	}
+	std::cout << " " << std::endl;
+*/ 
 
-        imwrite("../MPI_Seg_.jpg",image) ;
+	std::cout << (int) image.at<Vec3b>(127,127)[0] << " " << (int) flat_image[49149] << std::endl;
+        imwrite("../MPI_Seg_Image.jpg",image) ;
 
       }
 

@@ -19,6 +19,9 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 
+#include <omp.h>
+#include <tbb/tbb.h>
+
 using namespace cv;
 using namespace std;
 
@@ -28,11 +31,14 @@ int main( int argc, char** argv )
     options_description desc;
     desc.add_options()
         ("help", "produce help")
+	("nb-threads",value<int>()->default_value(0), "nb threads")
         ("file",value<std::string>(), "image file")
         ("show",value<int>()->default_value(0), "show image")
         ("add-noise",value<int>()->default_value(0), "add noise")
         ("noise-density",value<int>()->default_value(0), "noise density")
         ("filter",value<int>()->default_value(0), "filtre median")
+	("filter-omp",value<int>()->default_value(0), "filtre median omp")
+	("filter-tbb",value<int>()->default_value(0), "filtre median tbb")
         ("to-gray",value<int>()->default_value(0), "create gray image") ;
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
@@ -42,6 +48,12 @@ int main( int argc, char** argv )
     {
         std::cout << desc << "\n";
         return 1;
+    }
+
+    int nb_threads = vm["nb-threads"].as<int>();
+    if(nb_threads>0){
+	omp_set_num_threads(nb_threads);
+	tbb::task_scheduler_init init(nb_threads);
     }
 
     std::string img_file = vm["file"].as<std::string>() ;
@@ -153,6 +165,106 @@ int main( int argc, char** argv )
       imwrite("./Filter_Image.jpg",image) ;
     }
 
+    if(vm["filter-omp"].as<int>()==1)
+    {
+      switch(channels)
+      {
+        case 1:
+	  #pragma omp parallel for 
+	
+          for(std::size_t i=1;i<image.rows-1;++i)
+          {
+            for(int j=1;j<image.cols-1;++j)
+            {
+              array<uchar,5> buffer ;
+              buffer[0] = image.at<uchar>(i-1,j) ;
+              buffer[1] = image.at<uchar>(i,j-1) ;
+              buffer[2] = image.at<uchar>(i,j) ;
+              buffer[3] = image.at<uchar>(i,j+1) ;
+              buffer[4] = image.at<uchar>(i+1,j) ;
+              std::sort(buffer.begin(),buffer.end()) ;
+              image.at<uchar>(i,j) = buffer[2] ;
+            }
+          }
+	 
+          break ;
+        case 3: 
+          
+          Mat_<Vec3b> _I = image;
+  	  #pragma omp parallel for
+          for(std::size_t i=1;i<image.rows-1;++i)
+          {
+            for(int j=1;j<image.cols-1;++j)
+            {
+              for(int k=0;k<3;++k)
+              {
+                array<uchar,5> buffer ;
+                buffer[0] = _I(i-1,j)[k] ;
+                buffer[1] = _I(i,j-1)[k] ;
+                buffer[2] = _I(i,j)[k] ;
+                buffer[3] = _I(i,j+1)[k] ;
+                buffer[4] = _I(i+1,j)[k] ;
+                std::sort(buffer.begin(),buffer.end()) ;
+                _I(i,j)[k] = buffer[2] ;
+              }
+            }
+          }
+	 
+          break ;
+      }
+
+      imwrite("./Filter_Omp_Image.jpg",image) ;
+    }
+
+   if(vm["filter-tbb"].as<int>()==1)
+    {
+      switch(channels)
+      {
+        case 1: 
+	{
+	  tbb::parallel_for(std::size_t(1),std::size_t(image.rows-1), [&](std::size_t i)
+          {
+            for(int j=1;j<image.cols-1;++j)
+            {
+              array<uchar,5> buffer ;
+              buffer[0] = image.at<uchar>(i-1,j) ;
+              buffer[1] = image.at<uchar>(i,j-1) ;
+              buffer[2] = image.at<uchar>(i,j) ;
+              buffer[3] = image.at<uchar>(i,j+1) ;
+              buffer[4] = image.at<uchar>(i+1,j) ;
+              std::sort(buffer.begin(),buffer.end()) ;
+              image.at<uchar>(i,j) = buffer[2] ;
+            }
+          });
+	}
+          break ;
+        case 3:
+          
+          Mat_<Vec3b> _I = image;
+	  {
+	  tbb::parallel_for(std::size_t(1), std::size_t(image.rows-1) , [&](std::size_t i)
+         							 {
+           								 for(int j=1;j<image.cols-1;++j)
+           									 {
+              										for(int k=0;k<3;++k)
+             											 {
+               											 array<uchar,5> buffer ;
+               											 buffer[0] = _I(i-1,j)[k] ;
+               											 buffer[1] = _I(i,j-1)[k] ;
+                										 buffer[2] = _I(i,j)[k] ;
+												buffer[3] = _I(i,j+1)[k] ;
+												buffer[4] = _I(i+1,j)[k] ;
+												std::sort(buffer.begin(),buffer.end()) ;
+												_I(i,j)[k] = buffer[2] ;
+		     										 }
+            									}
+	   							});
+	  }
+  	 break ;
+      }
+
+      imwrite("./Filter_tbb_Image.jpg",image) ;
+    }
 
 
     if(vm["to-gray"].as<int>()==1)
