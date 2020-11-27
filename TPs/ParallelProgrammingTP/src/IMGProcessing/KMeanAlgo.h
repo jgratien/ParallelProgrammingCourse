@@ -71,8 +71,8 @@ namespace PPTP
 					for (int j = 0; j < nb_channels; j++) {
 						centroids[i][j] = (int)(colorsum[j]/clst_count[i]);
 						colorsum[j] = 0;
-						clst_count[i] = 0;
 					}
+					clst_count[i] = 0;
 				}
 			}
 
@@ -148,10 +148,6 @@ namespace PPTP
 					// nearest centroids computing
 					std::cout << "Starting segmentation n." << iter << "..." << std::endl;
 					converged = segment(image);
-					for(int i=0; i < m_nb_centroid;i++)
-						std::cout << (int)centroids[i][0] << " "
-								  << (int)centroids[i][1] << " "
-								  << (int)centroids[i][2] << std::endl;
 				}
 				// change pixels color
 				map_segmentation(image);
