@@ -19,6 +19,8 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <IMGProcessing/KMeanAlgo.h>
+#include <IMGProcessing/KMeanAlgo_parallel_omp.h>
+
 
 using namespace cv;
 using namespace std;
@@ -33,7 +35,8 @@ int main( int argc, char** argv )
         ("show",value<int>()->default_value(0), "show image")
         ("seg",value<int>()->default_value(0), "kmean segmentation")
         ("kmean-value",value<int>()->default_value(0), "KMean k value") 
-        ("nb-centroids",value<int>()->default_value(0), "nb centroids") ;
+        ("nb-centroids",value<int>()->default_value(0), "nb centroids") 
+    	("mode", value<int>()->default_value(0), "0:sequential 1:openmp 2:tbb");
     	
     	
     variables_map vm;
@@ -72,23 +75,23 @@ int main( int argc, char** argv )
     int nb_centroids = vm["nb-centroids"].as<int>() ;
     if(vm["seg"].as<int>()==1)
     {
-      switch(channels)
-      {
-        case 1:
-          {
-		  PPTP::KMeanAlgo algo(1,nb_centroids) ;
-        	  algo.process(image) ;
-          }
-          break ;
-        case 3:
-          {
-		  PPTP::KMeanAlgo algo(3,nb_centroids) ;
-        	  algo.process(image) ;
-          }
-          break ;
-      }
-
-      imwrite("./Seg_Image.jpg",image) ;
+	const int mode= vm["mode"].as<int>();    
+	switch(mode)
+	{
+		case 0:
+		{	
+			PPTP::KMeanAlgo algo(channels,nb_centroids) ;
+			algo.process(image) ;
+			break;
+		}
+		case 1:
+		{
+			PPTP::KMeanAlgoParOmp algo(channels, nb_centroids);
+			algo.process_omp(image);
+			break;
+		}
+	} 
+    	imwrite("./Seg_Image.jpg",image) ;
     }
 
     return 0 ;

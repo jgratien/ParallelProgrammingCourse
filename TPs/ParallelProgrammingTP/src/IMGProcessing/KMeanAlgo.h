@@ -11,6 +11,8 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <map>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
@@ -30,13 +32,14 @@ namespace PPTP
 		virtual ~KMeanAlgo() {}
 		
 
-		std::map<std::tuple<int,int>,int> compute_centroids(cv::Mat const& image)
+		bool compute_centroids(cv::Mat const& image)
 		{
 			using namespace cv ;
-	
+			
+			bool centroids_convergence=true;
 		      	/*****COMPUTE NEAREST CENTROID*****/
 			
-			std::map<std::tuple<int,int>, int> collection_centroid_id;
+			//std::map<std::tuple<int,int>, int> collection_centroid_id;
 			int centroid_id=0;
 			for(int i=0;i<image.rows;i++)
 			{
@@ -44,15 +47,19 @@ namespace PPTP
 				{
 					// CALCUL NEAREST CENTROID
 					centroid_id = calc_closest_centroid(image, i, j);
-					collection_centroid_id.emplace(std::make_tuple(i,j),centroid_id);
+					//collection_centroid_id.emplace(std::make_tuple(i,j),centroid_id);
+					auto pixel_coord = std::make_tuple(i,j);
+					if(collection_centroid_id.count(pixel_coord)==0 || collection_centroid_id[pixel_coord]!=centroid_id)
+					{
+						collection_centroid_id[pixel_coord]=centroid_id;
+						centroids_convergence=false;
+					}
 				}
 			}
-			
-			
-			return collection_centroid_id;
+			return centroids_convergence;
 		}
 
-		void update_centroids(cv::Mat& image, std::map<std::tuple<int,int>, int> collection_centroid_id)
+		void update_centroids(cv::Mat& image)
 		{
 			using namespace cv;
 
@@ -72,14 +79,15 @@ namespace PPTP
 							if( it.second == c){
 								tie(i, j)=it.first;
 								updated_centroids[c]+=image.at<uchar>(i,j);
-centroids_occurences[c]++;
+								centroids_occurences[c]++;
 							}
 						}
 				
 					}
 					for(int c=0; c<m_nb_centroid; c++)
 					{
-						updated_centroids[c]/=centroids_occurences[c];
+						if(centroids_occurences[c] !=0)
+							updated_centroids[c]/=centroids_occurences[c];
 					}
 					break;
 				case 3:
@@ -101,9 +109,12 @@ centroids_occurences[c]++;
 					}
 					for(int c=0; c<m_nb_centroid; c++)
 					{
-						for(int k=0;k<nb_channels;k++){
+						if(centroids_occurences[c] !=0)
+						{
+							for(int k=0;k<nb_channels;k++){
 							updated_centroids[c+k]/=centroids_occurences[c];
-						}
+							}
+						}	
 					}
 					break;
 
@@ -112,11 +123,9 @@ centroids_occurences[c]++;
 
  		}
 
-		void compute_segmentation(cv::Mat& image, std::map<std::tuple<int,int>, int>& collection_centroid_id)
+		void compute_segmentation(cv::Mat& image)
 		{
                       using namespace cv ;
-
-		      //Mat img_result= image;
 
 		      int cluster_id =0;
 		      switch(nb_channels)
@@ -126,12 +135,10 @@ centroids_occurences[c]++;
 		          {
 		            for(int j=1;j<image.cols-1;++j)
 		            {
-		             	//uchar pixel = image.at<uchar>(i,j) ;
 				cluster_id=collection_centroid_id[std::make_tuple(i,j)];
 			      	image.at<uchar>(i,j)=m_centroids[cluster_id];
 		            }
 		          }
-			  //return img_result;
 		          break ;
 		        case 3:
 		          Mat_<Vec3b> _I = image;
@@ -143,12 +150,10 @@ centroids_occurences[c]++;
 				cluster_id=collection_centroid_id[std::make_tuple(i,j)];
 				for(int k=0;k<3;++k)
 		              	{
-		              		//uchar pixel = _I(i,j)[k] ;
 					_I(i,j)[k]=m_centroids[3*cluster_id+k];	
 		              	}
 		            }
 		          }
-			  //return _I;
 		          break ;
 		      }
 		}
@@ -159,19 +164,20 @@ centroids_occurences[c]++;
 			std::cout<<"Centroid_init"<<std::endl;
 			init_centroid(image);
 			
-			std::map<std::tuple<int,int>, int> collection_centroid_id;
+			//std::map<std::tuple<int,int>, int> collection_centroid_id;
 			std::cout<<"compute centroids"<<std::endl;
 			int iterations=0;
-			
-			while(iterations<50){
+			bool convergence_centroids=false;
+
+			while(iterations<200 && !convergence_centroids){
 				std::cout<<"iteration number: "<<iterations<<std::endl;
-				collection_centroid_id=compute_centroids(image) ;
-				update_centroids(image, collection_centroid_id);
+				convergence_centroids=compute_centroids(image) ;
+				update_centroids(image);
 				iterations++;
 			}
 			//Mat img_seg;
 			std::cout<<"compute segmentation"<<std::endl; 
-			compute_segmentation(image, collection_centroid_id) ;
+			compute_segmentation(image) ;
 		}
 
 	private :
@@ -197,7 +203,7 @@ centroids_occurences[c]++;
 						row_id=(int)(rand()%image.rows);
 						col_id=(int)(rand()%image.cols);
 						m_centroids[i]=image.at<uchar>(row_id,col_id);
-						}while(abs(m_centroids[i]-m_centroids[i-1])>0 && std::find(m_centroids.begin(), m_centroids.end(), m_centroids[i]) != m_centroids.end());
+						}while(abs(m_centroids[i]-m_centroids[i-1])>5 && std::find(m_centroids.begin(), m_centroids.end(), m_centroids[i]) != m_centroids.end());
 					}
 					break;
 				}
@@ -227,7 +233,7 @@ centroids_occurences[c]++;
 
 								dist+=pow(_I(row_id,col_id)[i]-m_centroids[i-3],2);
 							}
-						}while(sqrt(dist)>0 && std::find(m_centroids.begin(), m_centroids.end(), m_centroids[c]) != m_centroids.end());
+						}while(sqrt(dist)>5 && std::find(m_centroids.begin(), m_centroids.end(), m_centroids[c]) != m_centroids.end());
 						
 					}
 					break;
@@ -290,6 +296,7 @@ centroids_occurences[c]++;
 	    	int nb_channels  =3  ;
 		int m_nb_centroid = 0 ;
 		std::vector<uchar> m_centroids ;
+		std::map<std::tuple<int,int>,int> collection_centroid_id;
 	};
 }
 
