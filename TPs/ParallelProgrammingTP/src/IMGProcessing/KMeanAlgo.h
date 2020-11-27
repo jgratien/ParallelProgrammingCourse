@@ -15,6 +15,7 @@
 #include <omp.h>
 #include <chrono>
 #include <ctime>
+#include <limits>
 
 namespace PPTP
 {
@@ -56,8 +57,8 @@ namespace PPTP
 			m_nb_channels = image.channels(); //Setting image number of channels
 
 			init_centroids(image);
-			
-			std::cout<<"Init done" <<std::endl;
+
+			std::cout << "Init done" << std::endl;
 
 			int n = 0;
 			std::vector<double> displacement(m_nb_centroid, 0);
@@ -156,14 +157,14 @@ namespace PPTP
 			case 3:
 				Mat_<Vec3b> *_I = new Mat_<Vec3b>();
 				*_I = image;
-				std::cout<<"Image copied by pointer" <<std::endl;
+				std::cout << "Image copied by pointer" << std::endl;
 				for (int k = 0; k < m_nb_centroid; k++)
 				{
 
-					j = rand() % (image.cols-2) +1 ;
-					i = rand() % (image.rows-2) +1 ;
+					j = rand() % (image.cols - 2) + 1;
+					i = rand() % (image.rows - 2) + 1;
 					for (int c = 0; c < 3; c++)
-					{	
+					{
 						pixel = (*_I)(i, j)[c];
 						m_centroids.push_back(pixel);
 						m_new_centroids[k * m_nb_channels + c] = (double)pixel;
@@ -183,14 +184,9 @@ namespace PPTP
 
 			uchar pixel = 0;
 			double distance = 0;
-			double temp = 0;
 			uint32_t c = 0;
 
 			//Initializing pixel-centroid mapping vector and displacement vector
-			for (int i = 0; i < (image.rows * image.cols); i++)
-			{
-				m_mapping[i] = 0;
-			}
 			for (int i = 0; i < m_nb_centroid; i++)
 			{
 				m_cluster_sizes[i] = 0;
@@ -206,19 +202,11 @@ namespace PPTP
 				{
 					for (auto col = 0; col < image.cols; col++)
 					{
+						distance = std::numeric_limits<double>::max();
+
+						c = argClosest(distance, row, col, image);
+
 						pixel = image.at<uchar>(row, col);
-
-						distance = ((int)pixel - (int)m_centroids[0]) * ((int)pixel - (int)m_centroids[0]);
-
-						for (uint16_t k = 0; k < m_nb_centroid; k++)
-						{
-							temp = ((int)pixel - (int)m_centroids[k]) * ((int)pixel - (int)m_centroids[k]);
-							if (temp < distance)
-							{
-								distance = temp;
-								c = k;
-							}
-						}
 
 						m_mapping[row * image.cols + col] = c; //Pixel's Corresponding centroid
 						m_cluster_sizes[c] += 1;			   //One more pixel belonging to cluster c : increment by 1
@@ -239,83 +227,88 @@ namespace PPTP
 			//RGB images
 			case 3:
 
-				Mat_<Vec3b> _I = image;
-
 #pragma omp parallel if (parallel)
-				{
+			{
 #pragma omp for collapse(2)                                \
-	firstprivate(pixel, distance, temp)                    \
+	firstprivate(pixel, distance)                    \
 		schedule(static, 32)                               \
 			reduction(+                                    \
 					  : m_cluster_sizes [0:m_nb_centroid]) \
 				reduction(-                                \
 						  : m_new_centroids [0:(m_nb_centroid * m_nb_channels)])
 
-					for (auto row = 0; row < image.rows; row++)
+				for (auto row = 0; row < image.rows; row++)
 
+				{
+					for (auto col = 0; col < image.cols; col++)
 					{
-						for (auto col = 0; col < image.cols; col++)
-						{
+						distance = std::numeric_limits<double>::max();
 
-							for (uint16_t channel = 0; channel < m_nb_channels; channel++)
-							{
-								pixel = _I(row, col)[channel];
-								distance += ((int)pixel - (int)m_centroids[0 * m_nb_channels + channel]) * ((int)pixel - (int)m_centroids[0 * m_nb_channels + channel]);
-							}
+						c = argClosest(distance, row, col, image);
 
-							for (uint16_t k = 0; k < m_nb_centroid; k++)
-							{
-								temp = 0;
+						m_mapping[row * image.cols + col] = c;
 
-								for (uint16_t channel = 0; channel < m_nb_channels; channel++)
-								{
-									pixel = _I(row, col)[channel];
-									temp += ((int)pixel - (int)m_centroids[k * m_nb_channels + channel]) * ((int)pixel - (int)m_centroids[k * m_nb_channels + channel]);
-								}
+						//One more pixel belonging to cluster c : increment by 1
+						m_cluster_sizes[c] += 1; //Reduction
 
-								if (temp <= distance)
-								{
-									distance = temp;
-									c = k;
-								}
-							}
-
-							//Shared between threads, no false sharing thanks to 16-chunks block cycles
-							m_mapping[row * image.cols + col] = c;
-
-							//One more pixel belonging to cluster c : increment by 1
-							m_cluster_sizes[c] += 1; //Reduction
-
-							//Accumulating pixels value in the c position (helps computing barycentre later)
-							//REDUCTION ON +operator for vectorized m_new_centroids
-							for (uint16_t channel = 0; channel < m_nb_channels; channel++)
-							{
-								pixel = _I(row, col)[channel];
-								m_new_centroids[c * m_nb_channels + channel] += (double)pixel; //Reduction
-							}
-						}
-					}
-#pragma omp single
-					//Computing barycentre, measuring displacement between old and new centroid & updating centroid values
-					std::fill(displacement.begin(), displacement.end(), 0);
-
-#pragma omp for schedule(static, 8)
-					for (uint16_t k = 0; k < m_nb_centroid; k++)
-					{
+						//Accumulating pixels value in the c position (helps computing barycentre later)
 						for (uint16_t channel = 0; channel < m_nb_channels; channel++)
 						{
-							m_new_centroids[k * m_nb_channels + channel] /= (double)(m_cluster_sizes[k] != 0 ? (double)m_cluster_sizes[k] : 1.0);
-							displacement[k] += (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]) * (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]);
-
-							m_centroids[k * m_nb_channels + channel] = (uchar)m_new_centroids[k * m_nb_channels + channel];
+							pixel = (m_nb_channels == 1) ? image.at<uchar>(row, col) : image.at<Vec3b>(row, col)[channel];
+							m_new_centroids[c * m_nb_channels + channel] += (double)pixel;
 						}
-						//displacement contains doubles = > chuncks of 8 (8*64 = 64bytes) is enough to avoid false sharing
-						displacement[k] = sqrt(displacement[k] / m_nb_channels); //Divide by nb_channels since displacement accumulates sums for each channel
 					}
 				}
-				break;
+#pragma omp single
+				//Computing barycentre, measuring displacement between old and new centroid & updating centroid values
+				std::fill(displacement.begin(), displacement.end(), 0);
+
+#pragma omp for schedule(static, 8)
+				for (uint16_t k = 0; k < m_nb_centroid; k++)
+				{
+					for (uint16_t channel = 0; channel < m_nb_channels; channel++)
+					{
+						m_new_centroids[k * m_nb_channels + channel] /= (double)(m_cluster_sizes[k] != 0 ? (double)m_cluster_sizes[k] : 1.0);
+						displacement[k] += (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]) * (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]);
+
+						m_centroids[k * m_nb_channels + channel] = (uchar)m_new_centroids[k * m_nb_channels + channel];
+					}
+					//displacement contains doubles = > chuncks of 8 (8*64 = 64bytes) is enough to avoid false sharing
+					displacement[k] = sqrt(displacement[k] / m_nb_channels); //Divide by nb_channels since displacement accumulates sums for each channel
+				}
+			}
+			break;
 			}
 			return (displacement);
+		}
+
+		//Closest centroid
+		uint32_t argClosest(double &distance, int row, int col, cv::Mat const &image)
+		{
+			using namespace cv;
+
+			uchar pixel = 0;
+			double temp = 0;
+			uint32_t c = 0;
+
+			for (uint16_t k = 0; k < m_nb_centroid; k++)
+			{
+				temp = 0;
+
+				for (uint16_t channel = 0; channel < m_nb_channels; channel++)
+				{
+					pixel = (m_nb_channels == 1) ? image.at<uchar>(row, col) : image.at<Vec3b>(row, col)[channel];
+					temp += ((int)pixel - (int)m_centroids[k * m_nb_channels + channel]) * ((int)pixel - (int)m_centroids[k * m_nb_channels + channel]);
+				}
+
+				if (temp <= distance)
+				{
+					distance = temp;
+					c = k;
+				}
+			}
+
+			return (c);
 		}
 
 		//Segmentation
@@ -342,8 +335,8 @@ namespace PPTP
 			//RGB image segmentation
 			case 3:
 
-#pragma omp parallel if(parallel)
-{
+#pragma omp parallel if (parallel)
+			{
 #pragma omp for collapse(2) schedule(static, 64)
 				for (int row = 0; row < image.rows; row++)
 				{
@@ -359,8 +352,8 @@ namespace PPTP
 						}
 					}
 				}
-}
-				break;
+			}
+			break;
 			}
 		}
 
@@ -378,3 +371,4 @@ namespace PPTP
 } // namespace PPTP
 
 #endif /* SRC_IMGPROCESSING_KMEANALGO_H_ */
+
