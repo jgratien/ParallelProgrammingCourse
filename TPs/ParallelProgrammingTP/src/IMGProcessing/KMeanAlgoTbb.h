@@ -8,6 +8,8 @@
 #ifndef SRC_IMGPROCESSING_KMEANALGOTBB_H_
 #define SRC_IMGPROCESSING_KMEANALGOTBB_H_
 
+#include "tbb/tbb.h"
+
 namespace PPTP
 {
 
@@ -29,6 +31,7 @@ namespace PPTP
 		      //std::cout << "initialize centroids" << std::endl;
 		      init_centroids(image);
 
+
 		      // we'll store centroids corresponding to each pixel in pixel_segmentation
 		      std::vector<int> pixel_segmentation(image.cols*image.rows, 0);
 
@@ -38,32 +41,42 @@ namespace PPTP
 		      {
 			std::cout << "iteration number: " << iter << std::endl;
 
-			for(int i=0; i<image.rows; i++)
-			{
-			  for(int j=0; j<image.cols; j++)
+			
+			//{
+			  //tbb::parallel_for(0, image.rows,
+			  //[&](int i)
+			  for(int i=0; i<image.rows; i++)
 			  {
-			    switch(m_nb_channels)
-			    {
-			      case(1):
-			      {
-				uchar current_pixel = image.at<uchar>(i,j);
-				nearest_centroid_id = nearest_centroid(current_pixel);
-				pixel_segmentation.at(i*image.cols+j) = nearest_centroid_id;
-				break;
-			      }
-			      case(3):
-			      {
-				Mat_<Vec3b> _I = image;
-                                uchar current_red = _I(i,j)[0];
-				uchar current_green = _I(i,j)[1];
-				uchar current_blue = _I(i,j)[2];
-				nearest_centroid_id = nearest_centroid(current_red, current_green, current_blue);
-				pixel_segmentation.at(i*image.cols+j) = nearest_centroid_id;
-				break;
-			      }
-		            }
-			  }
-			}
+			  	
+			     
+			        //tbb::parallel_for(0, image.cols,
+				//[&](int j)
+				for(int j=0; j<image.cols; j++)
+			  	{
+			    		switch(m_nb_channels)
+			    		{
+			     			case(1):
+			      			{
+							uchar current_pixel = image.at<uchar>(i,j);
+							nearest_centroid_id = nearest_centroid(current_pixel);
+							pixel_segmentation.at(i*image.cols+j) = nearest_centroid_id;
+							break;
+			      			}
+			      			case(3):
+			      			{
+							Mat_<Vec3b> _I = image;
+                                			uchar current_red = _I(i,j)[0];
+							uchar current_green = _I(i,j)[1];
+							uchar current_blue = _I(i,j)[2];
+							nearest_centroid_id = nearest_centroid(current_red, current_green, current_blue);
+							pixel_segmentation.at(i*image.cols+j) = nearest_centroid_id;
+							break;
+			      			}
+		            		}
+			  	}
+			    
+			  }//);
+			//}
 			
 			// save old centroids before updating them to calculate their variance
 			std::vector<uchar> old_centroids = m_centroids;
@@ -135,32 +148,36 @@ namespace PPTP
 		void init_centroids(cv::Mat const& image)
 		{
 		  using namespace cv;
-		  m_centroids.reserve(m_nb_centroids*m_nb_channels);
-		  for(int i=0; i<m_nb_centroids; i++)
+		  m_centroids.resize(m_nb_centroids*m_nb_channels);
 		  {
-		    int random_pixel;
-	            switch(m_nb_channels)
-	            {		 
-		      case(1):
-		      {
-		        random_pixel = image.at<uchar>(rand() % image.rows, rand() % image.cols);
-			m_centroids.push_back(random_pixel);
-	                break;
-		      }
-		      case(3):
-		      {
-			Mat_<Vec3b> _I = image;
-			int random_line = rand() % image.rows;
-			int random_column = rand() % image.cols;
-			for(int k=0; k<3; k++)
-			{
-			  random_pixel = _I(random_line, random_column)[k];
-			  m_centroids.push_back(random_pixel); 
-			} 
-			break;
-		      }
+		  	tbb::parallel_for(0, m_nb_centroids,
+		  	[&](int i)
+			//for(int i=0; i<m_nb_centroids; i++)
+		  		{
+	            			switch(m_nb_channels)
+	            			{		 
+		      				case(1):
+		      				{
+		        				uchar random_pixel = image.at<uchar>(rand() % image.rows, rand() % image.cols);
+							m_centroids[i] = random_pixel;
+	                				break;
+		      				}
+		      				case(3):
+		      				{
+							Mat_<Vec3b> _I = image;
+							int random_line = rand() % image.rows;
+							int random_column = rand() % image.cols;
+							for(int k=0; k<3; k++)
+								{
+			  					   uchar random_pixel = _I(random_line, random_column)[k];
+			 					   m_centroids[3*i+k] = random_pixel; 
+								}
+								
+							break;
+		      				}
  
-		    }
+		    			}
+		  		});
 		  }
 		}
 
