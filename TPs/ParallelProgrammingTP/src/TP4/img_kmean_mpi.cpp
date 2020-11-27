@@ -19,6 +19,7 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <IMGProcessing/Kmean_mpi.h>
+#include "Utils/Timer.h"
 
 using namespace cv;
 using namespace std;
@@ -45,6 +46,8 @@ int main( int argc, char** argv )
         return 1;
     }
 
+    using namespace PPTP;    
+    Timer timer;
     MPI_Init(&argc,&argv) ;
 
     int my_rank = 0 ;
@@ -84,6 +87,7 @@ int main( int argc, char** argv )
 
       if(vm["seg"].as<int>()==1)
       {
+	Timer::Sentry sentry(timer, "KMEANS SEGMENTATION WITH MPI");
 	MPI_Status status;
 	{
 	  // BCAST NB_CHANNELS, NB_ROWS, NB_COLS AND NB_CENTROIDS TO ALL PROCS
@@ -273,35 +277,15 @@ int main( int argc, char** argv )
 	  }
 
         }
-/*
-	for(int i=0; i<flat_image.size();i++)
-	{
-		std::cout << (int) flat_image[i] << " ";
-	}
-	std::cout << " *****************************************************************************************************************************************************************************************************************************************************************************************************************************************************" << std::endl;
-*/
 
 	// unflat image
 	unflat_image(flat_image, image, nb_channels);
 	
-	// flatten image
-      std::vector<uchar> flat_image_; //(image.rows*image.cols*nb_channels);
-      if(image.isContinuous())
-      {
-	flat_image_.assign(image.datastart, image.dataend);
-      }
 
-/*	for(int i=0; i<flat_image_.size();i++)
-	{
-		std::cout << (int) flat_image_[i] << " ";
-	}
-	std::cout << " " << std::endl;
-*/ 
-
-	std::cout << (int) image.at<Vec3b>(127,127)[0] << " " << (int) flat_image[49149] << std::endl;
         imwrite("../MPI_Seg_Image.jpg",image) ;
 
       }
+      timer.printInfo();
 
     }
     else

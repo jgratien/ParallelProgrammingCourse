@@ -19,6 +19,7 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <IMGProcessing/KMeanAlgo.h>
+#include <Utils/Timer.h>
 
 using namespace cv;
 using namespace std;
@@ -42,6 +43,9 @@ int main( int argc, char** argv )
         std::cout << desc << "\n";
         return 1;
     }
+
+    using namespace PPTP;
+    Timer timer;
 
     std::string img_file = vm["file"].as<std::string>() ;
     Mat image;
@@ -74,20 +78,22 @@ int main( int argc, char** argv )
       {
         case 1:
           {
-		  PPTP::KMeanAlgo algo(1,nb_centroids) ;
+		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION SEQUENTIAL");
+		  KMeanAlgo algo(1,nb_centroids) ;
 		  std::cout << "starting processing ... " << std::endl;
         	  algo.process(image) ;
           }
           break ;
         case 3:
           {
-		  PPTP::KMeanAlgo algo(3,nb_centroids) ;
+		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION SEQUENTIAL");
+		  KMeanAlgo algo(3,nb_centroids) ;
 		  std::cout << "starting processing ... " << std::endl;
         	  algo.process(image) ;
           }
           break ;
       }
-
+      timer.printInfo();
       imwrite("../Seg_Image.jpg",image) ;
     }
 
