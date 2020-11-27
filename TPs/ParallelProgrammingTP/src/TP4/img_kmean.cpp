@@ -29,10 +29,11 @@ int main( int argc, char** argv )
     options_description desc;
     desc.add_options()
         ("help", "produce help")
-        ("file",value<std::string>(), "image file")
+        ("file",value<std::string>()->default_value(std::string("")), "image file")
         ("show",value<int>()->default_value(0), "show image")
         ("seg",value<int>()->default_value(0), "kmean segmentation")
-        ("kmean-value",value<int>()->default_value(0), "KMean k value") ;
+        ("kmean-value",value<int>()->default_value(0), "KMean k value")
+    		("max-iter", value<int>()->default_value(10), "Kmean maximum iterations number");
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
@@ -66,28 +67,14 @@ int main( int argc, char** argv )
     cout<<"NCOLS       : "<<image.cols<<std::endl ;
     const int channels = image.channels();
 
-    int nb_centroids = vm["nb-centroids"].as<int>() ;
+    int nb_centroids = vm["kmean-value"].as<int>() ;
     if(vm["seg"].as<int>()==1)
     {
-      switch(channels)
-      {
-        case 1:
-          {
-		  PPTP::KMeanAlgo algo(1,nb_centroids) ;
-        	  algo.process(image) ;
-          }
-          break ;
-        case 3:
-          {
-		  PPTP::KMeanAlgo algo(3,nb_centroids) ;
-        	  algo.process(image) ;
-          }
-          break ;
-      }
-
+      int maxiter = vm["max-iter"].as<int>();
+      PPTP::KMeanAlgo algo(channels, nb_centroids, maxiter) ;
+      algo.process(image) ;
       imwrite("./Seg_Image.jpg",image) ;
     }
 
     return 0 ;
 }
-
