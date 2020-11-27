@@ -25,11 +25,10 @@ namespace PPTP
 			int m_maxiter;
 			// vector holding all centroids
 			std::vector<uchar*> centroids;
-			// represents channels sum & count
-			// of pixels for each cluster
-			std::vector<
-				std::tuple<int*, int>
-				> reduced_clusters;
+			// color sum of clusters
+			std::vector<double*> clst_colorsum;
+			// count of elements of clusters
+			std::vector<double> clst_count;
 			// matrix for clusters mapping
 			uchar* clustered_img;
 
@@ -39,10 +38,11 @@ namespace PPTP
 				, m_nb_centroid(nb_centroids)
 				, m_maxiter(max_iter)
 			{
+				clst_count.reserve(nb_centroids);
 				for(int i = 0; i < nb_centroids; i++) {
 					centroids.push_back(new uchar[nb_channels]);
-					reduced_clusters.push_back(
-						std::make_tuple(new int[nb_channels], 0));
+					clst_colorsum.push_back(new double[nb_channels]);
+					clst_count[i] = 0;
 				}
 			}
 			virtual ~KMeanAlgo() {}
@@ -64,14 +64,14 @@ namespace PPTP
 			}
 
 			void compute_centroids() {
-				int* colorsum;
-				int clustercount;
+				double* colorsum;
 				for (int i = 0; i < m_nb_centroid; i++) {
-					colorsum = std::get<0>(reduced_clusters[i]);
-					clustercount = std::get<1>(reduced_clusters[i]);
+					colorsum = clst_colorsum[i];
+					std::cout << "FOUND " << clst_count[i] << " elements in cluster n." << i << std::endl;
 					for (int j = 0; j < nb_channels; j++) {
-						centroids[i][j] = (int)(colorsum[j]/clustercount);
+						centroids[i][j] = (int)(colorsum[j]/clst_count[i]);
 						colorsum[j] = 0;
+						clst_count[i] = 0;
 					}
 				}
 			}
@@ -103,12 +103,12 @@ namespace PPTP
 				for(int i = 0; i < image.rows; i++)
 					for(int j = 0; j < image.cols; j++) {
 						cent_ind = nrst_centroid_index(image, i, j);
-						std::get<1>(reduced_clusters[cent_ind]) += 1;
+						clst_count[cent_ind] += 1;
 						if (nb_channels == 1)
-							std::get<0>(reduced_clusters[cent_ind])[0] += image.at<uchar>(i, j);
+							clst_colorsum[cent_ind][0] += image.at<uchar>(i, j);
 						else
 							for (int ch = 0; ch < nb_channels; ch++)
-								std::get<0>(reduced_clusters[cent_ind])[ch] += image.at<cv::Vec3b>(i, j)[ch];
+								clst_colorsum[cent_ind][ch] += image.at<cv::Vec3b>(i, j)[ch];
 						if (clustered_img[i * image.cols + j] != cent_ind) {
 							clustered_img[i * image.cols + j] = cent_ind;
 							converged = false;
@@ -149,7 +149,9 @@ namespace PPTP
 					std::cout << "Starting segmentation n." << iter << "..." << std::endl;
 					converged = segment(image);
 					for(int i=0; i < m_nb_centroid;i++)
-						std::cout << (int)centroids[i][0] << " " << (int)centroids [i][1] << " " << (int)centroids[i][2] << std::endl;
+						std::cout << (int)centroids[i][0] << " "
+								  << (int)centroids[i][1] << " "
+								  << (int)centroids[i][2] << std::endl;
 				}
 				// change pixels color
 				map_segmentation(image);
