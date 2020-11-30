@@ -219,7 +219,9 @@ namespace PPTP
 			case 1:
 			{
 
-#pragma omp parallel for schedule(static, 16) reduction(+: m_cluster_sizes [0:m_nb_centroid]) reduction(+: m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(12) if (parallel)
+#pragma omp parallel for schedule(static, 16) reduction(+                                                \
+														: m_cluster_sizes [0:m_nb_centroid]) reduction(+ \
+																									   : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(12) if (parallel)
 				for (auto row = 0; row < image.rows; row++)
 
 				{
@@ -247,8 +249,8 @@ namespace PPTP
 			case 3:
 			{
 #pragma omp parallel for schedule(static, 16) reduction(+                                                \
-													   : m_cluster_sizes [0:m_nb_centroid]) reduction(+ \
-																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(12) if (parallel)
+														: m_cluster_sizes [0:m_nb_centroid]) reduction(+ \
+																									   : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(12) if (parallel)
 				for (auto row = 0; row < image.rows; row++)
 
 				{
@@ -369,7 +371,7 @@ namespace PPTP
 		}
 
 		//Kmeans + Image segmentation
-		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool randomInit = false,  bool parallel = false)
+		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool randomInit = false, bool parallel = false)
 		{
 			std::cout << "Started segmentation..." << std::endl;
 			init_centroids(image, randomInit);
