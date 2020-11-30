@@ -51,10 +51,9 @@ namespace PPTP
 		//Setters for centroids
 		void setCentroids(std::vector<uchar> centr)
 		{
-			// m_centroids.reserve(centr.size());
 
 			m_centroids = centr;
-			for (int i = 0; i < centr.size(); i++)
+			for (size_t i = 0; i < centr.size(); i++)
 			{
 				m_new_centroids[i] = (double)centr.at(i);
 			}
@@ -83,7 +82,7 @@ namespace PPTP
 			{
 				std::cout << "-------------------- ITERATION " << n + 1 << "----------------------------\n"
 						  << std::endl;
-				displacement = update_centroid_par(image, parallel);
+				displacement = update_centroid(image, parallel);
 
 				//We pick the max displacement from the returned per-cluster displacements vector
 				//The stop condition checks whether this max displacement is smaller than epsilon
@@ -201,7 +200,6 @@ namespace PPTP
 		{
 			using namespace cv;
 
-			uchar pixel = 0;
 			double distance = 0;
 			uint32_t c = 0;
 
@@ -221,9 +219,7 @@ namespace PPTP
 			case 1:
 			{
 
-#pragma omp parallel for schedule(static, 8) reduction(+                                                \
-													   : m_cluster_sizes [0:m_nb_centroid]) reduction(+ \
-																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(8) if (parallel)
+#pragma omp parallel for schedule(static, 16) reduction(+: m_cluster_sizes [0:m_nb_centroid]) reduction(+: m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(12) if (parallel)
 				for (auto row = 0; row < image.rows; row++)
 
 				{
@@ -250,10 +246,9 @@ namespace PPTP
 			}
 			case 3:
 			{
-				std::cout << "Yes rgb" << std::endl;
-#pragma omp parallel for schedule(static, 8) reduction(+                                                \
+#pragma omp parallel for schedule(static, 16) reduction(+                                                \
 													   : m_cluster_sizes [0:m_nb_centroid]) reduction(+ \
-																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(8) if (parallel)
+																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(12) if (parallel)
 				for (auto row = 0; row < image.rows; row++)
 
 				{
@@ -338,7 +333,7 @@ namespace PPTP
 			//Grayscale image segmentation
 			case 1:
 			{
-#pragma omp parallel for firstprivate(k) schedule(static, 8) if (parallel)
+#pragma omp parallel for firstprivate(k) schedule(static, 8) num_threads(12) if (parallel)
 				for (int row = 0; row < image.rows; row++)
 				{
 					for (int col = 0; col < image.cols; col++)
@@ -353,7 +348,7 @@ namespace PPTP
 			//RGB image segmentation
 			case 3:
 			{
-#pragma omp parallel for firstprivate(k) schedule(static, 8) if (parallel)
+#pragma omp parallel for firstprivate(k) schedule(static, 8) num_threads(12) if (parallel)
 				for (int row = 0; row < image.rows; row++)
 				{
 					for (int col = 0; col < image.cols; col++)

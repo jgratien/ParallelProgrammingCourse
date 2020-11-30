@@ -17,10 +17,21 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <IMGProcessing/KMeanAlgo.h>
+#include "sys/time.h"
+#include <ctime>
 
 using namespace cv;
 using namespace std;
-
+double now()
+{
+    struct timeval t;
+    double f_t;
+    gettimeofday(&t, NULL);
+    f_t = t.tv_usec;
+    f_t = f_t / ((float)1E6);
+    f_t += t.tv_sec;
+    return (f_t);
+}
 int main(int argc, char **argv)
 {
 
@@ -40,9 +51,10 @@ int main(int argc, char **argv)
   cout << "just entered" << endl;
   std::string img_file = vm["file"].as<std::string>();
   cout << "my image file : " << img_file << endl;
-  Mat image;
+  Mat image, image2;
   image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
 
+  image2 = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
   cout << "just entered" << endl;
   if (!image.data) // Check for invalid input
   {
@@ -64,6 +76,9 @@ int main(int argc, char **argv)
   cout << "NCOLS       : " << image.cols << std::endl;
   const int channels = image.channels();
 
+  double startSeq, endSeq;
+  double startPar, endPar;
+
   int nb_centroids = vm["kmean-value"].as<int>();
 
   if (vm["seg"].as<int>() == 1)
@@ -76,8 +91,22 @@ int main(int argc, char **argv)
     {
       cout << "=========GrayScale Kmeans=========" << endl;
     }
-    PPTP::KMeanAlgo algo(3, nb_centroids);
-    algo.process(image, false);
+    PPTP::KMeanAlgo algoSeq(channels, nb_centroids);
+    PPTP::KMeanAlgo algoPar(channels, nb_centroids);
+    algoSeq.init_centroids(image);
+    algoPar.init_centroids(image);
+    algoPar.setCentroids(algoSeq.getCentroids());
+
+    startSeq = now();
+    algoSeq.process(image, 100,1,false);
+    endSeq = now();
+
+    startPar = now();
+    algoPar.process(image2, 100,1,true);
+    endPar = now();
+
+    std::cout << "Acceleration OpenMP / Sequential : " << (endSeq - startSeq) / (endPar - startPar) << std::endl;
+    //algo.process(image, false);
   }
   
   cout << "Writing image" << endl;
@@ -85,7 +114,6 @@ int main(int argc, char **argv)
   string fileName = img_file + "_Segmented.jpg";
   imwrite(fileName, image);
   cout << "Image written at : " << fileName << endl;
-}
 
 return 0;
 }
