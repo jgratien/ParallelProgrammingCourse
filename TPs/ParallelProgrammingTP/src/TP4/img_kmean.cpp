@@ -68,29 +68,24 @@ int main(int argc, char **argv)
 
   if (vm["seg"].as<int>() == 1)
   {
-    switch (channels)
-    {
-    case 1:
-    {
-      cout << "=========GrayScale Kmeans=========" << endl;
-      PPTP::KMeanAlgo algo(1, nb_centroids);
-      algo.process(image);
-    }
-    break;
-    case 3:
+    if (channels == 3)
     {
       cout << "=========RGB Kmeans=========" << endl;
-      PPTP::KMeanAlgo algo(3, nb_centroids);
-      algo.process(image);
     }
-    break;
+    else
+    {
+      cout << "=========GrayScale Kmeans=========" << endl;
     }
-    cout << "Writing image" << endl;
-    img_file.resize(img_file.size() - 4);
-    string fileName = img_file + "_Segmented.jpg";
-    imwrite(fileName, image);
-    cout << "Image written at : " << fileName << endl;
+    PPTP::KMeanAlgo algo(3, nb_centroids);
+    algo.process(image, false);
   }
+  
+  cout << "Writing image" << endl;
+  img_file.resize(img_file.size() - 4);
+  string fileName = img_file + "_Segmented.jpg";
+  imwrite(fileName, image);
+  cout << "Image written at : " << fileName << endl;
+}
 
-  return 0;
+return 0;
 }

@@ -48,6 +48,25 @@ namespace PPTP
 			delete[] m_new_centroids;
 		}
 
+		//Setters for centroids
+		void setCentroids(std::vector<uchar> centr)
+		{
+			// m_centroids.reserve(centr.size());
+
+			m_centroids = centr;
+			for (int i = 0; i < centr.size(); i++)
+			{
+				m_new_centroids[i] = (double)centr.at(i);
+			}
+		}
+
+		//Getters for centroids
+
+		std::vector<uchar> getCentroids()
+		{
+			return (m_centroids);
+		}
+
 		//Main kmeans method : iterative computing & update of centroids positions & associated
 		//pixels of the image
 		void compute_centroids(cv::Mat const &image, int max_iterations, double epsilon, bool parallel)
@@ -55,10 +74,6 @@ namespace PPTP
 			using namespace cv;
 
 			m_nb_channels = image.channels(); //Setting image number of channels
-
-			init_centroids(image);
-
-			std::cout << "Init done" << std::endl;
 
 			int n = 0;
 			std::vector<double> displacement(m_nb_centroid, 0);
@@ -68,7 +83,7 @@ namespace PPTP
 			{
 				std::cout << "-------------------- ITERATION " << n + 1 << "----------------------------\n"
 						  << std::endl;
-				displacement = update_centroid(image, parallel);
+				displacement = update_centroid_par(image, parallel);
 
 				//We pick the max displacement from the returned per-cluster displacements vector
 				//The stop condition checks whether this max displacement is smaller than epsilon
@@ -180,6 +195,7 @@ namespace PPTP
 		//Returns a vector of euclidean differences between old and new position for each centroid
 		std::vector<double> update_centroid(cv::Mat const &image, bool parallel)
 		{
+
 			using namespace cv;
 
 			uchar pixel = 0;
@@ -194,91 +210,50 @@ namespace PPTP
 
 			std::vector<double> displacement(m_nb_centroid, 0.0);
 
-			switch (m_nb_channels)
+			//Grayscale images & RGB images
+
+			int length = m_nb_channels * m_nb_centroid;
+#pragma omp parallel for schedule(static, 8) reduction(+                                                \
+													   : m_cluster_sizes [0:m_nb_centroid]) reduction(+ \
+																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(8) if (parallel)
+			for (auto row = 0; row < image.rows; row++)
+
 			{
-			//Grayscale images
-			case 1:
-				for (auto row = 0; row < image.rows; row++)
+				const uchar *pixelsRow = image.ptr<uchar>(row);
+
+				for (auto col = 0; col < image.cols; col++)
 				{
-					for (auto col = 0; col < image.cols; col++)
-					{
-						distance = std::numeric_limits<double>::max();
+					distance = std::numeric_limits<double>::max();
 
-						c = argClosest(distance, row, col, image);
+					c = argClosest(distance, row, col, image);
 
-						pixel = image.at<uchar>(row, col);
+					m_mapping[row * image.cols + col] = c;
 
-						m_mapping[row * image.cols + col] = c; //Pixel's Corresponding centroid
-						m_cluster_sizes[c] += 1;			   //One more pixel belonging to cluster c : increment by 1
-						m_new_centroids[c] += (double)pixel;   //Accumulating pixels value in the c position (helps computing barycentre later)
-					}
-				}
+					//One more pixel belonging to cluster c : increment by 1
+					m_cluster_sizes[c] += 1; //Reduction
 
-				//Computing barycentre, measuring displacement between old and new centroid & updating centroid values
-				std::fill(displacement.begin(), displacement.end(), 0);
-				for (uint16_t k = 0; k < m_nb_centroid; k++)
-				{
-					m_new_centroids[k] /= ((double)m_cluster_sizes[k] != 0 ? m_cluster_sizes[k] : 1);
-					displacement[k] = fabs(m_new_centroids[k] - (double)m_centroids[k]);
-					m_centroids[k] = (uchar)m_new_centroids[k];
-				}
-				break;
-
-			//RGB images
-			case 3:
-
-#pragma omp parallel if (parallel)
-			{
-#pragma omp for collapse(2)                                \
-	firstprivate(pixel, distance)                    \
-		schedule(static, 32)                               \
-			reduction(+                                    \
-					  : m_cluster_sizes [0:m_nb_centroid]) \
-				reduction(-                                \
-						  : m_new_centroids [0:(m_nb_centroid * m_nb_channels)])
-
-				for (auto row = 0; row < image.rows; row++)
-
-				{
-					for (auto col = 0; col < image.cols; col++)
-					{
-						distance = std::numeric_limits<double>::max();
-
-						c = argClosest(distance, row, col, image);
-
-						m_mapping[row * image.cols + col] = c;
-
-						//One more pixel belonging to cluster c : increment by 1
-						m_cluster_sizes[c] += 1; //Reduction
-
-						//Accumulating pixels value in the c position (helps computing barycentre later)
-						for (uint16_t channel = 0; channel < m_nb_channels; channel++)
-						{
-							pixel = (m_nb_channels == 1) ? image.at<uchar>(row, col) : image.at<Vec3b>(row, col)[channel];
-							m_new_centroids[c * m_nb_channels + channel] += (double)pixel;
-						}
-					}
-				}
-#pragma omp single
-				//Computing barycentre, measuring displacement between old and new centroid & updating centroid values
-				std::fill(displacement.begin(), displacement.end(), 0);
-
-#pragma omp for schedule(static, 8)
-				for (uint16_t k = 0; k < m_nb_centroid; k++)
-				{
+					//Accumulating pixels value in the c position (helps computing barycentre later)
 					for (uint16_t channel = 0; channel < m_nb_channels; channel++)
 					{
-						m_new_centroids[k * m_nb_channels + channel] /= (double)(m_cluster_sizes[k] != 0 ? (double)m_cluster_sizes[k] : 1.0);
-						displacement[k] += (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]) * (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]);
-
-						m_centroids[k * m_nb_channels + channel] = (uchar)m_new_centroids[k * m_nb_channels + channel];
+						m_new_centroids[c * m_nb_channels + channel] += (double)(*(pixelsRow + col));
 					}
-					//displacement contains doubles = > chuncks of 8 (8*64 = 64bytes) is enough to avoid false sharing
-					displacement[k] = sqrt(displacement[k] / m_nb_channels); //Divide by nb_channels since displacement accumulates sums for each channel
 				}
 			}
-			break;
+			//Computing barycentre, measuring displacement between old and new centroid & updating centroid values
+			std::fill(displacement.begin(), displacement.end(), 0);
+
+			for (uint16_t k = 0; k < m_nb_centroid; k++)
+			{
+				for (uint16_t channel = 0; channel < m_nb_channels; channel++)
+				{
+					m_new_centroids[k * m_nb_channels + channel] /= (double)(m_cluster_sizes[k] != 0 ? (double)m_cluster_sizes[k] : 1.0);
+					displacement[k] += (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]) * (m_new_centroids[k * m_nb_channels + channel] - (double)m_centroids[k * m_nb_channels + channel]);
+					m_centroids[k * m_nb_channels + channel] = (uchar)m_new_centroids[k * m_nb_channels + channel];
+				}
+				//displacement contains doubles = > chuncks of 8 (8*64 = 64bytes) is enough to avoid false sharing
+				displacement[k] = sqrt(displacement[k] / m_nb_channels); //Divide by nb_channels since displacement accumulates sums for each channel
 			}
+
 			return (displacement);
 		}
 
@@ -312,7 +287,7 @@ namespace PPTP
 		}
 
 		//Segmentation
-		void compute_segmentation(cv::Mat &image, bool parallel)
+		void compute_segmentation(cv::Mat &image, bool parallel = false)
 		{
 			using namespace cv;
 
@@ -322,6 +297,8 @@ namespace PPTP
 			{
 			//Grayscale image segmentation
 			case 1:
+			{
+#pragma omp parallel for firstprivate(k) schedule(static, 8) if (parallel)
 				for (int row = 0; row < image.rows; row++)
 				{
 					for (int col = 0; col < image.cols; col++)
@@ -331,13 +308,12 @@ namespace PPTP
 						pixel = (uchar)m_centroids[k];
 					}
 				}
-
+				break;
+			}
 			//RGB image segmentation
 			case 3:
-
-#pragma omp parallel if (parallel)
 			{
-#pragma omp for collapse(2) schedule(static, 64)
+#pragma omp parallel for firstprivate(k) schedule(static, 8) if (parallel)
 				for (int row = 0; row < image.rows; row++)
 				{
 					for (int col = 0; col < image.cols; col++)
@@ -352,23 +328,21 @@ namespace PPTP
 						}
 					}
 				}
+				break;
 			}
-			break;
 			}
 		}
 
 		//Kmeans + Image segmentation
 		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool parallel = false)
 		{
-			const clock_t begin_time = clock();
+			std::cout << "Started segmentation..." << std::endl;
+			init_centroids(image);
 			compute_centroids(image, max_iterations, epsilon, parallel);
 			compute_segmentation(image, parallel);
-			const clock_t end_time = clock();
-			std::cout << "Elapsed time (in clock ticks) : " << (float)(end_time - begin_time) / (CLOCKS_PER_SEC / 1000) << std::endl;
 			std::cout << "Output generated : Done" << std::endl;
 		}
 	};
 } // namespace PPTP
 
 #endif /* SRC_IMGPROCESSING_KMEANALGO_H_ */
-
