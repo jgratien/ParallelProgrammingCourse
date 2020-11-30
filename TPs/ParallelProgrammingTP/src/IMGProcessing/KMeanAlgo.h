@@ -138,7 +138,7 @@ namespace PPTP
 		}
 
 		//Random centroids initialization based on image dimensions
-		void init_centroids(cv::Mat const &image)
+		void init_centroids(cv::Mat const &image, bool random = false)
 		{
 			using namespace cv;
 
@@ -147,8 +147,11 @@ namespace PPTP
 			std::cout << "Initialization started for " << m_nb_channels << " channels" << std::endl;
 
 			//Random seed for centroids random generation
-			time_t t;
-			srand((unsigned)time(&t));
+			if (random)
+			{
+				time_t t;
+				srand((unsigned)time(&t));
+			}
 
 			int i, j;
 			uchar pixel;
@@ -193,9 +196,9 @@ namespace PPTP
 
 		//Updating the centroids based on the surrounding closest pixels,
 		//Returns a vector of euclidean differences between old and new position for each centroid
+
 		std::vector<double> update_centroid(cv::Mat const &image, bool parallel)
 		{
-
 			using namespace cv;
 
 			uchar pixel = 0;
@@ -213,32 +216,71 @@ namespace PPTP
 			//Grayscale images & RGB images
 
 			int length = m_nb_channels * m_nb_centroid;
+			switch (m_nb_channels)
+			{
+			case 1:
+			{
+
 #pragma omp parallel for schedule(static, 8) reduction(+                                                \
 													   : m_cluster_sizes [0:m_nb_centroid]) reduction(+ \
 																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(8) if (parallel)
-			for (auto row = 0; row < image.rows; row++)
+				for (auto row = 0; row < image.rows; row++)
 
-			{
-				const uchar *pixelsRow = image.ptr<uchar>(row);
-
-				for (auto col = 0; col < image.cols; col++)
 				{
-					distance = std::numeric_limits<double>::max();
+					const uchar *pixelsRow = image.ptr<uchar>(row);
 
-					c = argClosest(distance, row, col, image);
-
-					m_mapping[row * image.cols + col] = c;
-
-					//One more pixel belonging to cluster c : increment by 1
-					m_cluster_sizes[c] += 1; //Reduction
-
-					//Accumulating pixels value in the c position (helps computing barycentre later)
-					for (uint16_t channel = 0; channel < m_nb_channels; channel++)
+					for (auto col = 0; col < image.cols; col++)
 					{
-						m_new_centroids[c * m_nb_channels + channel] += (double)(*(pixelsRow + col));
+						distance = std::numeric_limits<double>::max();
+
+						c = argClosest(distance, row, col, image);
+
+						m_mapping[row * image.cols + col] = c;
+
+						//One more pixel belonging to cluster c : increment by 1
+						m_cluster_sizes[c] += 1; //Reduction
+
+						//Accumulating pixels value in the c position (helps computing barycentre later)
+
+						m_new_centroids[c] += (double)(pixelsRow[col]);
 					}
 				}
+
+				break;
 			}
+			case 3:
+			{
+				std::cout << "Yes rgb" << std::endl;
+#pragma omp parallel for schedule(static, 8) reduction(+                                                \
+													   : m_cluster_sizes [0:m_nb_centroid]) reduction(+ \
+																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(8) if (parallel)
+				for (auto row = 0; row < image.rows; row++)
+
+				{
+					const Vec3b *pixelsRow = image.ptr<Vec3b>(row);
+
+					for (auto col = 0; col < image.cols; col++)
+					{
+						distance = std::numeric_limits<double>::max();
+
+						c = argClosest(distance, row, col, image);
+
+						m_mapping[row * image.cols + col] = c;
+
+						//One more pixel belonging to cluster c : increment by 1
+						m_cluster_sizes[c] += 1; //Reduction
+
+						//Accumulating pixels value in the c position (helps computing barycentre later)
+						for (uint16_t channel = 0; channel < m_nb_channels; channel++)
+						{
+							m_new_centroids[c * m_nb_channels + channel] += (double)(pixelsRow[col][channel]);
+						}
+					}
+				}
+				break;
+			}
+			}
+
 			//Computing barycentre, measuring displacement between old and new centroid & updating centroid values
 			std::fill(displacement.begin(), displacement.end(), 0);
 
@@ -256,7 +298,6 @@ namespace PPTP
 
 			return (displacement);
 		}
-
 		//Closest centroid
 		uint32_t argClosest(double &distance, int row, int col, cv::Mat const &image)
 		{
@@ -285,7 +326,6 @@ namespace PPTP
 
 			return (c);
 		}
-
 		//Segmentation
 		void compute_segmentation(cv::Mat &image, bool parallel = false)
 		{
