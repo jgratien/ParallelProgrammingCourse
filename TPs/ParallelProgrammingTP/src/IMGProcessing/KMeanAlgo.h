@@ -369,10 +369,10 @@ namespace PPTP
 		}
 
 		//Kmeans + Image segmentation
-		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool parallel = false)
+		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool randomInit = false,  bool parallel = false)
 		{
 			std::cout << "Started segmentation..." << std::endl;
-			init_centroids(image);
+			init_centroids(image, randomInit);
 			compute_centroids(image, max_iterations, epsilon, parallel);
 			compute_segmentation(image, parallel);
 			std::cout << "Output generated : Done" << std::endl;

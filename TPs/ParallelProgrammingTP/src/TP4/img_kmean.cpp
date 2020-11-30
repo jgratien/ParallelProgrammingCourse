@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 
   using namespace boost::program_options;
   options_description desc;
-  desc.add_options()("help", "produce help")("file", value<std::string>(), "image file")("show", value<int>()->default_value(0), "show image")("seg", value<int>()->default_value(0), "kmean segmentation")("kmean-value", value<int>()->default_value(0), "KMean k value");
+  desc.add_options()("help", "produce help")("file", value<std::string>(), "image file")("show", value<int>()->default_value(0), "show image")("seg", value<int>()->default_value(0), "kmean segmentation")("kmean-value", value<int>()->default_value(0), "KMean k value")("rgb", value<int>()->default_value(1), "RGB or GrayScale");
   variables_map vm;
   store(parse_command_line(argc, argv, desc), vm);
   notify(vm);
@@ -52,9 +52,17 @@ int main(int argc, char **argv)
   std::string img_file = vm["file"].as<std::string>();
   cout << "my image file : " << img_file << endl;
   Mat image, image2;
-  image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
 
-  image2 = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
+  if (vm["rgb"].as<int>() == 1)
+  {
+    image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
+    image2 = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
+  }
+  else{
+    image = imread(img_file.c_str(), CV_LOAD_IMAGE_GRAYSCALE); // Read the file
+    image2 = imread(img_file.c_str(), CV_LOAD_IMAGE_GRAYSCALE); // Read the file
+  }
+
   cout << "just entered" << endl;
   if (!image.data) // Check for invalid input
   {
@@ -94,15 +102,15 @@ int main(int argc, char **argv)
     PPTP::KMeanAlgo algoSeq(channels, nb_centroids);
     PPTP::KMeanAlgo algoPar(channels, nb_centroids);
     algoSeq.init_centroids(image);
-    algoPar.init_centroids(image);
+    algoPar.init_centroids(image2);
     algoPar.setCentroids(algoSeq.getCentroids());
 
     startSeq = now();
-    algoSeq.process(image, 100,1,false);
+    algoSeq.process(image, 100,1,true,false);
     endSeq = now();
 
     startPar = now();
-    algoPar.process(image2, 100,1,true);
+    algoPar.process(image2, 100,1,true,true);
     endPar = now();
 
     std::cout << "Acceleration OpenMP / Sequential : " << (endSeq - startSeq) / (endPar - startPar) << std::endl;
