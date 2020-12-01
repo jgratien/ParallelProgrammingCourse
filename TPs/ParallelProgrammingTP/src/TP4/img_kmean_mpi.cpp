@@ -216,22 +216,14 @@ int main( int argc, char** argv )
 
 
 	    // UPDATING CENTROIDS
-	    std::vector<double> count_pxl;
-	    count_pxl.reserve((nb_channels+1)*nb_centroids);
-	    count_pxl = count_pixels(nb_centroids, pixel_collection, flat_image, rows_local_proc_zero, image.cols, nb_channels);
+	    // count pixels for each centroid by proc 0
+	    std::vector<double> count_pxl_local;
+	    count_pxl_local.reserve((nb_channels+1)*nb_centroids);
+	    count_pxl_local = count_pixels(nb_centroids, pixel_collection, flat_image, rows_local_proc_zero, image.cols, nb_channels);
 
-	    // receive count_pxl_local from each proc
-	    for(int i=1; i<nb_proc; i++)
-	    {
-		std::vector<double> count_pxl_local((nb_channels+1)*nb_centroids);
-		MPI_Recv(count_pxl_local.data(), (nb_channels+1)*nb_centroids, MPI_DOUBLE, i, 6000, MPI_COMM_WORLD, &status);
-
-		// add received count_pxl_local to count_pxl global
-		std::transform(count_pxl.begin(), count_pxl.end(), count_pxl_local.begin(), count_pxl.begin(), std::plus<double>());
-
-
-	    }
-
+	    // Reduce count from other procs	
+	    std::vector<double> count_pxl((nb_channels+1)*nb_centroids);
+	    MPI_Reduce(count_pxl_local.data(), count_pxl.data(), (nb_channels+1)*nb_centroids, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
 	    // save old centroids before updating them to calculate variance
 	    std::vector<uchar> old_centroids = centroids;
@@ -378,8 +370,9 @@ int main( int argc, char** argv )
 	    count_pxl_local.reserve((nb_channels+1)*nb_centroids);
 	    count_pxl_local = count_pixels(nb_centroids, pixel_collection_local, flat_image_local, rows_local, nb_cols, nb_channels);
 
-	    // send count_pxl_local to proc 0
-	    MPI_Send(count_pxl_local.data(), (nb_channels+1)*nb_centroids, MPI_DOUBLE, 0, 6000, MPI_COMM_WORLD);
+
+	    std::vector<double> count_pxl((nb_channels+1)*nb_centroids);
+	    MPI_Reduce(count_pxl_local.data(), count_pxl.data(), (nb_channels+1)*nb_centroids, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
 	    // receive epsilon value
 	    double epsilon;
