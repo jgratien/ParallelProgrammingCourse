@@ -17,21 +17,11 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <IMGProcessing/KMeanAlgo.h>
-#include "sys/time.h"
-#include <ctime>
+#include <Utils/TimerNow.h>
 
 using namespace cv;
 using namespace std;
-double now()
-{
-    struct timeval t;
-    double f_t;
-    gettimeofday(&t, NULL);
-    f_t = t.tv_usec;
-    f_t = f_t / ((float)1E6);
-    f_t += t.tv_sec;
-    return (f_t);
-}
+
 int main(int argc, char **argv)
 {
 
@@ -55,11 +45,12 @@ int main(int argc, char **argv)
 
   if (vm["rgb"].as<int>() == 1)
   {
-    image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
+    image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);  // Read the file
     image2 = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
   }
-  else{
-    image = imread(img_file.c_str(), CV_LOAD_IMAGE_GRAYSCALE); // Read the file
+  else
+  {
+    image = imread(img_file.c_str(), CV_LOAD_IMAGE_GRAYSCALE);  // Read the file
     image2 = imread(img_file.c_str(), CV_LOAD_IMAGE_GRAYSCALE); // Read the file
   }
 
@@ -106,22 +97,21 @@ int main(int argc, char **argv)
     algoPar.setCentroids(algoSeq.getCentroids());
 
     startSeq = now();
-    algoSeq.process(image, 100,1,true,false);
+    algoSeq.process(image, 100, 1, true, false);
     endSeq = now();
 
     startPar = now();
-    algoPar.process(image2, 100,1,true,true);
+    algoPar.process(image2, 100, 1, true, true);
     endPar = now();
 
     std::cout << "Acceleration OpenMP / Sequential : " << (endSeq - startSeq) / (endPar - startPar) << std::endl;
-    //algo.process(image, false);
   }
-  
+
   cout << "Writing image" << endl;
   img_file.resize(img_file.size() - 4);
   string fileName = img_file + "_Segmented.jpg";
   imwrite(fileName, image);
   cout << "Image written at : " << fileName << endl;
 
-return 0;
+  return 0;
 }
