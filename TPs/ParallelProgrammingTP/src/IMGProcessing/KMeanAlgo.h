@@ -1,8 +1,8 @@
 /*
- * KMeanAlgo.h
+ *  KMeanAlgo.h
  *
- *  Created on: Nov 4, 2020
- *      Author: gratienj
+ *  Edited on: Nov 27, 2020
+ *     Author: ramyk
  */
 
 #ifndef SRC_IMGPROCESSING_KMEANALGO_H_
@@ -12,7 +12,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <cstdlib>
-#include <tuple>
 
 namespace PPTP
 {
@@ -53,7 +52,7 @@ namespace PPTP
 				for (int i = 0; i < m_nb_centroid; i++) {
 					row = rand() % image.rows;
 					col = rand() % image.cols;
-					if (nb_channels == 0)
+					if (nb_channels == 1)
 						centroids[i][0] = image.at<uchar>(row, col);
 					else
 						for (int j = 0; j < nb_channels; j++)
@@ -140,8 +139,7 @@ namespace PPTP
 					if (iter == 1) {
 						std::cout << "Randomly initializing centroids..." << std::endl;
 						init_centroids(image);
-					}
-					else {
+					} else {
 						std::cout << "Computing new centroids..." << std::endl;
 						compute_centroids();
 					}

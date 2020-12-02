@@ -170,9 +170,7 @@ int main(int argc, char** argv)
     timer.printInfo() ;
     double normy = PPTP::norm2(y);
     std::cout << "||y|| = " << normy << std::endl;
-  }
-  else
-  {
+  } else {
     // Receive Vector X
     std::vector<double> x;
     int x_nrows;

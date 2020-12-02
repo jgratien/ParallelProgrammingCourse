@@ -1,11 +1,9 @@
 /*
- * main.cpp
+ *  img_kmean.cpp
  *
- *  Created on: Oct 8, 2019
- *      Author: gratienj
+ *  Edited on: Nov 27, 2020
+ *     Author: ramyk
  */
-
-
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -33,7 +31,7 @@ int main( int argc, char** argv )
         ("show",value<int>()->default_value(0), "show image")
         ("seg",value<int>()->default_value(0), "kmean segmentation")
         ("kmean-value",value<int>()->default_value(0), "KMean k value")
-    		("max-iter", value<int>()->default_value(10), "Kmean maximum iterations number");
+        ("max-iter", value<int>()->default_value(10), "Kmean maximum iterations number");
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
