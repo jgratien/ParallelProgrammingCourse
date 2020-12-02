@@ -108,31 +108,48 @@ namespace PPTP
 		      switch(m_nb_channels)
 		      {
 		        case 1:
-		          for(int i=1;i<image.rows-1;++i)
-		          {
-		            for(int j=1;j<image.cols-1;++j)
-		            {
-		              uchar pixel = image.at<uchar>(i,j);
-			      int centroid_id = nearest_centroid(pixel);
-			      image.at<uchar>(i,j) = m_centroids.at(centroid_id);
-		            }
-		          }
+		          tbb::parallel_for(tbb::blocked_range<int>(1, image.rows),
+					  [&](tbb::blocked_range<int> r)
+						{
+		          				for(int i=r.begin();i<r.end();++i)
+		          				{
+							 	tbb::parallel_for(tbb::blocked_range<int>(1, image.cols),
+										[&](tbb::blocked_range<int> s)
+										{
+		            								for(int j=s.begin();j<s.end();++j)
+		            								{
+		              									uchar pixel = image.at<uchar>(i,j);
+			      									int centroid_id = nearest_centroid(pixel);
+			      									image.at<uchar>(i,j) = m_centroids.at(centroid_id);
+		            								}
+									});
+		          				}
+
+			  			});
 		          break ;
 		        case 3:
 		          Mat_<Vec3b> _I = image;
-		          for(int i=1;i<image.rows-1;++i)
-		          {
-		            for(int j=1;j<image.cols-1;++j)
-		            {
-		                uchar red = _I(i,j)[0];
-				uchar green = _I(i,j)[1];
-				uchar blue = _I(i,j)[2];
-				int centroid_id = nearest_centroid(red, green, blue);
-		        	_I(i,j)[0] = m_centroids.at(3*centroid_id);
-				_I(i,j)[1] = m_centroids.at(3*centroid_id+1);
-				_I(i,j)[2] = m_centroids.at(3*centroid_id+2);
-		            }
-		          }
+			  tbb::parallel_for(tbb::blocked_range<int>(1, image.rows),
+					  [&](tbb::blocked_range<int> r)
+						{
+		          				for(int i=r.begin();i<r.end();++i)
+		          				{
+								tbb::parallel_for(tbb::blocked_range<int>(1, image.cols),
+										[&](tbb::blocked_range<int> s)
+										{
+		            								for(int j=s.begin();j<s.end();++j)
+											{
+		                								uchar red = _I(i,j)[0];
+												uchar green = _I(i,j)[1];
+												uchar blue = _I(i,j)[2];
+												int centroid_id = nearest_centroid(red, green, blue);
+		        									_I(i,j)[0] = m_centroids.at(3*centroid_id);
+												_I(i,j)[1] = m_centroids.at(3*centroid_id+1);
+												_I(i,j)[2] = m_centroids.at(3*centroid_id+2);
+		            								}
+										});
+		          				}
+						});
 		          break ;
 		      }
 		}
@@ -256,7 +273,7 @@ namespace PPTP
 		      case(3):
 		      {
 			Mat_<Vec3b> _I = image;
-			double sum_red=0, sum_green=0, sum_blue=0;
+			//double sum_red=0, sum_green=0, sum_blue=0;
 			int count = tbb::parallel_reduce(tbb::blocked_range<int>(0, image.cols*image.rows), 0, 
 				[&](tbb::blocked_range<int> r, int count)->int
 					{
@@ -266,14 +283,56 @@ namespace PPTP
 					    {
 						int index_i = i/image.cols;
 						int index_j = i - image.cols*index_i;
-						sum_red += (double) _I(index_i, index_j)[0];
-						sum_green += (double) _I(index_i, index_j)[1];
-						sum_blue += (double) _I(index_i, index_j)[2];
 						count +=1;
 					    }
 					  }
 					  return count;
 					}, std::plus<double>() );
+			int sum_red = tbb::parallel_reduce(tbb::blocked_range<int>(0, image.cols*image.rows), 0, 
+				[&](tbb::blocked_range<int> r, int sum_red)->int
+					{
+					  for(int i=r.begin(); i<r.end(); i++)
+					  {
+					    if(pixel_segmentation[i]==j)
+					    {
+						int index_i = i/image.cols;
+						int index_j = i - image.cols*index_i;
+						sum_red += (double) _I(index_i, index_j)[0];
+					    }
+					  }
+					  return sum_red;
+					}, std::plus<double>() );
+
+			int sum_green = tbb::parallel_reduce(tbb::blocked_range<int>(0, image.cols*image.rows), 0, 
+				[&](tbb::blocked_range<int> r, int sum_green)->int
+					{
+					  for(int i=r.begin(); i<r.end(); i++)
+					  {
+					    if(pixel_segmentation[i]==j)
+					    {
+						int index_i = i/image.cols;
+						int index_j = i - image.cols*index_i;
+						sum_green += (double) _I(index_i, index_j)[1];
+					    }
+					  }
+					  return sum_green;
+					}, std::plus<double>() );
+
+			int sum_blue = tbb::parallel_reduce(tbb::blocked_range<int>(0, image.cols*image.rows), 0, 
+				[&](tbb::blocked_range<int> r, int sum_blue)->int
+					{
+					  for(int i=r.begin(); i<r.end(); i++)
+					  {
+					    if(pixel_segmentation[i]==j)
+					    {
+						int index_i = i/image.cols;
+						int index_j = i - image.cols*index_i;
+						sum_blue += (double) _I(index_i, index_j)[2];
+					    }
+					  }
+					  return sum_blue;
+					}, std::plus<double>() );
+
 
 
 			double barycenter_red = (double) sum_red / (double) count;
