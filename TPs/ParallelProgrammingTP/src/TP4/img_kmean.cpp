@@ -6,7 +6,8 @@
  */
 
 
-
+#include <algorithm>
+#include <vector>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -34,8 +35,9 @@ int main( int argc, char** argv )
         ("show",value<int>()->default_value(0), "show image")
         ("seg",value<int>()->default_value(1), "kmean segmentation")
 	("max_it",value<int>()->default_value(50), "Max_iterations")
+	("openmp",value<int>()->default_value(1), "OPEN_MP")
 	("epsilon",value<double>()->default_value(0.9), "Epsilon")
-        ("kmean-value",value<int>()->default_value(4), "KMean k value") ;
+        ("kmean",value<int>()->default_value(4), "KMean k value") ;
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
@@ -83,82 +85,90 @@ int main( int argc, char** argv )
         	  //algo.process(image) ;
           }
           break ;
+
+
+                 
+
         case 3:
-          {
-		  auto start = high_resolution_clock::now();
+          {     	
+       		  auto start = high_resolution_clock::now();
 		  //PPTP::KMeanAlgo algo(3,nb_centroids) ;
         	  //algo.process(image) ;
-		 /* int kmeans  = vm["kmean"].as<int>();
+		  int kmeans  = vm["kmean"].as<int>();
 		  int k = kmeans;
-		  cout<<"Value of K is"<<k<<std::endl;*/
-		  int k = 2 ;
+		  cout<<"Value of K is "<<k<<std::endl;
+		  int openmp = vm["openmp"].as<int>();
 
-		  std::vector<std::vector <double>> centroids(k, std::vector<double>(3,0.0)) ;
+		  std::vector<std::vector <double>> centroids2(k, std::vector<double>(3,0.0)) ;
                   cout <<"\nInitialising random centroids by choosing pixels from the image "<<std::endl;	 
-                  //#pragma omp parallel for
+                  #pragma omp parallel for
 		  for(int j=0; j<k; j++)
-		  {
-		    
-		   	  
+		  {	  
 		    int co = rand()%ncols;
 		    int ro = rand()%nrows;
 
-		    Vec3b& rand = image.at<Vec3b>(ro,co);
+		    Vec3b& rand2 = image.at<Vec3b>(ro,co);
 
-		    centroids[j].at(0) = rand[0];
-		    centroids[j].at(1) = rand[1];
-		    centroids[j].at(2) = rand[2];
+		    centroids2[j].at(0) = rand2[0];
+		    centroids2[j].at(1) = rand2[1];
+		    centroids2[j].at(2) = rand2[2];
 
-                                  /* cout<<"\nRed value for randomly initialised centroid number "<< j+1<<" is ="<<centroids[j].at(0)<<std::endl; 
-                                   cout<<"Green value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j].at(1)<<std::endl; 
-                                   cout<<"Blue value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j].at(2)<<std::endl; */
-
-		  
-		  
+                                  cout<<"\nRed value for randomly initialised centroid number "<< j+1<<" is ="<<centroids2[j].at(0)<<std::endl; 
+                                   cout<<"Green value for randomly initialised centroid number "<<j+1<<" is ="<<centroids2[j].at(1)<<std::endl; 
+                                   cout<<"Blue value for randomly initialised centroid number "<<j+1<<" is ="<<centroids2[j].at(2)<<std::endl; 
 		  } 
 		  
 		   int count =0 ;
 		   double disp = 200;
-		   //double epsilon = vm["epsilon"].as<double>();
-		   double const eps = 1.00;
-		   //int max_it = vm["max_iterations"].as<int>();
-		   int max = 100;
-	           std::vector<int> size(k, 0);
+		   double epsilon = vm["epsilon"].as<double>();
+		   double eps =  epsilon;
+		   int max_it = vm["max_it"].as<int>();
+		   int max = max_it;
+	           std::vector<double> size2(k, 0);
 
 
 		   while(count<max && disp>eps)
 
                        {
-		         std::vector<std::vector <double>> new_centroid_sums(k, std::vector<double>(3, 0.0))  ;
+		         std::vector <double> red(k, 0.0)  ;
+                         std::vector <double> green(k, 0.0)  ;
+                         std::vector <double> blue(k, 0.0)  ;
+
+
 			                  	 cout<<"\n\nParsing through image pixels to check centroid similarity, cycle number: "<<count+1<<std::endl;
+                        
+                         
+                         #pragma omp declare reduction(vec_double_plus : std::vector<double>: std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>()))initializer(omp_priv = omp_orig) 
+						
+
+
 
 			 for(int i=0; i<k; i++)
 			 {
-			   size[i]=0;
+			   size2[i]=0;
 			 
-			 }
-
-
-		         //#pragma omp parallel for
+			 }                        
+		        #pragma omp parallel for collapse(2) reduction(vec_double_plus : red, green ,blue, size2) if(openmp==1)
 			 for(int y=0; y<nrows; y++)
 			 {
 				 for(int x=0; x<ncols; x++)
-
-		                  {
+                                   {
+				     int c = 0; 
 				     int z=0;
 				     double sum=0;
 				     Vec3b& pix = image.at<Vec3b>(y,x);
-				     unsigned char r = fabs(pix[0] - centroids[0].at(0));
-                                     unsigned char g = fabs(pix[1] - centroids[0].at(1));
-                                     unsigned char b = fabs(pix[2] - centroids[0].at(2));
+				     
+				     unsigned char r = fabs(pix[0] - centroids2[0].at(0));
+                                     unsigned char g = fabs(pix[1] - centroids2[0].at(1));
+                                     unsigned char b = fabs(pix[2] - centroids2[0].at(2));
 
 				     double min = r*r + g*g + b*b;
 
                                      for(int t=1; t<k; t++)
 				         {
-					    r = fabs(pix[0] - centroids[t].at(0));
-                                            g = fabs(pix[1] - centroids[t].at(1));
-                                            b = fabs(pix[2] - centroids[t].at(2));
+					    r = fabs(pix[0] - centroids2[t].at(0));
+                                            g = fabs(pix[1] - centroids2[t].at(1));
+                                            b = fabs(pix[2] - centroids2[t].at(2));
 
                                             sum = r*r + g*g + b*b ;
 
@@ -167,121 +177,97 @@ int main( int argc, char** argv )
 					 
 					 }
 
-                                     //#pragma omp atomic
-				     new_centroid_sums[z].at(0) += pix[0];
-
-				     //#pragma omp atomic
-                                     new_centroid_sums[z].at(1) += pix[1];	 
-
-                                     //#pragma omp atomic
-                                     new_centroid_sums[z].at(2) += pix[2];
-
-                                     //#pragma omp atomic
-                                     size[z]++;  
+				     
+                                     
+				     red[z] += pix[0];
+                                     green[z] += pix[1];	                                    
+                                     blue[z] += pix[2];                                 
+                                     size2[z]++; 
 				  }
-		       
-		 
-
+		       		 
 			 }
-		             std::vector<std::vector <double>> new_centroids(k, std::vector<double>(3, 0.0)) ;
+		             std::vector<std::vector <double>> new_centroids2(k, std::vector<double>(3, 0.0)) ;
                               cout<<"Done with centroid sums of cycle "<<count+1<<std::endl;
 
-                               //#pragma omp parallel for 
+                               #pragma omp parallel for if(openmp==1)
 			       for(int i=0; i<k; i++)
 			       {
-			             new_centroids[i].at(0) = new_centroid_sums[i].at(0)/size[i] ;
-                                     new_centroids[i].at(1) = new_centroid_sums[i].at(1)/size[i] ;
-                                     new_centroids[i].at(2) = new_centroid_sums[i].at(2)/size[i] ; 
+			             new_centroids2[i].at(0) = red[i]/size2[i] ;
+                                     new_centroids2[i].at(1) = green[i]/size2[i] ;
+                                     new_centroids2[i].at(2) = blue[i]/size2[i] ; 
                                   /*cout<<"\nRed value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[i].at(0)<<std::endl; 
                                    cout<<"Green value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[i].at(1)<<std::endl; 
                                    cout<<"Blue value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[i].at(2)<<std::endl; */
 			     
 
 			       }
- 
-			      
+			unsigned char r = fabs(new_centroids2[0].at(0) - centroids2[0].at(0));
+                        unsigned char g = fabs(new_centroids2[0].at(1) - centroids2[0].at(1));
+                        unsigned char b = fabs(new_centroids2[0].at(2) - centroids2[0].at(2));
 
-
-
-
-                	             unsigned char r = fabs(new_centroids[0].at(0) - centroids[0].at(0));
-                                     unsigned char g = fabs(new_centroids[0].at(1) - centroids[0].at(1));
-                                     unsigned char b = fabs(new_centroids[0].at(2) - centroids[0].at(2));
-
-				     disp = r*r + g*g + b*b;
-                                     //#pragma omp parallel for
+				     disp = sqrt(r*r + g*g + b*b);
+                                    #pragma omp parallel for if(openmp==1)
                                      for(int t=1; t<k; t++)
 				         {
-					    r = fabs(new_centroids[t].at(0) - centroids[t].at(0));
-                                            g = fabs(new_centroids[t].at(1) - centroids[t].at(1));
-                                            b = fabs(new_centroids[t].at(2) - centroids[t].at(2));
+					    r = fabs(new_centroids2[t].at(0) - centroids2[t].at(0));
+                                            g = fabs(new_centroids2[t].at(1) - centroids2[t].at(1));
+                                            b = fabs(new_centroids2[t].at(2) - centroids2[t].at(2));
 
-                                            double dispc = r*r + g*g + b*b ;
+                                            double dispc = sqrt (r*r + g*g + b*b) ;
 
 					    if(dispc>disp) 
 					    
 					    { 
-					      //#pragma omp atomic read
-						    disp=dispc; } 
+					      #pragma omp atomic read
+					      disp=dispc;         } 
 					 
 					 }
 
 				  cout<<"\n\nLargest Displacement of centroids at cylce "<<count+1<< " = "<<disp<<std::endl;  
-                                  //#pragma omp parallel for
+                                  #pragma omp parallel for if(openmp==1)
                                   for(int e=0; e<k; e++)
 
 				     {
-				       centroids[e].at(0) = new_centroids[e].at(0); 
-                                       centroids[e].at(1) = new_centroids[e].at(1); 
-                                       centroids[e].at(2) = new_centroids[e].at(2);
+				       centroids2[e].at(0) = new_centroids2[e].at(0); 
+                                       centroids2[e].at(1) = new_centroids2[e].at(1); 
+                                       centroids2[e].at(2) = new_centroids2[e].at(2);
 				     
 				     }
                                 
                                  count++;
-
-
-
 		       }
-
-		      
-
 	                 cout<<"\n\nKmeans has done its work, now it's  time to display the new image"<<std::endl;
 
                          //#pragma omp parallel for
                          for (int i=0; i<k; i++)
 			      {
-			           cout<<"\nRed value for FINAL centroid number "<<i+1<<" is = "<<centroids[i].at(0)<<std::endl;
+			           cout<<"\nRed value for FINAL centroid number "<<i+1<<" is = "<<centroids2[i].at(0)<<std::endl;
 				    
-                                   cout<<"Green value for FINAL centroid number "<<i+1<<" is = "<<centroids[i].at(1)<<std::endl; 
-                                   cout<<"Blue value for FINAL centroid number "<<i+1<<" is = "<<centroids[i].at(2)<<std::endl; 
+                                   cout<<"Green value for FINAL centroid number "<<i+1<<" is = "<<centroids2[i].at(1)<<std::endl; 
+                                   cout<<"Blue value for FINAL centroid number "<<i+1<<" is = "<<centroids2[i].at(2)<<std::endl; 
 
-				   cout<<"Number of pixels belonging to centorid number "<< i+1 <<" is = "<<size[i]<<std::endl;
+				   cout<<"Number of pixels belonging to centorid number "<< i+1 <<" is = "<<size2[i]<<std::endl;
 		    
-			      }
-
-
-
-		         
-                         //#pragma omp parallel for collapse(2)
+			      }         
+                        #pragma omp parallel for collapse(2) if(openmp==1)
 			 for(int y=0; y<nrows; y++)
 			 {
 				 for(int x=0; x<ncols; x++)
-
-		                  {
+                             {
 				     int z=0;
 				     double sum=0;
 				     Vec3b& pix = image.at<Vec3b>(y,x);
-				     unsigned char r = fabs(pix[0] - centroids[0].at(0));
-                                     unsigned char g = fabs(pix[1] - centroids[0].at(1));
-                                     unsigned char b = fabs(pix[2] - centroids[0].at(2));
+                                     unsigned char r = fabs(pix[0] - centroids2[0].at(0));
+                                     unsigned char g = fabs(pix[1] - centroids2[0].at(1));
+                                     unsigned char b = fabs(pix[2] - centroids2[0].at(2));
 
 				     double min = r*r + g*g + b*b;
 
                                      for(int t=1; t<k; t++)
 				         {
-					    r = fabs(pix[0] - centroids[t].at(0));
-                                            g = fabs(pix[1] - centroids[t].at(1));
-                                            b = fabs(pix[2] - centroids[t].at(2));
+					    r = fabs(pix[0] - centroids2[t].at(0));
+                                            g = fabs(pix[1] - centroids2[t].at(1));
+                                            b = fabs(pix[2] - centroids2[t].at(2));
 
                                             sum = r*r + g*g + b*b ;
 
@@ -292,34 +278,32 @@ int main( int argc, char** argv )
 
                                      
 				    
-				  pix[0] = centroids[z].at(0);
-				  pix[1] = centroids[z].at(1);
-				  pix[2] = centroids[z].at(2);
-				
-			
+				  pix[0] = (unsigned char)centroids2[z].at(0);
+				  pix[1] = (unsigned char)centroids2[z].at(1);
+				  pix[2] = (unsigned char)centroids2[z].at(2);
 				  
 				  }
-		       
-		 
   	                   }
-                             
-				 auto stop = high_resolution_clock::now(); 
+                            	auto stop = high_resolution_clock::now(); 
+                                auto duration2 = duration_cast<milliseconds>(stop - start); 
+			        
+			  if (openmp == 1) 
+				 cout <<"\n\nThe process WITH OPEN_MP took "<< duration2.count()<<" milliseconds" << std::endl; 
+			  //cout << "The OPEN_MP version is "<<acc<<" milliseconds faster than sequential"<< std::endl;
 
-                                 auto duration = duration_cast<microseconds>(stop - start); 
-  
-// To get the value of duration use the count() 
-// member function on the duration object 
-			  cout <<"\n\nThe process took "<< duration.count()<<" microseconds" << std::endl; 
-
+                        else cout <<"\n\nThe process WITHOUT OPEN_MP took "<< duration2.count()<<" milliseconds" << std::endl; 
 
 
 			  
 
-	cout<<"\nNew Image Displayed with "<<k<<" amount of colors"<<std::endl;	 
+                cout<<"\nNew Image Displayed with "<<k<<" amount of colors"<<std::endl;	 
 	
-	        imwrite("./Seg_Image.jpg",image) ;
+	        imwrite("./Seg_Image1.jpg",image) ;
 
-	  }
+	  
+          
+                        }
+
           break ;
       }
 

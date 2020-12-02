@@ -9,6 +9,10 @@
 ../src/IMGProcessing/KMeanAlgo.h
 
 /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP4/img_kmean.cpp
+algorithm
+-
+vector
+-
 opencv2/core/core.hpp
 -
 opencv2/highgui/highgui.hpp

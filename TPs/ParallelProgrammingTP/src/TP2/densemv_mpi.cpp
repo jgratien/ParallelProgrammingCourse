@@ -54,6 +54,7 @@ int main(int argc, char** argv)
   MPI_Comm_rank(MPI_COMM_WORLD,&my_rank) ;
 
   using namespace PPTP ;
+  using namespace std;
 
   Timer timer ;
   MatrixGenerator generator ;
@@ -88,7 +89,7 @@ int main(int argc, char** argv)
 
   if(my_rank==0)
   {
-    //MPI_Init(&argc,&argv);
+    
     DenseMatrix matrix ;
 
     if(vm.count("file"))
@@ -130,7 +131,7 @@ int main(int argc, char** argv)
       begin += nrows_local_proc_zero;
       
 
-    {
+    
       for (int i=1; i<nb_proc; ++i)
       {
         std::cout<<" SEND MATRIX DATA to proc "<<i<<std::endl ;
@@ -146,17 +147,17 @@ int main(int argc, char** argv)
 	MPI_Send(ptr, nrows_local*nrows, MPI_DOUBLE, i, 2000, MPI_COMM_WORLD);
 	begin += nrows_local;
       }
-    }
-
-    {
+   
+      
+   
       // BROAD CAST VECTOR X
       
       //std::vector<double> x_to_send;
-       MPI_Bcast(x.data(), nrows_int, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+       MPI_Bcast(x.data(), nrows_int, MPI_DOUBLE, 0, MPI_COMM_WORLD); 
 
  
      
-    }
+  
 
     {
       std::vector<double> y(nrows);
@@ -173,12 +174,13 @@ int main(int argc, char** argv)
     DenseMatrix local_matrix ;
     std::size_t local_nrows ;
     std::vector<double> result;
-    result.resize(nrows_int);
+    result.resize(nrows);
 
-    {
+    
       // EXTRACT LOCAL DATA FROM MASTER PROC
       double s ;
       int beg = 0 ;
+      cout<<"\nresult computed by processor 0  ";
       for(int i = 0; i<nrows_local_proc_zero; i++)
 	      
       {   
@@ -190,22 +192,29 @@ int main(int argc, char** argv)
 		  beg++;
 	  }
 
-            result.at(i) = s;    }
+            result.at(i) = s; cout<<result.at(i)<<" ";    }
 
       int begs =  nrows_local_proc_zero;
       MPI_Status status;
 
       // COMPUTE LOCAL SIZE
       for (int t=1; t<nb_proc; t++)
-           {
+          
+      {    
 	    int size_to_receive = nrows/nb_proc;
-	    std::vector<double> result_to_receive;
+	    
 	    if (t<r) size_to_receive++;
-	    result_to_receive.resize(size_to_receive);
-	    MPI_Recv(result_to_receive.data(), size_to_receive, MPI_DOUBLE, t, 3000, MPI_COMM_WORLD, &status);
+
+            std::vector<double> result_to_receive(size_to_receive, 0.0);
+
+	    
+	    MPI_Recv(&result_to_receive[0], size_to_receive, MPI_DOUBLE, t, 3000, MPI_COMM_WORLD, &status);
+	    cout<<"\nReceived result from processor "<<t<<" and the first element is "<<result_to_receive[0]<<"  "<<result_to_receive[1]<<"   "<<result_to_receive[2];
+	    cout<<"\nResult received from processor "<<t<<std::endl;
 	     for(int u=0; u<size_to_receive; u++)
 	                 {
-			   result.at(begs+u) = result_to_receive.at(u); 
+			   result.at(begs+u) = result_to_receive.at(u);
+			  cout<<result_to_receive.at(u)<<" "; 
 			 }
 	     begs += size_to_receive;
 	   
@@ -222,16 +231,10 @@ int main(int argc, char** argv)
       
       }
       norm = sqrt(norm);
-      std::cout<<"\nNorm of the resulting vector ="<<norm<<std::endl;
-    }
+      std::cout<<"\nNorm of the resulting vector = "<<norm<<std::endl;
+   
 
-    //std::vector<double> local_y(local_nrows);
-    {
-      // compute parallel SPMV
-    }
-
-    MPI_Finalize;
-  }
+      }
   else
   {
     // COMPUTE LOÂii²CAL MATRICE LOCAL VECTOR
@@ -245,37 +248,39 @@ int main(int argc, char** argv)
     
       // RECV DATA FROM MASTER PROC
       
-    { // RECV Global Size
+     // RECV Global Size
       int nrows_to_receive = 0;
       MPI_Bcast(&nrows_to_receive, 1, MPI_INT, 0, MPI_COMM_WORLD);
-      std::cout<<" receive Broadcasted "<<my_rank<<" value="<<nrows_to_receive;
+      std::cout<<" receive Broadcasted "<<my_rank<<" value = "<<nrows_to_receive;
       nrows = nrows_to_receive;
+       
       
 
       // RECV LOCAL SIZE
       int nrows_local_receive = 0;
       MPI_Status status;
       MPI_Recv(&nrows_local_receive, 1, MPI_INT, 0, 1000, MPI_COMM_WORLD, &status);
-      std::cout<<" receive local_rows"<<my_rank<<" value="<<nrows_local_receive<<std::endl;
+      std::cout<<" receive local_rows "<<my_rank<<" value = "<<nrows_local_receive<<std::endl;
       local_nrows = nrows_local_receive;
       local_vector.resize(nrows_to_receive*nrows_local_receive);
       //RECV MATRIX DATA
       //std::vector<double> local_values (nrows_local_receive*nrows_to_receive);
       MPI_Recv(local_vector.data(), nrows_local_receive*nrows_to_receive, MPI_DOUBLE, 0, 2000, MPI_COMM_WORLD, &status);
-      
+      cout<<"\nlocal vector of processor "<<my_rank<<" starts with "<<local_vector[0]<<std::endl;      
 
     
-    }
     
-    { // BROAD CAST VECTOR X
+    
+     // BROAD CAST VECTOR X
       //o* ... */
       std::vector<double> x_to_receive(nrows);
+      x_to_receive.resize(nrows);
       MPI_Bcast(x_to_receive.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
         
       int beg = 0 ;
       double s;
-      std::vector<double> result_to_send;
-      result_to_send.resize(local_nrows);
+      std::vector<double> result_to_send(local_nrows, 0.0);
+      
       for(int i = 0; i<local_nrows; i++)
       {   
 	      s = 0 ;
@@ -286,18 +291,13 @@ int main(int argc, char** argv)
 	  }
 
          result_to_send.at(i) = s;
-      
+         //cout<<"\nresult from processor "<<my_rank<<" is  "<<s<<std::endl; 
     }
 
-      MPI_Send(result_to_send.data(), local_nrows, MPI_DOUBLE, 0, 3000, MPI_COMM_WORLD);}
-
-    //std::vector<double> local_y(local_nrows);
-    {
-      // compute parallel SPMV
-    }
+      MPI_Send(&result_to_send[0], local_nrows, MPI_DOUBLE, 0, 3000, MPI_COMM_WORLD);
 
   } 
-  MPI_Finalize; 
+  MPI_Finalize(); 
   timer.printInfo() ;
   return 0 ;
   }

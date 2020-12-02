@@ -31,6 +31,8 @@ boost/program_options/cmdline.hpp
 -
 boost/program_options/variables_map.hpp
 -
+chrono
+-
 
 /gext/jean-marc.gratien/ModuleHPC2020/local/opencv/include/opencv/cxcore.h
 opencv2/core/core_c.h
