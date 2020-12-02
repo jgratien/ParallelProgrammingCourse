@@ -1,66 +1,79 @@
 /*
- * KMeanAlgo.h
+ * KMeanAlgo_parallel_tbb.h
  *
  *  Created on: Nov 4, 2020
  *      Author: gratienj
  */
 
-#ifndef SRC_IMGPROCESSING_KMEANALGO_H_
-#define SRC_IMGPROCESSING_KMEANALGO_H_
-
+#pragma once
 
 #include <stdlib.h>
 #include <math.h>
 #include <map>
+#include "tbb/tbb.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 using namespace cv;
 using namespace std;
+using namespace tbb;
+
+typedef tbb::spin_mutex mtxType;
+mtxType mtx;
+
 
 namespace PPTP
 {
 
-	class KMeanAlgo
+	class KMeanAlgoParTbb
 	{
 	public:
-		KMeanAlgo(int nb_channels, int nb_centroids, int nb_iterations)
+		KMeanAlgoParTbb(int nb_channels, int nb_centroids, int nb_iterations)
 	    : nb_channels(nb_channels)
 		, m_nb_centroid(nb_centroids)
 		, nb_iterations(nb_iterations)
 	    {}
-		virtual ~KMeanAlgo() {}
+		virtual ~KMeanAlgoParTbb() {}
 		
 
-		bool compute_centroids(cv::Mat const& image)
+		bool compute_centroids_tbb(cv::Mat const& image)
 		{
 			using namespace cv ;
-			
+	
 			bool centroids_convergence=true;
 		      	/*****COMPUTE NEAREST CENTROID*****/
 			
 			//std::map<std::tuple<int,int>, int> collection_centroid_id;
-			int centroid_id=0;
-			for(int i=0;i<image.rows;i++)
+			
+			//TO PARALLELISE
+		
+			tbb::parallel_for(std::size_t(0), (size_t)image.rows, [&](std::size_t i)
 			{
+				int centroid_id =0;
 				for(int j=0;j<image.cols;j++)
 				{
 					// CALCUL NEAREST CENTROID
-					centroid_id = calc_closest_centroid(image, i, j);
-					//collection_centroid_id.emplace(std::make_tuple(i,j),centroid_id);
-					auto pixel_coord = std::make_tuple(i,j);
-					if(collection_centroid_id.count(pixel_coord)==0 || collection_centroid_id[pixel_coord]!=centroid_id)
-					{
-						collection_centroid_id[pixel_coord]=centroid_id;
-						centroids_convergence=false;
+					// not a critical section
+					{	
+						//mtxType::scoped_lock lock(mtx);
+						centroid_id = calc_closest_centroid(image, i, j);
+						//collection_centroid_id.emplace(std::make_tuple(i,j),centroid_id);
+						auto pixel_coord = std::make_tuple(i,j);
+						if(collection_centroid_id.count(pixel_coord)==0 || collection_centroid_id[pixel_coord]!= centroid_id)
+						{
+							
+							mtxType::scoped_lock lock(mtx);	
+							collection_centroid_id[pixel_coord]=centroid_id;
+							centroids_convergence=false;
+						}
 					}
 				}
-			}
+			});
 			return centroids_convergence;
 		}
 
-		void update_centroids(cv::Mat& image)
+		void update_centroids_tbb(cv::Mat& image)
 		{
 			using namespace cv;
 
@@ -68,23 +81,30 @@ namespace PPTP
 			std::vector<int> centroids_occurences;
 			centroids_occurences.resize(m_nb_centroid);
 			updated_centroids.resize(m_nb_centroid*nb_channels);
-			int i,j;
 			switch(nb_channels)
 			{
 				case 1:
-					
-					for(auto& it : collection_centroid_id)
+					//TO PARALLELISE
+					tbb::parallel_for(std::size_t(0), collection_centroid_id.size(), [&](std::size_t r)
 					{
+						int i,j;
+						auto it = collection_centroid_id.begin();
+						advance(it, r);
 						for(int c=0;c<m_nb_centroid;c++)
 						{
-							if( it.second == c){
-								tie(i, j)=it.first;
-								updated_centroids[c]+=image.at<uchar>(i,j);
-								centroids_occurences[c]++;
+							if( it->second == c){
+								tie(i, j)=it->first;
+								//critical sesssion
+								{
+									mtxType::scoped_lock lock(mtx);
+									updated_centroids[c]+=image.at<uchar>(i,j);
+									centroids_occurences[c]++;
+								}
 							}
 						}
 				
-					}
+					});
+
 					for(int c=0; c<m_nb_centroid; c++)
 					{
 						if(centroids_occurences[c] !=0)
@@ -93,21 +113,32 @@ namespace PPTP
 					break;
 				case 3:
 					Mat_<Vec3b> _I = image;
-					for(auto& it : collection_centroid_id)
+
+					//TO PARALLELSIE
+					
+					tbb::parallel_for(std::size_t(0), collection_centroid_id.size(), [&](std::size_t r)
 					{
+						int i,j;
+						auto it = collection_centroid_id.begin();
+						advance(it,r);
+
 						for(int c=0; c<m_nb_centroid; c++)
 						{
-							if(it.second == c){
-								tie(i,j)=it.first;
-								centroids_occurences[c]++;
-								for(int k=3*c;k<3*c +3;k++)
+							if(it->second == c){
+								tie(i,j)=it->first;
+								//critical session
 								{
-
-									updated_centroids[k]+=_I(i,j)[k];
+									mtxType::scoped_lock lock(mtx);
+									centroids_occurences[c]++;
+									for(int k=3*c;k<3*c +3;k++)
+									{
+										updated_centroids[k]+=_I(i,j)[k];
+									}
 								}
 							}
 						}
-					}
+					});
+
 					for(int c=0; c<m_nb_centroid; c++)
 					{
 						if(centroids_occurences[c] !=0)
@@ -120,51 +151,51 @@ namespace PPTP
 					break;
 
 			}
-			m_centroids.resize(updated_centroids.size());
-			for(int i=0; i<updated_centroids.size();i++)
-			{
-				m_centroids[i]=(uchar)updated_centroids[i];
-			}
-			//m_centroids.swap(updated_centroids);
+			m_centroids.swap(updated_centroids);
 
  		}
 
-		void compute_segmentation(cv::Mat& image)
+		void compute_segmentation_tbb(cv::Mat& image)
 		{
                       using namespace cv ;
 
-		      int cluster_id =0;
 		      switch(nb_channels)
 		      {
 		        case 1:
-		          for(std::size_t i=0;i<(size_t)image.rows;++i)
-		          {
-		            for(int j=0;j<image.cols;++j)
-		            {
-				cluster_id=collection_centroid_id[std::make_tuple(i,j)];
-			      	image.at<uchar>(i,j)=m_centroids[cluster_id];
-		            }
-		          }
-		          break ;
-		        case 3:
-		          Mat_<Vec3b> _I = image;
-		          for(std::size_t i=0;i<(size_t)image.rows;++i)
-		          {
-		            for(int j=0;j<image.cols;++j)
-		            {
+			  	//TO PARALLELISE
+				tbb::parallel_for(std::size_t(0), (size_t)image.rows, [&](std::size_t i)	
+		          	{
+					int cluster_id=0;
+		            		for(int j=0;j<image.cols;++j)
+		           	 	{
+						cluster_id=collection_centroid_id[std::make_tuple(i,j)];
+			      			image.at<uchar>(i,j)=m_centroids[cluster_id];
+		            		}
+		          	});
+		          	break ;
+		        
+			case 3:
+		       		Mat_<Vec3b> _I = image;
+		          	//TO PARALLELISE
+			  	
+				tbb::parallel_for(std::size_t(0), (size_t)image.rows, [&](std::size_t i)	
+		          	{
+		            		int cluster_id=0;
+					for(int j=0;j<image.cols;++j)
+		            		{
 		              	
-				cluster_id=collection_centroid_id[std::make_tuple(i,j)];
-				for(int k=0;k<3;++k)
-		              	{
-					_I(i,j)[k]=m_centroids[3*cluster_id+k];	
-		              	}
-		            }
-		          }
-		          break ;
+						cluster_id=collection_centroid_id[std::make_tuple(i,j)];
+						for(int k=0;k<3;++k)
+		              			{
+							_I(i,j)[k]=m_centroids[3*cluster_id+k];	
+		              			}
+		            		}
+		          	});
+		          	break ;
 		      }
 		}
 
-		void process(cv::Mat& image)
+		void process_tbb(cv::Mat& image)
 		{
 			std::cout<<"Start process"<<std::endl;
 			std::cout<<"Centroid_init"<<std::endl;
@@ -174,16 +205,16 @@ namespace PPTP
 			std::cout<<"compute centroids"<<std::endl;
 			int iterations=0;
 			bool convergence_centroids=false;
-
+			
 			while(iterations<nb_iterations && !convergence_centroids){
 				std::cout<<"iteration number: "<<iterations<<std::endl;
-				convergence_centroids=compute_centroids(image) ;
-				update_centroids(image);
+				convergence_centroids=compute_centroids_tbb(image) ;
+				update_centroids_tbb(image);
 				iterations++;
 			}
 			//Mat img_seg;
 			std::cout<<"compute segmentation"<<std::endl; 
-			compute_segmentation(image) ;
+			compute_segmentation_tbb(image) ;
 		}
 
 	private :
@@ -209,7 +240,7 @@ namespace PPTP
 						row_id=(int)(rand()%image.rows);
 						col_id=(int)(rand()%image.cols);
 						m_centroids[i]=image.at<uchar>(row_id,col_id);
-						}while(abs(m_centroids[i]-m_centroids[i-1])>10 && std::find(m_centroids.begin(), m_centroids.end(), m_centroids[i]) != m_centroids.end());
+						}while(abs(m_centroids[i]-m_centroids[i-1])>5 && std::find(m_centroids.begin(), m_centroids.end(), m_centroids[i]) != m_centroids.end());
 					}
 					break;
 				}
@@ -239,7 +270,7 @@ namespace PPTP
 
 								dist+=pow(_I(row_id,col_id)[i]-m_centroids[i-3],2);
 							}
-						}while(sqrt(dist)>10 && std::find(m_centroids.begin(), m_centroids.end(), m_centroids[c]) != m_centroids.end());
+						}while(sqrt(dist)>5 && std::find(m_centroids.begin(), m_centroids.end(), m_centroids[c]) != m_centroids.end());
 						
 					}
 					break;
@@ -307,4 +338,3 @@ namespace PPTP
 	};
 }
 
-#endif /* SRC_IMGPROCESSING_KMEANALGO_H_ */

@@ -20,6 +20,9 @@
 #include <boost/program_options/variables_map.hpp>
 #include <IMGProcessing/KMeanAlgo.h>
 #include <IMGProcessing/KMeanAlgo_parallel_omp.h>
+#include <IMGProcessing/KMeanAlgo_parallel_tbb.h>
+#include "Utils/Timer.h"
+#include "tbb/tbb.h"
 
 
 using namespace cv;
@@ -35,13 +38,18 @@ int main( int argc, char** argv )
         ("show",value<int>()->default_value(0), "show image")
         ("seg",value<int>()->default_value(0), "kmean segmentation")
         ("kmean-value",value<int>()->default_value(0), "KMean k value") 
-        ("nb-centroids",value<int>()->default_value(0), "nb centroids") 
-    	("mode", value<int>()->default_value(0), "0:sequential 1:openmp 2:tbb");
+        ("nb-centroids",value<int>()->default_value(0), "nb centroids")
+        ("nb-iterations",value<int>()->default_value(50), "nb iterations")
+	("mode", value<int>()->default_value(0), "0:sequential 1:openmp 2:tbb")
+    	("nb-threads", value<int>()->default_value(0), "nb threads");
     	
     	
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
+
+    using namespace PPTP;
+    Timer timer;
 
     if (vm.count("help"))
     {
@@ -73,6 +81,11 @@ int main( int argc, char** argv )
     const int channels = image.channels();
 
     int nb_centroids = vm["nb-centroids"].as<int>() ;
+    int nb_iterations = vm["nb-iterations"].as<int>();
+    
+    cout<<"NB CENTROIDS       : "<<nb_centroids<<std::endl ;
+    cout<<"NB ITERATIONS MAX       : "<<nb_iterations<<std::endl ;
+    
     if(vm["seg"].as<int>()==1)
     {
 	const int mode= vm["mode"].as<int>();    
@@ -80,17 +93,36 @@ int main( int argc, char** argv )
 	{
 		case 0:
 		{	
-			PPTP::KMeanAlgo algo(channels,nb_centroids) ;
+			PPTP::KMeanAlgo algo(channels,nb_centroids, nb_iterations) ;
+			Timer::Sentry sentry(timer, "Sequential Kmeans");
 			algo.process(image) ;
 			break;
 		}
 		case 1:
 		{
-			PPTP::KMeanAlgoParOmp algo(channels, nb_centroids);
+			int nb_threads = vm["nb-threads"].as<int>();
+			if(nb_threads>0){
+				omp_set_num_threads(nb_threads);
+			}
+			PPTP::KMeanAlgoParOmp algo(channels, nb_centroids, nb_iterations);
+			Timer::Sentry sentry(timer, "Parallel OMP Kmeans");
 			algo.process_omp(image);
 			break;
 		}
-	} 
+		case 2:
+		{
+			int nb_threads = vm["nb-threads"].as<int>();	
+			if(nb_threads>0){
+				tbb::task_scheduler_init init(nb_threads);
+			}
+			Timer::Sentry sentry(timer, "Parallel TBB Kmeans");
+			cout<<"on est la"<<endl;
+			PPTP::KMeanAlgoParTbb algo(channels, nb_centroids, nb_iterations);
+			algo.process_tbb(image);
+			break;
+		}
+	}
+       	timer.printInfo();	
     	imwrite("./Seg_Image.jpg",image) ;
     }
 
