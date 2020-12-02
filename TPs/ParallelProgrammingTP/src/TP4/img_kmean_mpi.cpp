@@ -90,31 +90,64 @@ int main( int argc, char** argv )
 	Timer::Sentry sentry(timer, "KMEANS SEGMENTATION WITH MPI");
 	MPI_Status status;
 	{
-	  // BCAST NB_CHANNELS, NB_ROWS, NB_COLS AND NB_CENTROIDS TO ALL PROCS
-	  std::vector<int> send_info={nb_channels, image.rows, image.cols, nb_centroids};
-	  MPI_Bcast(send_info.data(), 4, MPI_INT, 0, MPI_COMM_WORLD);
+	  // BCAST NB_CHANNELS, NB_COLS AND NB_CENTROIDS TO ALL PROCS
+	  std::vector<int> send_info={nb_channels, image.cols, nb_centroids};
+	  MPI_Bcast(send_info.data(), 3, MPI_INT, 0, MPI_COMM_WORLD);
 	}
 
-	int rows_local_proc_zero;
+
+	//std::vector<uchar> flat_image2 = flat_image;
+
+	// SEND FLAT IMAGE USING MPI_SCATTERV
+
+	// declare the counts
+	//int counts[nb_proc];
+	// declare the displacement
+	//int displacements[nb_proc];
+	//int start = 0;
+	//int rows_zero;
+	
+
+	// save local rows of each proc in rows_local_info
+	int rows_local_info[nb_proc];
+	for (int i=0; i<nb_proc; i++)
+	{
+	  int rows_local = image.rows / nb_proc;
+	  int r = image.rows % nb_proc;
+	  if(r>i) rows_local ++;
+	  rows_local_info[i] = rows_local;
+
+	  //if(i==0) rows_zero = rows_local;
+	  //counts[i] = rows_local*image.cols*nb_channels;
+	  //displacements[i] = start;
+	  //start += counts[i];
+	}
+
+	//MPI_Bcast(counts, nb_proc, MPI_INT, 0, MPI_COMM_WORLD);
+	//MPI_Bcast(displacements, nb_proc, MPI_INT, 0, MPI_COMM_WORLD);
+
+	//for(int i=0; i<nb_proc; i++)
+	//{
+	//	std::cout << displacements[i] << " " << counts[i] << std::endl;
+	//}
+	//std::vector<uchar> flat_image_local(counts[my_rank]);
+	//std::cout << "local size " << flat_image_local.size() << std::endl;
+	//std::cout << "global size " << flat_image.size() << std::endl;
+	//MPI_Scatterv(flat_image.data(), counts, displacements, MPI_UNSIGNED_CHAR, flat_image_local.data(), counts[my_rank], MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD); 
+
+	//std::cout << " scatter: " << (int) flat_image[0] << " " << (int) flat_image_local[0] << std::endl;
+
+	int rows_local_proc_zero = rows_local_info[0];
 
         {
           // SEND IMAGE DATA
 	  // send local image rows
 
-	  int begin = 0; 
-	  
-	  rows_local_proc_zero = image.rows / nb_proc;
-	  int r = image.rows % nb_proc;
-	  if(r>0) rows_local_proc_zero ++;
-	  begin += rows_local_proc_zero;
-	  
-
+	  int begin = rows_local_proc_zero;
 	  for(int i=1; i<nb_proc; i++)
 	  {
 	    // send local size to proc i
-	    int rows_local = image.rows / nb_proc;
-	    int r = image.rows % nb_proc;
-	    if(r>i) rows_local ++;
+	    int rows_local = rows_local_info[i];
 	    MPI_Send(&rows_local, 1, MPI_INT, i, 1000, MPI_COMM_WORLD);
 
 	    // send local part of image
@@ -126,7 +159,7 @@ int main( int argc, char** argv )
 
 	{
 	  // INIT CENTROIDS
-	  // determine number of centroids to init by proc 0 
+	  // determine number of centroids to init by proc 0 i
 	  int nb_cent_to_init_zero = nb_centroids / nb_proc;
 	  int r = nb_centroids % nb_proc;
 	  if(r>0) nb_cent_to_init_zero ++;
@@ -176,33 +209,13 @@ int main( int argc, char** argv )
 	    // calculate nearest centroid for each pixel
 	    // each proc calculates for the pixel in his part of image
 	    // nearest centroids of the part of proc 0
-	    int nearest_centroid_id;
-	    for(int i=0; i<rows_local_proc_zero*image.cols; i++)
-	    {
-	      switch(nb_channels)
-	      {
-		case(1):
-		{
-		  nearest_centroid_id = nearest_centroid(nb_channels, nb_centroids, centroids, flat_image[i]);
-		  pixel_collection.at(i) = nearest_centroid_id;
-		  break;
-		}
-		case(3):
-		{
-		  nearest_centroid_id = nearest_centroid(nb_channels, nb_centroids, centroids, flat_image[3*i], flat_image[3*i+1], flat_image[3*i+2]);
-		  pixel_collection.at(i) = nearest_centroid_id;
-		  break; 
-		}
-	      }
-	    }
+	    update_pixel_collection(pixel_collection, nb_channels, rows_local_proc_zero, image.cols, nb_centroids, centroids, flat_image);
 
 	    // receive calculation of nearest centroids by other procs
 	    int begin = image.cols*rows_local_proc_zero;
 	    for(int i=1; i<nb_proc; i++)
 	    {
-		int rows_local = image.rows / nb_proc;
-	        int r = image.rows % nb_proc;
-	        if(r>i) rows_local ++;
+		int rows_local = rows_local_info[i];
 
 		std::vector<int> pixel_collection_local(image.cols*rows_local);
 
@@ -256,9 +269,7 @@ int main( int argc, char** argv )
 	  for(int i=1; i<nb_proc; i++)
 	  {
 	    // receive flat_image_local after segmentation
-	    int rows_local = image.rows / nb_proc;
-	    int r = image.rows % nb_proc;
-	    if(r>i) rows_local ++;
+	    int rows_local = rows_local_info[i];
 
 	    std::vector<uchar> flat_image_local(rows_local*image.cols*nb_channels);
 	    MPI_Recv(flat_image_local.data(), rows_local*image.cols*nb_channels, MPI_UNSIGNED_CHAR, i, 7000, MPI_COMM_WORLD, &status);
@@ -289,12 +300,11 @@ int main( int argc, char** argv )
       if(vm["seg"].as<int>()==1)
       {
 	// RECEIVE NB_CHANNELS, NB_ROWS, NB_COLS AND NB_CENTROIDS FROM PROC 0
-	std::vector<int> recv_info(4);
-	MPI_Bcast(recv_info.data(), 4, MPI_INT, 0, MPI_COMM_WORLD);
+	std::vector<int> recv_info(3);
+	MPI_Bcast(recv_info.data(), 3, MPI_INT, 0, MPI_COMM_WORLD);
 	int nb_channels = recv_info[0];
-	int nb_rows = recv_info[1];
-	int nb_cols = recv_info[2];
-	int nb_centroids = recv_info[3];
+	int nb_cols = recv_info[1];
+	int nb_centroids = recv_info[2];
 
         
         // RECV IMAGE DATA FROM PROC 0
@@ -303,6 +313,23 @@ int main( int argc, char** argv )
 	
 	std::vector<uchar> flat_image_local(rows_local*nb_cols*nb_channels);
 	MPI_Recv(flat_image_local.data(), rows_local*nb_cols*nb_channels, MPI_UNSIGNED_CHAR, 0, 2000, MPI_COMM_WORLD, &status);
+
+	// scatter part
+	
+	//int counts[nb_proc];
+	//int displacements[nb_proc];
+	//MPI_Bcast(counts, nb_proc, MPI_INT, 0, MPI_COMM_WORLD);
+	//MPI_Bcast(displacements, nb_proc, MPI_INT, 0, MPI_COMM_WORLD);
+	//for(int i=0; i<nb_proc; i++)
+	//{
+	//	std::cout << displacements[i] << "-" << counts[i] << std::endl;
+	//}
+
+	//std::vector<uchar> flat_image_local(counts[my_rank]);
+	//std::cout << " size local: " << flat_image_local.size();
+	//MPI_Scatterv(NULL, counts, displacements, MPI_UNSIGNED_CHAR, flat_image_local.data(), counts[my_rank], MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
+
+	// std::cout << "scatter: " << flat_image_local.size() << std::endl;
 
 	{
        	  // INIT CENTROIDS
@@ -338,27 +365,8 @@ int main( int argc, char** argv )
 	    MPI_Bcast(centroids.data(), nb_centroids*nb_channels, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
 
 	    // calculate nearest centroid
-	    int nearest_centroid_id;
 	    std::vector<int> pixel_collection_local(nb_cols*rows_local);
-	    for(int i=0; i<nb_cols*rows_local; i++)
-	    {
-	      switch(nb_channels)
-	      {
-		case(1):
-		{
-		  nearest_centroid_id = nearest_centroid(nb_channels, nb_centroids, centroids, flat_image_local[i]);
-		  pixel_collection_local.at(i) = nearest_centroid_id;
-		  break;
-		}
-		case(3):
-		{
-		  nearest_centroid_id = nearest_centroid(nb_channels, nb_centroids, centroids, flat_image_local[3*i], flat_image_local[3*i+1], flat_image_local[3*i+2]);
-		  pixel_collection_local.at(i) = nearest_centroid_id;
-		  break; 
-		}
-	      }
-
-	    }
+	    update_pixel_collection(pixel_collection_local, nb_channels, rows_local, nb_cols, nb_centroids, centroids, flat_image_local);
 
 	    // send pixel_collection_local to proc 0
 	    MPI_Send(pixel_collection_local.data(), nb_cols*rows_local, MPI_INT, 0, 5000, MPI_COMM_WORLD);

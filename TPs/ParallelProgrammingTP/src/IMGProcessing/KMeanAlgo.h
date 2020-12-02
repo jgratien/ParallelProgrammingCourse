@@ -14,9 +14,10 @@ namespace PPTP
 	class KMeanAlgo
 	{
 	public:
-	    KMeanAlgo(int nb_channels, int nb_centroids)
+	    KMeanAlgo(int nb_channels, int nb_centroids, int max_iter)
 	    : m_nb_channels(nb_channels)
 	    , m_nb_centroids(nb_centroids)
+	    , m_max_iter(max_iter)
 	    {}
 		virtual ~KMeanAlgo() {}
 
@@ -34,7 +35,7 @@ namespace PPTP
 
 		      // COMPUTE CENTROIDS
 		      int iter = 0; double epsilon=1;
-		      while ( (iter<50) && (epsilon>0.05) ) 
+		      while ( (iter<m_max_iter) && (epsilon>0.05) ) 
 		      {
 			std::cout << "iteration number: " << iter << std::endl;
 
@@ -129,6 +130,7 @@ namespace PPTP
 	private :
 	    	int m_nb_channels ;
 		int m_nb_centroids ;
+		int m_max_iter;
 		std::vector<uchar> m_centroids ;
 
 		//init

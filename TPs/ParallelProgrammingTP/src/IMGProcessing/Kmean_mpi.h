@@ -58,6 +58,29 @@ int nearest_centroid(int nb_channels, int nb_centroids, std::vector<uchar> centr
 	return std::distance(distances.begin(), itr);
 }
 
+// UPDATE PIXEL COLLECTION
+void update_pixel_collection(std::vector<int>& pixel_collection, int nb_channels, int nb_rows, int nb_cols, int nb_centroids, std::vector<uchar> centroids, std::vector<uchar> flat_image)
+{
+	int nearest_centroid_id;
+	for(int i=0; i<nb_rows*nb_cols; i++)
+	{
+		switch(nb_channels)
+		{
+		  case(1):
+		  {
+			nearest_centroid_id = nearest_centroid(nb_channels, nb_centroids, centroids, flat_image[i]);
+			pixel_collection.at(i) = nearest_centroid_id;
+			break;
+		  }
+		  case(3):
+		  {
+			nearest_centroid_id = nearest_centroid(nb_channels, nb_centroids, centroids, flat_image[3*i], flat_image[3*i+1], flat_image[3*i+2]);
+			pixel_collection.at(i) = nearest_centroid_id;
+			break;
+		  }
+		}
+	}
+}
 
 // COUNT PIXELS FOR EACH CENTROIDS
 std::vector<double> count_pixels(int nb_centroids, std::vector<int> pixel_collection, std::vector<uchar> flat_image, int nb_rows, int nb_cols, int nb_channels)

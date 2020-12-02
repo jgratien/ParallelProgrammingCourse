@@ -9,6 +9,7 @@
 #define SRC_IMGPROCESSING_KMEANALGOTBB_H_
 
 #include "tbb/tbb.h"
+#include <mutex>
 
 namespace PPTP
 {
@@ -16,9 +17,10 @@ namespace PPTP
 	class KMeanAlgoTbb
 	{
 	public:
-	    KMeanAlgoTbb(int nb_channels, int nb_centroids)
+	    KMeanAlgoTbb(int nb_channels, int nb_centroids, int max_iter)
 	    : m_nb_channels(nb_channels)
 	    , m_nb_centroids(nb_centroids)
+	    , m_max_iter(max_iter)
 	    {}
 		virtual ~KMeanAlgoTbb() {}
 
@@ -37,21 +39,22 @@ namespace PPTP
 
 		      // COMPUTE CENTROIDS
 		      int iter = 0; double epsilon=1;
-		      while ( (iter<50) && (epsilon>0.05) ) 
+		      std::mutex m;
+		      while ( (iter<m_max_iter) && (epsilon>0.05) ) 
 		      {
 			std::cout << "iteration number: " << iter << std::endl;
 
 			
-			//{
-			  //tbb::parallel_for(0, image.rows,
-			  //[&](int i)
-			  for(int i=0; i<image.rows; i++)
+			{
+			  tbb::parallel_for(0, image.rows,
+			  [&](int i)
+			  //for(int i=0; i<image.rows; i++)
 			  {
 			  	
 			     
-			        //tbb::parallel_for(0, image.cols,
-				//[&](int j)
-				for(int j=0; j<image.cols; j++)
+			        tbb::parallel_for(0, image.cols,
+				[&](int j)
+				//for(int j=0; j<image.cols; j++)
 			  	{
 			    		switch(m_nb_channels)
 			    		{
@@ -65,18 +68,22 @@ namespace PPTP
 			      			case(3):
 			      			{
 							Mat_<Vec3b> _I = image;
+							//m.lock();
                                 			uchar current_red = _I(i,j)[0];
 							uchar current_green = _I(i,j)[1];
 							uchar current_blue = _I(i,j)[2];
+							m.lock();
 							nearest_centroid_id = nearest_centroid(current_red, current_green, current_blue);
+							
 							pixel_segmentation.at(i*image.cols+j) = nearest_centroid_id;
+							m.unlock();
 							break;
 			      			}
 		            		}
-			  	}
+			  	});
 			    
-			  }//);
-			//}
+			  });
+			}
 			
 			// save old centroids before updating them to calculate their variance
 			std::vector<uchar> old_centroids = m_centroids;
@@ -142,6 +149,7 @@ namespace PPTP
 	private :
 	    	int m_nb_channels ;
 		int m_nb_centroids ;
+		int m_max_iter;
 		std::vector<uchar> m_centroids ;
 
 		//init
@@ -152,7 +160,6 @@ namespace PPTP
 		  {
 		  	tbb::parallel_for(0, m_nb_centroids,
 		  	[&](int i)
-			//for(int i=0; i<m_nb_centroids; i++)
 		  		{
 	            			switch(m_nb_channels)
 	            			{		 
@@ -168,11 +175,10 @@ namespace PPTP
 							int random_line = rand() % image.rows;
 							int random_column = rand() % image.cols;
 							for(int k=0; k<3; k++)
-								{
-			  					   uchar random_pixel = _I(random_line, random_column)[k];
-			 					   m_centroids[3*i+k] = random_pixel; 
-								}
-								
+							{
+			  				   uchar random_pixel = _I(random_line, random_column)[k];
+			 			           m_centroids[3*i+k] = random_pixel; 
+							}	
 							break;
 		      				}
  
@@ -207,6 +213,7 @@ namespace PPTP
 		      }
 		    }
 		  }
+		  
 		  // determine the minimum distance to pixel and return the index of the centroid ie its id
 		  double min = *std::min_element(distances.begin(), distances.end());
 		  std::vector<double>::iterator itr = std::find(distances.begin(), distances.end(), min);
@@ -217,54 +224,63 @@ namespace PPTP
 		void update_centroids(std::vector<int> pixel_segmentation, cv::Mat const& image)
 		{
 		  using namespace cv;
+		  
 		  for(int j=0; j<m_nb_centroids; j++)
 		  {
-		    double sum=0, sum_red=0, sum_green=0, sum_blue=0;
-		    int count=0;
-		    for(int i=0; i<image.cols*image.rows; i++)
-		    {
-			if(pixel_segmentation[i]==j)
-			{
-			  switch(m_nb_channels)
-			  {
-			    case(1):
-			    {
-			      int index_i = i/image.cols;
-			      int index_j = i - image.cols*index_i;
-			      sum += (double) image.at<uchar>(index_i,index_j);
-			      count++; 
-			      break;
-		            }
-			    case(3):
-			    {
-			      Mat_<Vec3b> _I = image;
-			      // determine indexes i and j of the pixel corresponding to pixel_segmentation[i]
-			      int index_i = i/image.cols;
-			      int index_j = i - image.cols*index_i;
-			      sum_red += (double) _I(index_i,index_j)[0];
-			      sum_green += (double) _I(index_i,index_j)[1];
-			      sum_blue += (double) _I(index_i,index_j)[2];
-			      count++;
-			      break;
-			    }
-			  } 
-			}
-		    }
+		    int count = 0;
 		    switch(m_nb_channels)
 	            {
 		      case(1):
 		      {
-			double barycenter = (double) sum / count;
+			double sum = tbb::parallel_reduce(tbb::blocked_range<int>(0, image.cols*image.rows), 0.0, 
+				[&](tbb::blocked_range<int> r, double sum)->double
+					{
+					  for(int i=r.begin(); i<r.end(); i++)
+					  {
+					    if(pixel_segmentation[i]==j)
+					    {
+						int index_i = i/image.cols;
+						int index_j = i - image.cols*index_i;
+						sum += (double) image.at<uchar>(index_i, index_j);
+						count ++;
+					    }
+					  }
+					  return sum;
+					}, std::plus<double>() );
+
+
+			double barycenter = (double) sum / (double) count;
 			m_centroids[j] =  (uchar) barycenter;
 			break;
 		      }
 		      case(3):
 		      {
-			double barycenter_red = (double) sum_red / count;
+			Mat_<Vec3b> _I = image;
+			double sum_red=0, sum_green=0, sum_blue=0;
+			int count = tbb::parallel_reduce(tbb::blocked_range<int>(0, image.cols*image.rows), 0, 
+				[&](tbb::blocked_range<int> r, int count)->int
+					{
+					  for(int i=r.begin(); i<r.end(); i++)
+					  {
+					    if(pixel_segmentation[i]==j)
+					    {
+						int index_i = i/image.cols;
+						int index_j = i - image.cols*index_i;
+						sum_red += (double) _I(index_i, index_j)[0];
+						sum_green += (double) _I(index_i, index_j)[1];
+						sum_blue += (double) _I(index_i, index_j)[2];
+						count +=1;
+					    }
+					  }
+					  return count;
+					}, std::plus<double>() );
+
+
+			double barycenter_red = (double) sum_red / (double) count;
 			m_centroids[3*j] = (uchar) barycenter_red;
-			double barycenter_green = (double) sum_green / count;
+			double barycenter_green = (double) sum_green / (double) count;
 			m_centroids[3*j+1] = (uchar) barycenter_green;
-			double barycenter_blue = (double) sum_blue / count;
+			double barycenter_blue = (double) sum_blue / (double) count;
 			m_centroids[3*j+2] = (uchar) barycenter_blue;
 			break;
 		      }
@@ -276,7 +292,9 @@ namespace PPTP
 		double compute_variance(std::vector<uchar> old_centroids)
 		{
                   double sum=0;
-		  for(int i=0; i<m_nb_centroids; i++)
+		  tbb::parallel_for(0, m_nb_centroids,
+		  [&](int i)
+		  //for(int i=0; i<m_nb_centroids; i++)
 	          {
 		    switch(m_nb_channels)
 	            {
@@ -294,7 +312,7 @@ namespace PPTP
 			break;
 		      }
 		    }
-		  }
+		  });
 		  return (double) sum / m_nb_centroids;
 
 		}

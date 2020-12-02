@@ -40,7 +40,8 @@ int main( int argc, char** argv )
         ("seg",value<int>()->default_value(0), "kmean segmentation")
 	("seg-openmp",value<int>()->default_value(0), "Kmean segmentation using openmp")
 	("seg-tbb",value<int>()->default_value(0), "Kmean segmentation using tbb")
-        ("kmean-value",value<int>()->default_value(0), "KMean k value") ;
+        ("kmean-value",value<int>()->default_value(0), "KMean k value")
+        ("max_iter",value<int>()->default_value(50), "max iterations");
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
@@ -85,6 +86,7 @@ int main( int argc, char** argv )
     const int channels = image.channels();
 
     int nb_centroids = vm["kmean-value"].as<int>() ;
+    int max_iter = vm["max_iter"].as<int>();
     
     if(vm["seg"].as<int>()==1)
     {
@@ -93,7 +95,7 @@ int main( int argc, char** argv )
         case 1:
           {
 		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION SEQUENTIAL");
-		  KMeanAlgo algo(1,nb_centroids) ;
+		  KMeanAlgo algo(1, nb_centroids, max_iter) ;
 		  std::cout << "starting processing ... " << std::endl;
         	  algo.process(image) ;
           }
@@ -101,7 +103,7 @@ int main( int argc, char** argv )
         case 3:
           {
 		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION SEQUENTIAL");
-		  KMeanAlgo algo(3,nb_centroids) ;
+		  KMeanAlgo algo(3, nb_centroids, max_iter) ;
 		  std::cout << "starting processing ... " << std::endl;
         	  algo.process(image) ;
           }
@@ -118,7 +120,7 @@ int main( int argc, char** argv )
         case 1:
           {
 		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION WITH OPENMP");
-		  KMeanAlgoOpenMP algo(1,nb_centroids) ;
+		  KMeanAlgoOpenMP algo(1, nb_centroids, max_iter) ;
 		  std::cout << "starting processing ... " << std::endl;
         	  algo.process(image) ;
           }
@@ -126,7 +128,7 @@ int main( int argc, char** argv )
         case 3:
           {
 		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION WITH OPENMP");
-		  KMeanAlgoOpenMP algo(3,nb_centroids) ;
+		  KMeanAlgoOpenMP algo(3, nb_centroids, max_iter) ;
 		  std::cout << "starting processing ... " << std::endl;
         	  algo.process(image) ;
           }
@@ -143,7 +145,7 @@ int main( int argc, char** argv )
         case 1:
           {
 		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION WITH TBB");
-		  KMeanAlgoTbb algo(1,nb_centroids) ;
+		  KMeanAlgoTbb algo(1, nb_centroids, max_iter) ;
 		  std::cout << "starting processing ... " << std::endl;
         	  algo.process(image) ;
           }
@@ -151,7 +153,7 @@ int main( int argc, char** argv )
         case 3:
           {
 		  Timer::Sentry sentry(timer, "KMEANS SEGMENTATION WITH TBB");
-		  KMeanAlgoTbb algo(3,nb_centroids) ;
+		  KMeanAlgoTbb algo(3, nb_centroids, max_iter) ;
 		  std::cout << "starting processing ... " << std::endl;
         	  algo.process(image) ;
           }

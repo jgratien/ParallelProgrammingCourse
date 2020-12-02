@@ -14,9 +14,10 @@ namespace PPTP
 	class KMeanAlgoOpenMP
 	{
 	public:
-	    KMeanAlgoOpenMP(int nb_channels, int nb_centroids)
+	    KMeanAlgoOpenMP(int nb_channels, int nb_centroids, int max_iter)
 	    : m_nb_channels(nb_channels)
 	    , m_nb_centroids(nb_centroids)
+	    , m_max_iter(max_iter)
 	    {}
 		virtual ~KMeanAlgoOpenMP() {}
 
@@ -34,7 +35,7 @@ namespace PPTP
 
 		      // COMPUTE CENTROIDS
 		      int iter = 0; double epsilon=1;
-		      while ( (iter<50) && (epsilon>0.05) ) 
+		      while ( (iter<m_max_iter) && (epsilon>0.05) ) 
 		      {
 			std::cout << "iteration number: " << iter << std::endl;
 			#pragma omp parallel for collapse(2)
@@ -131,6 +132,7 @@ namespace PPTP
 	private :
 	    	int m_nb_channels ;
 		int m_nb_centroids ;
+		int m_max_iter;
 		std::vector<uchar> m_centroids ;
 
 		//init
@@ -209,6 +211,7 @@ namespace PPTP
 		  {
 		    double sum=0, sum_red=0, sum_green=0, sum_blue=0;
 		    int count=0;
+		    #pragma parallel for reduction(+:sum, sum_red, sum_green, sum_blue, count)
 		    for(int i=0; i<image.cols*image.rows; i++)
 		    {
 			if(pixel_segmentation[i]==j)
@@ -220,7 +223,7 @@ namespace PPTP
 			      int index_i = i/image.cols;
 			      int index_j = i - image.cols*index_i;
 			      sum += (double) image.at<uchar>(index_i,index_j);
-			      count++; 
+			      count++;
 			      break;
 		            }
 			    case(3):
@@ -233,6 +236,7 @@ namespace PPTP
 			      sum_green += (double) _I(index_i,index_j)[1];
 			      sum_blue += (double) _I(index_i,index_j)[2];
 			      count++;
+			      
 			      break;
 			    }
 			  } 
