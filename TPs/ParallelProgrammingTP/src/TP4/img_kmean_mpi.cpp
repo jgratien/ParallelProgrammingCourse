@@ -89,6 +89,15 @@ void segment(std::vector<uchar>& block, std::vector<uchar>& centroids,
   }
 }
 
+void paint_segmentation(std::vector<uchar>& img_mat, long img_size,
+                        std::vector<uchar>& centroids, int nb_channels,
+                        std::vector<uint8_t>& clustered_block)
+{
+  for (int i = 0; i < img_size; i++)
+    for (int j = 0; j < nb_channels; j++)
+      img_mat[i * nb_channels + j] = centroids[clustered_block[i] * nb_channels + j];
+}
+
 int main( int argc, char** argv )
 {
     using namespace boost::program_options;
@@ -208,9 +217,9 @@ int main( int argc, char** argv )
       }
 
       // Painting image according to clustering result
-      for (int i = 0; i < proc_blocksize; i++)
-        for (int j = 0; j < nb_channels; j++)
-          img_mat[i * nb_channels + j] = centroids[clustered_block[i] * nb_channels + j];
+      paint_segmentation(img_mat, proc_blocksize,
+                         centroids, nb_channels,
+                         clustered_block);
 
       // Receive partial matrix parts
       start = proc_blocksize * nb_channels;
@@ -268,9 +277,9 @@ int main( int argc, char** argv )
       }
 
       // Painting image according to clustering result
-      for (int i = 0; i < proc_blocksize; i++)
-        for (int j = 0; j < nb_channels; j++)
-          block[i * nb_channels + j] = centroids[clustered_block[i] * nb_channels + j];
+      paint_segmentation(block, proc_blocksize,
+                         centroids, nb_channels,
+                         clustered_block);
 
       // Sending result image parts
       MPI_Send(block.data(), proc_blocksize * nb_channels,
