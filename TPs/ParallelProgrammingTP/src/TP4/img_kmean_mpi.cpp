@@ -117,6 +117,7 @@ int main( int argc, char** argv )
         return 1;
     }
 
+    PPTP::Timer timer;
     MPI_Init(&argc,&argv) ;
     MPI_Status status;
 
@@ -145,100 +146,100 @@ int main( int argc, char** argv )
       std::cout << "NROWS       : " << nb_rows << std::endl;
       std::cout << "NCOLS       : " << nb_cols << std::endl;
 
-      // Starting timer count
-      PPTP::Timer timer;
-      PPTP::Timer::Sentry sentry(timer, "Kmeans_MPI");
+      { // Timer scope
+        // Starting timer count
+        PPTP::Timer::Sentry sentry(timer, "Kmeans_MPI");
 
-      std::vector<uchar> img_mat(nb_rows * nb_cols * nb_channels);
-      if (image.isContinuous())
-        img_mat.assign(image.datastart, image.dataend);
+        std::vector<uchar> img_mat(nb_rows * nb_cols * nb_channels);
+        if (image.isContinuous())
+          img_mat.assign(image.datastart, image.dataend);
 
-      // Broadcasting sizes
-      int buff[2] = { nb_channels, nb_centroids };
-      MPI_Bcast(buff, 2, MPI_INT, 0, MPI_COMM_WORLD);
+        // Broadcasting sizes
+        int buff[2] = { nb_channels, nb_centroids };
+        MPI_Bcast(buff, 2, MPI_INT, 0, MPI_COMM_WORLD);
 
-      // Splitting & sending image matrix
-      int r = (nb_rows * nb_cols) % nb_proc;
-      long proc_blocksize = 0;
-      long start = nb_channels * (nb_rows * nb_cols / nb_proc + ((r > 0) ? 1 : 0));
-      for (int i = 1; i < nb_proc; i++) {
-        proc_blocksize = nb_rows * nb_cols / nb_proc + ((r > 0) ? 1 : 0);
-        MPI_Send(&proc_blocksize, 1, MPI_LONG, i, 1000, MPI_COMM_WORLD);
-        MPI_Send(img_mat.data() + start, proc_blocksize * nb_channels,
-                 MPI_UNSIGNED_CHAR, i, 2000, MPI_COMM_WORLD);
-        start += proc_blocksize * nb_channels;
-      }
-
-      // Process initialization
-      if (r > 0) proc_blocksize++;
-      std::vector<uint8_t> clustered_block(proc_blocksize);
-      std::vector<double> clst_colorsum(nb_channels * nb_centroids);
-      std::vector<double> clst_count(nb_centroids);
-      std::vector<uchar> centroids = init_centroids(img_mat, nb_rows, nb_cols,
-                                                    nb_centroids, nb_channels);
-      std::vector<uchar> new_centroids(nb_centroids * nb_channels);
-      int iter = 0;
-      converged = false;
-      double count_buff[nb_centroids];
-      double color_buff[nb_centroids * nb_channels];
-      while (!converged) {
-        // Sending new centroids
-        MPI_Bcast(centroids.data(), nb_channels * nb_centroids,
-                  MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
-
-        // Process own data
-        segment(img_mat, centroids, clustered_block, proc_blocksize,
-                nb_channels, nb_centroids, clst_colorsum, clst_count);
-
-        // Receiving clusters elements count reduction
+        // Splitting & sending image matrix
+        int r = (nb_rows * nb_cols) % nb_proc;
+        long proc_blocksize = 0;
+        long start = nb_channels * (nb_rows * nb_cols / nb_proc + ((r > 0) ? 1 : 0));
         for (int i = 1; i < nb_proc; i++) {
-          MPI_Recv(count_buff, nb_centroids, MPI_DOUBLE,
-                   i, 2333, MPI_COMM_WORLD, &status);
-          for (int j = 0; j < nb_centroids; j++)
-            clst_count[j] += count_buff[j];
+          proc_blocksize = nb_rows * nb_cols / nb_proc + ((r > 0) ? 1 : 0);
+          MPI_Send(&proc_blocksize, 1, MPI_LONG, i, 1000, MPI_COMM_WORLD);
+          MPI_Send(img_mat.data() + start, proc_blocksize * nb_channels,
+                  MPI_UNSIGNED_CHAR, i, 2000, MPI_COMM_WORLD);
+          start += proc_blocksize * nb_channels;
         }
 
-        // Receiving clusters colors sum reduction
-        for (int i = 1; i < nb_proc; i++) {
-          MPI_Recv(color_buff, nb_centroids * nb_channels, MPI_DOUBLE,
-                   i, 2666, MPI_COMM_WORLD, &status);
-          for (int j = 0; j < nb_centroids * nb_channels; j++)
-            clst_colorsum[j] += color_buff[j];
+        // Process initialization
+        if (r > 0) proc_blocksize++;
+        std::vector<uint8_t> clustered_block(proc_blocksize);
+        std::vector<double> clst_colorsum(nb_channels * nb_centroids);
+        std::vector<double> clst_count(nb_centroids);
+        std::vector<uchar> centroids = init_centroids(img_mat, nb_rows, nb_cols,
+                                                      nb_centroids, nb_channels);
+        std::vector<uchar> new_centroids(nb_centroids * nb_channels);
+        int iter = 0;
+        converged = false;
+        double count_buff[nb_centroids];
+        double color_buff[nb_centroids * nb_channels];
+        while (!converged) {
+          // Sending new centroids
+          MPI_Bcast(centroids.data(), nb_channels * nb_centroids,
+                    MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
+
+          // Process own data
+          segment(img_mat, centroids, clustered_block, proc_blocksize,
+                  nb_channels, nb_centroids, clst_colorsum, clst_count);
+
+          // Receiving clusters elements count reduction
+          for (int i = 1; i < nb_proc; i++) {
+            MPI_Recv(count_buff, nb_centroids, MPI_DOUBLE,
+                    i, 2333, MPI_COMM_WORLD, &status);
+            for (int j = 0; j < nb_centroids; j++)
+              clst_count[j] += count_buff[j];
+          }
+
+          // Receiving clusters colors sum reduction
+          for (int i = 1; i < nb_proc; i++) {
+            MPI_Recv(color_buff, nb_centroids * nb_channels, MPI_DOUBLE,
+                    i, 2666, MPI_COMM_WORLD, &status);
+            for (int j = 0; j < nb_centroids * nb_channels; j++)
+              clst_colorsum[j] += color_buff[j];
+          }
+
+          // Computing new centroids
+          new_centroids = compute_centroids(nb_centroids, nb_channels,
+                                            clst_colorsum, clst_count);
+
+          // Convergence test
+          converged = (new_centroids == centroids) || ((++iter) >= maxiter);
+          MPI_Bcast(&converged, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
+          centroids.swap(new_centroids);
         }
 
-        // Computing new centroids
-        new_centroids = compute_centroids(nb_centroids, nb_channels,
-                                          clst_colorsum, clst_count);
+        // Painting image according to clustering result
+        paint_segmentation(img_mat, proc_blocksize,
+                          centroids, nb_channels,
+                          clustered_block);
 
-        // Convergence test
-        converged = (new_centroids == centroids) || ((++iter) >= maxiter);
-        MPI_Bcast(&converged, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
-        centroids.swap(new_centroids);
-      }
+        // Receive partial matrix parts
+        start = proc_blocksize * nb_channels;
+        for (int i = 1; i < nb_proc; i++) {
+          proc_blocksize = nb_rows * nb_cols / nb_proc + ((r > 0) ? 1 : 0);
+          MPI_Recv(img_mat.data() + start, proc_blocksize * nb_channels,
+                  MPI_UNSIGNED_CHAR, i, 3000, MPI_COMM_WORLD, &status);
+          start += proc_blocksize * nb_channels;
+        }
 
-      // Painting image according to clustering result
-      paint_segmentation(img_mat, proc_blocksize,
-                         centroids, nb_channels,
-                         clustered_block);
+        // Reconstruct image
+        cv::Mat result(nb_rows, nb_cols,
+                      (nb_channels == 1) ? CV_8UC1 : CV_8UC3,
+                      img_mat.data());
+        std::cout << "Writing image output" << std::endl;
+        cv::imwrite("./MPI-out.jpg", result);
 
-      // Receive partial matrix parts
-      start = proc_blocksize * nb_channels;
-      for (int i = 1; i < nb_proc; i++) {
-        proc_blocksize = nb_rows * nb_cols / nb_proc + ((r > 0) ? 1 : 0);
-        MPI_Recv(img_mat.data() + start, proc_blocksize * nb_channels,
-                 MPI_UNSIGNED_CHAR, i, 3000, MPI_COMM_WORLD, &status);
-        start += proc_blocksize * nb_channels;
-      }
-
-      // Reconstruct image
-      cv::Mat result(nb_rows, nb_cols,
-                     (nb_channels == 1) ? CV_8UC1 : CV_8UC3,
-                     img_mat.data());
-
-      // Stopping timer
+      }// Stopping timer
       timer.printInfo();
-      std::cout << "Writing image output" << std::endl;
-      cv::imwrite("./MPI-out.jpg", result);
     } else {
       // Receiving sizes
       int buff[2];
