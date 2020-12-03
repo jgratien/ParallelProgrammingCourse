@@ -72,7 +72,7 @@ int main( int argc, char** argv )
       PPTP::KMeanAlgo algo(channels, nb_centroids, maxiter) ;
       algo.process(image) ;
       std::cout << "Writing image output" << std::endl;
-      imwrite("./Seg_Image.jpg",image) ;
+      imwrite("./Seq_Image.jpg",image) ;
     }
 
     return 0 ;
