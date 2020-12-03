@@ -29,7 +29,6 @@ int main( int argc, char** argv )
         ("help", "produce help")
         ("file",value<std::string>()->default_value(std::string("")), "image file")
         ("show",value<int>()->default_value(0), "show image")
-        ("seg",value<int>()->default_value(0), "kmean segmentation")
         ("kmean-value",value<int>()->default_value(0), "KMean k value")
         ("max-iter", value<int>()->default_value(10), "Kmean maximum iterations number");
     variables_map vm;
@@ -66,14 +65,11 @@ int main( int argc, char** argv )
     const int channels = image.channels();
 
     int nb_centroids = vm["kmean-value"].as<int>() ;
-    if(vm["seg"].as<int>()==1)
-    {
-      int maxiter = vm["max-iter"].as<int>();
-      PPTP::KMeanAlgo algo(channels, nb_centroids, maxiter) ;
-      algo.process(image) ;
-      std::cout << "Writing image output" << std::endl;
-      imwrite("./Seq_Image.jpg",image) ;
-    }
+    int maxiter = vm["max-iter"].as<int>();
+    PPTP::KMeanAlgo algo(channels, nb_centroids, maxiter) ;
+    algo.process(image) ;
+    std::cout << "Writing image output" << std::endl;
+    imwrite("./Seq_Image.jpg",image) ;
 
     return 0 ;
 }
