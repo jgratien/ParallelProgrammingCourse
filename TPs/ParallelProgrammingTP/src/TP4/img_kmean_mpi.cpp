@@ -176,12 +176,10 @@ int main( int argc, char** argv )
         // Sending new centroids
         MPI_Bcast(centroids.data(), nb_channels * nb_centroids,
                   MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
-        std::cout << "iteration " << iter+1 << ": Centroids broadcasted" << std::endl;
 
         // Process own data
         segment(img_mat, centroids, clustered_block, proc_blocksize,
                 nb_channels, nb_centroids, clst_colorsum, clst_count);
-        std::cout << "iteration " << iter+1 << ": Done segmenting" << std::endl;
 
         // Receiving clusters elements count reduction
         for (int i = 1; i < nb_proc; i++) {
@@ -190,7 +188,6 @@ int main( int argc, char** argv )
           for (int j = 0; j < nb_centroids; j++)
             clst_count[j] += count_buff[j];
         }
-        std::cout << "iteration " << iter+1 << ": Clusters count received" << std::endl;
 
         // Receiving clusters colors sum reduction
         for (int i = 1; i < nb_proc; i++) {
@@ -199,25 +196,19 @@ int main( int argc, char** argv )
           for (int j = 0; j < nb_centroids * nb_channels; j++)
             clst_colorsum[j] += color_buff[j];
         }
-        std::cout << "iteration " << iter+1 << ": Clusters colors received" << std::endl;
 
         // Computing new centroids
         new_centroids = compute_centroids(nb_centroids, nb_channels,
                                           clst_colorsum, clst_count);
-        std::cout << "iteration " << iter+1 << ": New centroids computed" << std::endl;
-        for (int i = 0; i < nb_centroids; i++)
-          std::cout << (int)centroids[i*3] << " " << (int)centroids[i*3 + 1]
-                    << " " << (int)centroids[i*3 + 2] << std::endl;
 
         // Convergence test
         converged = (new_centroids == centroids) || ((++iter) >= maxiter);
         MPI_Bcast(&converged, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
-        std::cout << "iteration " << iter << ": Convergence state broadcasted" << std::endl;
         centroids.swap(new_centroids);
       }
 
       // Painting image according to clustering result
-      for (int i = 0; i < proc_blocksize; i+=nb_channels)
+      for (int i = 0; i < proc_blocksize; i++)
         for (int j = 0; j < nb_channels; j++)
           img_mat[i * nb_channels + j] = centroids[clustered_block[i] * nb_channels + j];
 
@@ -238,7 +229,7 @@ int main( int argc, char** argv )
       // Stopping timer
       timer.printInfo();
       std::cout << "Writing image output" << std::endl;
-      cv::imwrite("./Seg_Image.jpg", result);
+      cv::imwrite("./MPI-out.jpg", result);
     } else {
       // Receiving sizes
       int buff[2];
@@ -265,10 +256,6 @@ int main( int argc, char** argv )
         // Process own data
         segment(block, centroids, clustered_block, proc_blocksize,
                 nb_channels, nb_centroids, clst_colorsum, clst_count);
-
-        std::cout << "On proc." << rank << std::endl;
-        for (int i = 0; i < nb_centroids; i ++)
-          std::cout << "count n." << i << ": " << clst_count[i] << std::endl;
 
         // Sending reduced clusters data
         MPI_Send(clst_count.data(), nb_centroids, MPI_DOUBLE,
