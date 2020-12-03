@@ -27,6 +27,11 @@ namespace PPTP
         return m_nrows ;
       }
 
+      std::vector<double> const &getValues() const
+      {
+      return (m_values);
+      }
+
       void setChunkSize(int chunk_size)
       {
         m_chunk_size = chunk_size ;
