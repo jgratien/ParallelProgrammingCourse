@@ -94,18 +94,6 @@ int main( int argc, char** argv )
 	  std::vector<int> send_info={nb_channels, image.cols, nb_centroids};
 	  MPI_Bcast(send_info.data(), 3, MPI_INT, 0, MPI_COMM_WORLD);
 	}
-
-
-	//std::vector<uchar> flat_image2 = flat_image;
-
-	// SEND FLAT IMAGE USING MPI_SCATTERV
-
-	// declare the counts
-	//int counts[nb_proc];
-	// declare the displacement
-	//int displacements[nb_proc];
-	//int start = 0;
-	//int rows_zero;
 	
 
 	// save local rows of each proc in rows_local_info
@@ -116,26 +104,7 @@ int main( int argc, char** argv )
 	  int r = image.rows % nb_proc;
 	  if(r>i) rows_local ++;
 	  rows_local_info[i] = rows_local;
-
-	  //if(i==0) rows_zero = rows_local;
-	  //counts[i] = rows_local*image.cols*nb_channels;
-	  //displacements[i] = start;
-	  //start += counts[i];
 	}
-
-	//MPI_Bcast(counts, nb_proc, MPI_INT, 0, MPI_COMM_WORLD);
-	//MPI_Bcast(displacements, nb_proc, MPI_INT, 0, MPI_COMM_WORLD);
-
-	//for(int i=0; i<nb_proc; i++)
-	//{
-	//	std::cout << displacements[i] << " " << counts[i] << std::endl;
-	//}
-	//std::vector<uchar> flat_image_local(counts[my_rank]);
-	//std::cout << "local size " << flat_image_local.size() << std::endl;
-	//std::cout << "global size " << flat_image.size() << std::endl;
-	//MPI_Scatterv(flat_image.data(), counts, displacements, MPI_UNSIGNED_CHAR, flat_image_local.data(), counts[my_rank], MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD); 
-
-	//std::cout << " scatter: " << (int) flat_image[0] << " " << (int) flat_image_local[0] << std::endl;
 
 	int rows_local_proc_zero = rows_local_info[0];
 
@@ -314,23 +283,6 @@ int main( int argc, char** argv )
 	std::vector<uchar> flat_image_local(rows_local*nb_cols*nb_channels);
 	MPI_Recv(flat_image_local.data(), rows_local*nb_cols*nb_channels, MPI_UNSIGNED_CHAR, 0, 2000, MPI_COMM_WORLD, &status);
 
-	// scatter part
-	
-	//int counts[nb_proc];
-	//int displacements[nb_proc];
-	//MPI_Bcast(counts, nb_proc, MPI_INT, 0, MPI_COMM_WORLD);
-	//MPI_Bcast(displacements, nb_proc, MPI_INT, 0, MPI_COMM_WORLD);
-	//for(int i=0; i<nb_proc; i++)
-	//{
-	//	std::cout << displacements[i] << "-" << counts[i] << std::endl;
-	//}
-
-	//std::vector<uchar> flat_image_local(counts[my_rank]);
-	//std::cout << " size local: " << flat_image_local.size();
-	//MPI_Scatterv(NULL, counts, displacements, MPI_UNSIGNED_CHAR, flat_image_local.data(), counts[my_rank], MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
-
-	// std::cout << "scatter: " << flat_image_local.size() << std::endl;
-
 	{
        	  // INIT CENTROIDS
 	  // receive nb_centroids to init
@@ -357,7 +309,6 @@ int main( int argc, char** argv )
 
         {
 	  int iter = 0;
-	  //double epsilon = 1;
 	  while (iter<50) 
 	  {
             // receive centroids vector
