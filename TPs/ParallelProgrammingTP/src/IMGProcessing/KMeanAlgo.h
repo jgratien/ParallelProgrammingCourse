@@ -20,6 +20,7 @@ namespace PPTP
 	{
 		private :
 			int nb_channels;
+			int nb_threads;
 			int m_nb_centroid;
 			int m_maxiter;
 			// vector holding all centroids
@@ -32,8 +33,10 @@ namespace PPTP
 			uchar* clustered_img;
 
 		public:
-			KMeanAlgo(int nb_channels, int nb_centroids, int max_iter)
+			KMeanAlgo(int nb_channels, int nb_centroids,
+					  int max_iter, int nb_threads)
 				: nb_channels(nb_channels)
+				, nb_threads(nb_threads)
 				, m_nb_centroid(nb_centroids)
 				, m_maxiter(max_iter)
 			{
@@ -130,6 +133,50 @@ namespace PPTP
 			}
 
 			void process(cv::Mat& image) {
+				bool converged = false;
+				int iter = 0;
+				while(!converged && iter < m_maxiter) {
+					iter++;
+					converged = true;
+					// computing centroids
+					if (iter == 1) {
+						std::cout << "Randomly initializing centroids..." << std::endl;
+						init_centroids(image);
+					} else {
+						std::cout << "Computing new centroids..." << std::endl;
+						compute_centroids();
+					}
+					// nearest centroids computing
+					std::cout << "Starting segmentation n." << iter << "..." << std::endl;
+					converged = segment(image);
+				}
+				// change pixels color
+				map_segmentation(image);
+			}
+
+			void omp_process(cv::Mat& image) {
+				bool converged = false;
+				int iter = 0;
+				while(!converged && iter < m_maxiter) {
+					iter++;
+					converged = true;
+					// computing centroids
+					if (iter == 1) {
+						std::cout << "Randomly initializing centroids..." << std::endl;
+						init_centroids(image);
+					} else {
+						std::cout << "Computing new centroids..." << std::endl;
+						compute_centroids();
+					}
+					// nearest centroids computing
+					std::cout << "Starting segmentation n." << iter << "..." << std::endl;
+					converged = segment(image);
+				}
+				// change pixels color
+				map_segmentation(image);
+			}
+
+			void tbb_process(cv::Mat& image) {
 				bool converged = false;
 				int iter = 0;
 				while(!converged && iter < m_maxiter) {
