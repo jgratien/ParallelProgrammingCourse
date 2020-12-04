@@ -137,6 +137,7 @@ int main( int argc, char** argv )
           return -1;
       }
 
+      cv::Mat result;
       const int nb_channels = image.channels();
       const int nb_centroids = vm["k"].as<int>();
       const int nb_rows = image.rows;
@@ -146,13 +147,14 @@ int main( int argc, char** argv )
       std::cout << "NROWS       : " << nb_rows << std::endl;
       std::cout << "NCOLS       : " << nb_cols << std::endl;
 
+      // Flattening image
+      std::vector<uchar> img_mat(nb_rows * nb_cols * nb_channels);
+      if (image.isContinuous())
+        img_mat.assign(image.datastart, image.dataend);
+
       { // Timer scope
         // Starting timer count
         PPTP::Timer::Sentry sentry(timer, "Kmeans_MPI");
-
-        std::vector<uchar> img_mat(nb_rows * nb_cols * nb_channels);
-        if (image.isContinuous())
-          img_mat.assign(image.datastart, image.dataend);
 
         // Broadcasting sizes
         int buff[2] = { nb_channels, nb_centroids };
@@ -160,8 +162,8 @@ int main( int argc, char** argv )
 
         // Splitting & sending image matrix
         int r = (nb_rows * nb_cols) % nb_proc;
-        long proc_blocksize = 0;
         long start = nb_channels * (nb_rows * nb_cols / nb_proc + ((r > 0) ? 1 : 0));
+        long proc_blocksize = start / nb_channels;
         for (int i = 1; i < nb_proc; i++) {
           proc_blocksize = nb_rows * nb_cols / nb_proc + ((r > 0) ? 1 : 0);
           MPI_Send(&proc_blocksize, 1, MPI_LONG, i, 1000, MPI_COMM_WORLD);
@@ -232,13 +234,13 @@ int main( int argc, char** argv )
         }
 
         // Reconstruct image
-        cv::Mat result(nb_rows, nb_cols,
-                      (nb_channels == 1) ? CV_8UC1 : CV_8UC3,
-                      img_mat.data());
-        std::cout << "Writing image output" << std::endl;
-        cv::imwrite("./MPI-out.jpg", result);
-
+        result = cv::Mat(nb_rows, nb_cols,
+                         (nb_channels == 1) ? CV_8UC1 : CV_8UC3,
+                         img_mat.data());
       }// Stopping timer
+
+      std::cout << "Writing image output" << std::endl;
+      cv::imwrite("./MPI-out.jpg", result);
       timer.printInfo();
     } else {
       // Receiving sizes

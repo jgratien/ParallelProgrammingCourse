@@ -69,7 +69,6 @@ namespace PPTP
 				double* colorsum;
 				for (int i = 0; i < m_nb_centroid; i++) {
 					colorsum = clst_colorsum[i];
-					std::cout << "FOUND " << clst_count[i] << " elements in cluster n." << i << std::endl;
 					for (int j = 0; j < nb_channels; j++) {
 						centroids[i][j] = (int)(colorsum[j]/clst_count[i]);
 						colorsum[j] = 0;
@@ -139,15 +138,9 @@ namespace PPTP
 					iter++;
 					converged = true;
 					// computing centroids
-					if (iter == 1) {
-						std::cout << "Randomly initializing centroids..." << std::endl;
-						init_centroids(image);
-					} else {
-						std::cout << "Computing new centroids..." << std::endl;
-						compute_centroids();
-					}
+					if (iter == 1) init_centroids(image);
+					else           compute_centroids();
 					// nearest centroids computing
-					std::cout << "Starting segmentation n." << iter << "..." << std::endl;
 					converged = segment(image);
 				}
 				// change pixels color
