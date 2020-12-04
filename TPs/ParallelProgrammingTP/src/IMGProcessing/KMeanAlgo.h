@@ -47,7 +47,11 @@ namespace PPTP
 					clst_count[i] = 0;
 				}
 			}
-			virtual ~KMeanAlgo() {}
+			virtual ~KMeanAlgo() {
+				delete[] clustered_img;
+				for (auto p: clst_colorsum) delete[] p;
+				for (auto p: centroids) delete[] p;
+			}
 
 			void init_centroids(cv::Mat& image) {
 				srand(time(0));
@@ -154,15 +158,9 @@ namespace PPTP
 					iter++;
 					converged = true;
 					// computing centroids
-					if (iter == 1) {
-						std::cout << "Randomly initializing centroids..." << std::endl;
-						init_centroids(image);
-					} else {
-						std::cout << "Computing new centroids..." << std::endl;
-						compute_centroids();
-					}
+					if (iter == 1) init_centroids(image);
+					else           compute_centroids();
 					// nearest centroids computing
-					std::cout << "Starting segmentation n." << iter << "..." << std::endl;
 					converged = segment(image);
 				}
 				// change pixels color
@@ -176,15 +174,9 @@ namespace PPTP
 					iter++;
 					converged = true;
 					// computing centroids
-					if (iter == 1) {
-						std::cout << "Randomly initializing centroids..." << std::endl;
-						init_centroids(image);
-					} else {
-						std::cout << "Computing new centroids..." << std::endl;
-						compute_centroids();
-					}
+					if (iter == 1) init_centroids(image);
+					else           compute_centroids();
 					// nearest centroids computing
-					std::cout << "Starting segmentation n." << iter << "..." << std::endl;
 					converged = segment(image);
 				}
 				// change pixels color
