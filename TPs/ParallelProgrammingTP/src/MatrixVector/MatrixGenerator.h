@@ -71,11 +71,16 @@ class MatrixGenerator
       typedef typename MatrixT::MatrixEntryType MatrixEntryType ;
       double diag = 1.;
       double offdiag = -0.1;
-      std::vector<MatrixEntryType>* entries = new std::vector<MatrixEntryType>(nx*nx,offdiag);
+      std::vector<MatrixEntryType> * entries = new std::vector<MatrixEntryType>();
+      entries->reserve(nx*nx);
       int col = 0;
       for(int row=0;row<nx;row++) {
-          *entries[row*nx + col] = MatrixEntryType(row,col, diag);
-	  col+=1;
+	 for(int col=0;col<nx;col++){
+          entries->emplace_back(row,col,(row == col) ? diag : offdiag);
+	  //(*entries)[row*nx + col] = MatrixEntryType(row, col, diag);
+	    // *entries[row*nx + col] = MatrixEntryType(row,col, diag);
+	  //col+=1;
+	 }
         }
       matrix.setFromTriplets(nx,*entries) ;
       delete entries;
