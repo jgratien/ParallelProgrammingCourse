@@ -18,12 +18,15 @@
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
+
+#include "omp.h"
+#include "tbb/tbb.h"
+
 #include <IMGProcessing/KMeanAlgo.h>
 #include <IMGProcessing/KMeanAlgoOpenMP.h>
 #include <IMGProcessing/KMeanAlgoTbb.h>
 #include <Utils/Timer.h>
-#include "omp.h"
-#include "tbb/tbb.h"
+
 
 using namespace cv;
 using namespace std;
@@ -34,7 +37,7 @@ int main( int argc, char** argv )
     options_description desc;
     desc.add_options()
         ("help", "produce help")
-	("nb-threads",value<int>()->default_value(0), "nb threads")
+	("nb-threads",value<int>()->default_value(1), "nb threads")
         ("file",value<std::string>(), "image file")
         ("show",value<int>()->default_value(0), "show image")
         ("seg",value<int>()->default_value(0), "kmean segmentation")
@@ -58,6 +61,11 @@ int main( int argc, char** argv )
 	omp_set_num_threads(nb_threads);
 	tbb::task_scheduler_init init(nb_threads);
     }
+
+    int nb_procs = omp_get_num_procs();
+    std::cout << "NB PROCS: " << nb_procs << std::endl;
+    int nb_available_threads = omp_get_max_threads();
+    std::cout << "NB AVAILABLE_THREADS: " << nb_available_threads << std::endl;
 
     using namespace PPTP;
     Timer timer;
