@@ -25,13 +25,13 @@
 #include "MatrixVector/LinearAlgebra.h"
 #include "MatrixVector/MatrixGenerator.h"
 
-#include "Utils/Timer.h"
 #include "Utils/TimerNow.h"
 
 int main(int argc, char **argv)
 {
     using namespace boost::program_options;
     using namespace PPTP;
+
     options_description desc;
     variables_map vm;
 
@@ -39,84 +39,88 @@ int main(int argc, char **argv)
 
     int my_rank = 0;
     int nb_proc = 1;
+
     MPI_Comm_size(MPI_COMM_WORLD, &nb_proc);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
     double norm = 0;
     double local_norm = 0;
     double start, end;
-    
+
     MPI_Status status;
     MPI_Request req;
 
-    if(my_rank==0){
+    if (my_rank == 0)
+    {
 
-	desc.add_options()("help", "produce help")("nrows", value<int>()->default_value(0), "matrix size")("nx", value<int>()->default_value(0), "nx grid size")("file", value<std::string>(), "file input")("eigen", value<int>()->default_value(0), "use eigen package");
-    	store(parse_command_line(argc, argv, desc), vm);
-    notify(vm);
+        desc.add_options()("help", "produce help")("nrows", value<int>()->default_value(0), "matrix size")("nx", value<int>()->default_value(0), "nx grid size")("file", value<std::string>(), "file input")("eigen", value<int>()->default_value(0), "use eigen package");
+        store(parse_command_line(argc, argv, desc), vm);
+        notify(vm);
 
-    	if (vm.count("help"))
-    	{
-        	std::cout << desc << "\n";
-        	return 1;
-    	}
+        if (vm.count("help"))
+        {
+            std::cout << desc << "\n";
+            return 1;
+        }
 
-    	MatrixGenerator generator;
+        MatrixGenerator generator;
 
-    	int nx = vm["nx"].as<int>();
+        int nx = vm["nx"].as<int>();
 
-    	if (vm["eigen"].as<int>() == 1)
-    	{
-        	typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> EigenMatrixType;
-        	typedef Eigen::Matrix<double, Eigen::Dynamic, 1> EigenVectorType;
+        if (vm["eigen"].as<int>() == 1)
+        {
+            typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> EigenMatrixType;
+            typedef Eigen::Matrix<double, Eigen::Dynamic, 1> EigenVectorType;
 
-        	std::size_t nrows = nx;
-        	EigenMatrixType matrix(nrows, nrows);
+            std::size_t nrows = nx;
+            EigenMatrixType matrix(nrows, nrows);
 
-        	generator.genLaplacian(nx, matrix);
+            generator.genLaplacian(nx, matrix);
 
-        	EigenVectorType x(nrows);
+            EigenVectorType x(nrows);
 
-        	for (std::size_t i = 0; i < nrows; ++i)
-            		x(i) = i + 1;
+            for (std::size_t i = 0; i < nrows; ++i)
+                x(i) = i + 1;
 
-        	EigenVectorType y;
-        	{
-            		y = matrix * x;
-        	}
+            EigenVectorType y;
+            {
+                y = matrix * x;
+            }
 
-        	double normy = PPTP::norm2(y);
-        	std::cout << "||y|| = " << normy << std::endl;
-    	}
-	else{
-        //Baseline sequential implementation     
-	    DenseMatrix matrix;
-	    
-            if (vm.count("file")){
-            	std::string file = vm["file"].as<std::string>();
-            	generator.readFromFile(file, matrix);
-	    }
-	    else{
+            double normy = PPTP::norm2(y);
+            std::cout << "||y|| = " << normy << std::endl;
+        }
+        else
+        {
+            //Baseline sequential implementation
+            DenseMatrix matrix;
+
+            if (vm.count("file"))
+            {
+                std::string file = vm["file"].as<std::string>();
+                generator.readFromFile(file, matrix);
+            }
+            else
+            {
                 generator.genLaplacian<DenseMatrix>(nx, matrix);
-	    }
-	
+            }
+
             std::vector<double> x(nx);
             for (std::size_t i = 0; i < nx; i++)
-            	x[i] =  i+ 1;
+                x[i] = i + 1;
             std::vector<double> y(nx);
             {
                 matrix.mult(x, y);
             }
             double normy = PPTP::norm2(y);
-            std::cout  <<"||y|| = " << normy << std::endl;	
-	}
+            std::cout << "||y|| = " << normy << std::endl;
+        }
 
-    	
-	//------------------------------Parallel implementation---------------------------
-       
+        //------------------------------Parallel implementation---------------------------
+
         DenseMatrix matrix;
 
-	//Preparing matrix data
+        //Preparing matrix data
         if (vm.count("file"))
         {
             std::string file = vm["file"].as<std::string>();
@@ -129,16 +133,16 @@ int main(int argc, char **argv)
 
         int nrows = nx;
 
-	//preparing X vector
+        //preparing X vector
         std::vector<double> x(nrows);
         for (std::size_t i = 0; i < nrows; i++)
-            x[i] =  i+ 1;
-	
-	start = now();
-	int local_nrows;
-        int slaveLocalSize;
+            x[i] = i + 1;
 
-        int rest = nrows % nb_proc;
+        start = now();
+        std::size_t local_nrows;
+        std::size_t slaveLocalSize;
+
+        std::size_t rest = nrows % nb_proc;
 
         slaveLocalSize = nx / nb_proc;
         local_nrows = slaveLocalSize + rest;
@@ -147,27 +151,26 @@ int main(int argc, char **argv)
 
         {
             // SEND GLOBAL & LOCAL SIZES
-            MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	    MPI_Bcast(&slaveLocalSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	    
-	    // SEND X
-	    MPI_Ibcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD, &req);
+            MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+            MPI_Bcast(&slaveLocalSize, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+
+            // SEND X
+            MPI_Ibcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD, &req);
 
             // SEND LOCAL MATRICES
             for (int i = 1; i < nb_proc; ++i)
             {
-		double const *localDataPtr = dataVector.data() + local_nrows * nx + slaveLocalSize * nx * (i-1);
-                
+                double const *localDataPtr = dataVector.data() + local_nrows * nx + slaveLocalSize * nx * (i - 1);
+
                 MPI_Isend(localDataPtr, slaveLocalSize * nrows, MPI_DOUBLE, i, i * 3 + 1, MPI_COMM_WORLD, &req);
             }
-
         }
 
         // COMPUTE LOCAL MATRICE LOCAL VECTOR ON PROC 0
         // DenseMatrix local_matrix;
         std::vector<double> local_y(local_nrows);
-        
-	{
+
+        {
             // compute parallel SPMV
             double tempSum = 0;
             for (int row = 0; row < local_nrows; row++)
@@ -180,8 +183,8 @@ int main(int argc, char **argv)
                 local_y[row] = tempSum;
                 local_norm += tempSum * tempSum;
             }
-	
-        MPI_Wait(&req, MPI_STATUS_IGNORE);
+
+            MPI_Wait(&req, MPI_STATUS_IGNORE);
         }
     }
 
@@ -189,35 +192,34 @@ int main(int argc, char **argv)
     {
         MPI_Request req2;
         // DenseMatrix local_matrix;
-        int nrows;
-        int slaveLocalSize;
+        std::size_t nrows;
+        std::size_t slaveLocalSize;
 
         std::vector<double> local_vals; //= new std::vector<double>();
         std::vector<double> x;
 
         {
             // RECV GLOBAL SIZE
-            MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
+            MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
 
             // RECV LOCAL SIZE
-            MPI_Bcast(&slaveLocalSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
-            
+            MPI_Bcast(&slaveLocalSize, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+
             // BROAD CAST VECTOR X
             x.resize(nrows);
-	    MPI_Ibcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD, &req);
+            MPI_Ibcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD, &req);
 
-	    //RECV LOCAL MATRIX DATA
-	    local_vals.resize(slaveLocalSize * nrows);
-	    MPI_Irecv(local_vals.data(), slaveLocalSize * nrows, MPI_DOUBLE, 0, my_rank * 3 +1, MPI_COMM_WORLD, &req2);
-
+            //RECV LOCAL MATRIX DATA
+            local_vals.resize(slaveLocalSize * nrows);
+            MPI_Irecv(local_vals.data(), slaveLocalSize * nrows, MPI_DOUBLE, 0, my_rank * 3 + 1, MPI_COMM_WORLD, &req2);
         }
 
         std::vector<double> local_y;
         double tempSum = 0;
         MPI_Wait(&req, MPI_STATUS_IGNORE);
         MPI_Wait(&req2, MPI_STATUS_IGNORE);
-	local_y.resize(slaveLocalSize);
-	{
+        local_y.resize(slaveLocalSize);
+        {
             // compute parallel SPMV
 
             for (int row = 0; row < slaveLocalSize; row++)
@@ -233,21 +235,18 @@ int main(int argc, char **argv)
 
             //MPI_Send(local_y.data(), local_nrows, MPI_DOUBLE, 0, my_rank * 4 + 1, MPI_COMM_WORLD);
         }
-
     }
 
     MPI_Reduce(&local_norm, &norm, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (my_rank == 0)
     {
-	end = now();
+        end = now();
         std::cout << "Time =" << end - start << std::endl;
         std::cout << "Parallel ||y||=" << sqrt(norm) << std::endl;
     }
-	
+
     MPI_Finalize();
     return 0;
 }
-
