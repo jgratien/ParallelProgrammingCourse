@@ -25,6 +25,8 @@ namespace PPTP
 			int m_maxiter;
 			// vector holding all centroids
 			std::vector<uchar*> centroids;
+			// vector holding iteration-wise centroids
+			std::vector<uchar*> new_centroids;
 			// color sum of clusters
 			std::vector<double*> clst_colorsum;
 			// count of elements of clusters
@@ -40,13 +42,15 @@ namespace PPTP
 				, m_nb_centroid(nb_centroids)
 				, m_maxiter(max_iter)
 			{
-				clst_count.reserve(nb_centroids);
-				for(int i = 0; i < nb_centroids; i++) {
+				clst_count.assign(nb_centroids * nb_threads, 0);
+				for (int i = 0; i < nb_centroids; i++) {
 					centroids.push_back(new uchar[nb_channels]);
-					clst_colorsum.push_back(new double[nb_channels]);
-					clst_count[i] = 0;
+					new_centroids.push_back(new uchar[nb_channels]);
+					for (int j = 0; j < nb_threads; j++)
+						clst_colorsum.push_back(new double[nb_channels]);
 				}
 			}
+
 			virtual ~KMeanAlgo() {
 				delete[] clustered_img;
 				for (auto p: clst_colorsum) delete[] p;
@@ -70,14 +74,23 @@ namespace PPTP
 			}
 
 			void compute_centroids() {
-				double* colorsum;
+				double temp_count = 0;
+				double temp_sum[nb_channels] = { 0 };
 				for (int i = 0; i < m_nb_centroid; i++) {
-					colorsum = clst_colorsum[i];
-					for (int j = 0; j < nb_channels; j++) {
-						centroids[i][j] = (int)(colorsum[j]/clst_count[i]);
-						colorsum[j] = 0;
+					for (int th = 0; th < nb_threads; th++) {
+						temp_count += clst_count[th * m_nb_centroid + i];
+						clst_count[th * m_nb_centroid + i] = 0;
+						for (int ch = 0; ch < nb_channels; ch++) {
+							temp_sum[ch] += clst_colorsum[th * m_nb_centroid + i][ch];
+							clst_colorsum[th * m_nb_centroid + i][ch] = 0;
+						}
 					}
-					clst_count[i] = 0;
+					for (int ch = 0; ch < nb_channels; ch++) {
+						new_centroids[i][ch] =
+							(int)(temp_sum[ch] / temp_count);
+						temp_sum[ch] = 0;
+					}
+					temp_count = 0;
 				}
 			}
 
@@ -101,9 +114,8 @@ namespace PPTP
 				return nrst_indx;
 			}
 
-			bool segment(cv::Mat& image) {
+			void segment(cv::Mat& image) {
 				using namespace cv;
-				bool converged = true;
 				int cent_ind;
 				for(int i = 0; i < image.rows; i++)
 					for(int j = 0; j < image.cols; j++) {
@@ -114,12 +126,8 @@ namespace PPTP
 						else
 							for (int ch = 0; ch < nb_channels; ch++)
 								clst_colorsum[cent_ind][ch] += image.at<cv::Vec3b>(i, j)[ch];
-						if (clustered_img[i * image.cols + j] != cent_ind) {
-							clustered_img[i * image.cols + j] = cent_ind;
-							converged = false;
-						}
+						clustered_img[i * image.cols + j] = cent_ind;
 					}
-				return converged;
 			}
 
 			void map_segmentation(cv::Mat& image) {
@@ -138,48 +146,93 @@ namespace PPTP
 			void process(cv::Mat& image) {
 				bool converged = false;
 				int iter = 0;
-				while(!converged && iter < m_maxiter) {
-					iter++;
-					converged = true;
-					// computing centroids
-					if (iter == 1) init_centroids(image);
-					else           compute_centroids();
+				init_centroids(image);
+				while (!converged && iter < m_maxiter) {
 					// nearest centroids computing
-					converged = segment(image);
+					segment(image);
+
+					// computing centroids
+					compute_centroids();
+
+					// verify convergence by comparing
+					// old && new centroids
+					converged = true;
+					int cent = 0, ch;
+					while (converged && cent < m_nb_centroid) {
+						ch = 0;
+						while (converged && ch < nb_channels) {
+							converged = centroids[cent][ch] == new_centroids[cent][ch];
+							ch++;
+						}
+						cent++;
+					}
+					centroids.swap(new_centroids);
+					iter++;
 				}
 				// change pixels color
+				std::cout << "Finished in " << iter << " iterations" << std::endl;
 				map_segmentation(image);
 			}
 
 			void omp_process(cv::Mat& image) {
 				bool converged = false;
 				int iter = 0;
-				while(!converged && iter < m_maxiter) {
-					iter++;
-					converged = true;
-					// computing centroids
-					if (iter == 1) init_centroids(image);
-					else           compute_centroids();
+				init_centroids(image);
+				while (!converged && iter < m_maxiter) {
 					// nearest centroids computing
-					converged = segment(image);
+					segment(image);
+
+					// computing centroids
+					compute_centroids();
+
+					// verify convergence by comparing
+					// old && new centroids
+					converged = true;
+					int cent = 0, ch;
+					while (converged && cent < m_nb_centroid) {
+						ch = 0;
+						while (converged && ch < nb_channels) {
+							converged = centroids[cent][ch] == new_centroids[cent][ch];
+							ch++;
+						}
+						cent++;
+					}
+					centroids.swap(new_centroids);
+					iter++;
 				}
 				// change pixels color
+				std::cout << "Finished in " << iter << " iterations" << std::endl;
 				map_segmentation(image);
 			}
 
 			void tbb_process(cv::Mat& image) {
 				bool converged = false;
 				int iter = 0;
-				while(!converged && iter < m_maxiter) {
-					iter++;
-					converged = true;
-					// computing centroids
-					if (iter == 1) init_centroids(image);
-					else           compute_centroids();
+				init_centroids(image);
+				while (!converged && iter < m_maxiter) {
 					// nearest centroids computing
-					converged = segment(image);
+					segment(image);
+
+					// computing centroids
+					compute_centroids();
+
+					// verify convergence by comparing
+					// old && new centroids
+					converged = true;
+					int cent = 0, ch;
+					while (converged && cent < m_nb_centroid) {
+						ch = 0;
+						while (converged && ch < nb_channels) {
+							converged = centroids[cent][ch] == new_centroids[cent][ch];
+							ch++;
+						}
+						cent++;
+					}
+					centroids.swap(new_centroids);
+					iter++;
 				}
 				// change pixels color
+				std::cout << "Finished in " << iter << " iterations" << std::endl;
 				map_segmentation(image);
 			}
 	};

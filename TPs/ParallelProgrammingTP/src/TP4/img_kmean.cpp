@@ -36,7 +36,7 @@ int main( int argc, char** argv )
         ("file",value<std::string>()->default_value(std::string("")), "image file")
         ("mode",value<std::string>()->default_value(std::string("seq")), "Computing mode <seq|omp|tbb>")
         ("nb-threads",value<int>()->default_value(1), "Number of threads: Useful only for 'omp' and 'tbb' moodes")
-        ("kmean-value",value<int>()->default_value(0), "KMean k value")
+        ("k",value<int>()->default_value(2), "KMean k value")
         ("max-iter", value<int>()->default_value(10), "Kmean maximum iterations number");
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
@@ -74,13 +74,12 @@ int main( int argc, char** argv )
     cout<<"NCOLS       : "<<image.cols<<std::endl;
     const int channels = image.channels();
 
-    int nb_centroids = vm["kmean-value"].as<int>();
+    int nb_centroids = vm["k"].as<int>();
     int maxiter = vm["max-iter"].as<int>();
     PPTP::Timer timer;
 
     {   // Timer scope
         // Starting timer count
-        boost::to_upper(mode);
         PPTP::Timer::Sentry sentry(timer, "Kmeans_" + mode);
         PPTP::KMeanAlgo algo(channels, nb_centroids, maxiter, nb_threads);
         if (mode == "seq")      algo.process(image);
@@ -88,6 +87,7 @@ int main( int argc, char** argv )
         else                    algo.tbb_process(image);
     }// Stopping timer
 
+    boost::to_upper(mode);
     std::cout << "Writing image output" << std::endl;
     imwrite("./" + mode + "-out.jpg", image);
 
