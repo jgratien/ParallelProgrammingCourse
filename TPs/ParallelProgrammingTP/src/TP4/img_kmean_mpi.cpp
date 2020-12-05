@@ -143,6 +143,7 @@ int main( int argc, char** argv )
       const int nb_rows = image.rows;
       const int nb_cols = image.cols;
       const int maxiter = vm["max-iter"].as<int>();
+      int iter = 0;
       std::cout << "NB CHANNELS : " << nb_channels << std::endl;
       std::cout << "NROWS       : " << nb_rows << std::endl;
       std::cout << "NCOLS       : " << nb_cols << std::endl;
@@ -180,7 +181,6 @@ int main( int argc, char** argv )
         std::vector<uchar> centroids = init_centroids(img_mat, nb_rows, nb_cols,
                                                       nb_centroids, nb_channels);
         std::vector<uchar> new_centroids(nb_centroids * nb_channels);
-        int iter = 0;
         converged = false;
         double count_buff[nb_centroids];
         double color_buff[nb_centroids * nb_channels];
@@ -239,6 +239,7 @@ int main( int argc, char** argv )
                          img_mat.data());
       }// Stopping timer
 
+      std::cout << "Finished in " << iter << " iterations" << std::endl;
       std::cout << "Writing image output" << std::endl;
       cv::imwrite("./MPI-out.jpg", result);
       timer.printInfo();
