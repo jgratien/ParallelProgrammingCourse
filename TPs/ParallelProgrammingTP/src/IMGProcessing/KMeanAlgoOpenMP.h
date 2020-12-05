@@ -38,7 +38,7 @@ namespace PPTP
 		      while ( (iter<m_max_iter) && (epsilon>0.05) ) 
 		      {
 			std::cout << "iteration number: " << iter << std::endl;
-			#pragma omp parallel for collapse(2)
+			#pragma omp parallel for collapse(2) private (nearest_centroid_id) shared (pixel_segmentation) 
 			for(int i=0; i<image.rows; i++)
 			{
 			  for(int j=0; j<image.cols; j++)
@@ -86,23 +86,24 @@ namespace PPTP
 		void compute_segmentation(cv::Mat& image)
 		{
                       using namespace cv ;
+		      int centroid_id;
 		      switch(m_nb_channels)
 		      {
 		        case 1:
-			  #pragma omp parallel for collapse(2)
+			  #pragma omp parallel for collapse(2) private(centroid_id) shared(m_centroids, image)
 		          for(int i=1;i<image.rows-1;++i)
 		          {
 		            for(int j=1;j<image.cols-1;++j)
 		            {
 		              uchar pixel = image.at<uchar>(i,j);
-			      int centroid_id = nearest_centroid(pixel);
+			      centroid_id = nearest_centroid(pixel);
 			      image.at<uchar>(i,j) = m_centroids.at(centroid_id);
 		            }
 		          }
 		          break ;
 		        case 3:
 		          Mat_<Vec3b> _I = image;
-			  #pragma omp parallel for collapse(2)
+			  #pragma omp parallel for collapse(2) private(centroid_id) shared(m_centroids, image)
 		          for(int i=1;i<image.rows-1;++i)
 		          {
 		            for(int j=1;j<image.cols-1;++j)
@@ -110,7 +111,7 @@ namespace PPTP
 		                uchar red = _I(i,j)[0];
 				uchar green = _I(i,j)[1];
 				uchar blue = _I(i,j)[2];
-				int centroid_id = nearest_centroid(red, green, blue);
+				centroid_id = nearest_centroid(red, green, blue);
 		        	_I(i,j)[0] = m_centroids.at(3*centroid_id);
 				_I(i,j)[1] = m_centroids.at(3*centroid_id+1);
 				_I(i,j)[2] = m_centroids.at(3*centroid_id+2);
@@ -140,10 +141,10 @@ namespace PPTP
 		{
 		  using namespace cv;
 		  m_centroids.reserve(m_nb_centroids*m_nb_channels);
-		  #pragma omp parallel for
+		  uchar random_pixel;
+		  #pragma omp parallel for private (random_pixel)
 		  for(int i=0; i<m_nb_centroids; i++)
 		  {
-		    int random_pixel;
 	            switch(m_nb_channels)
 	            {		 
 		      case(1):
@@ -174,7 +175,6 @@ namespace PPTP
 		{
 		  std::vector<double> distances(m_nb_centroids, 0);
 		  double dist=0;
-		  #pragma omp parallel for
 		  for(int i=0; i<m_nb_centroids; i++)
 		  {
 		    switch(m_nb_channels)
@@ -206,7 +206,6 @@ namespace PPTP
 		void update_centroids(std::vector<int> pixel_segmentation, cv::Mat const& image)
 		{
 		  using namespace cv;
-		  #pragma omp parallel for
 		  for(int j=0; j<m_nb_centroids; j++)
 		  {
 		    double sum=0, sum_red=0, sum_green=0, sum_blue=0;
@@ -268,7 +267,7 @@ namespace PPTP
 		double compute_variance(std::vector<uchar> old_centroids)
 		{
                   double sum=0;
-		  #pragma omp parallel for 
+		  #pragma omp parallel for reduction(+:sum)
 		  for(int i=0; i<m_nb_centroids; i++)
 	          {
 		    switch(m_nb_channels)
