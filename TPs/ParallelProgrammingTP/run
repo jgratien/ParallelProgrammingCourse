@@ -15,9 +15,9 @@
 ### usage : oarsub -l core=32 -S ./job_exemple.sh
 
 ### indiquer votre executable
-MONPROG=/gext/rami.kader/hpcai/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
+MONPROG=/gext/rami.kader/hpcai/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_kmean.exe
 ### indiquer votre fichier de donnees
-MYDATA=
+MYDATA="/gext/rami.kader/hpcai/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/test/TP4/test_10k.jpg"
 
 
 ### en execution standand, rien a changer ci-apres
@@ -42,10 +42,7 @@ if [ -f $MONPROG ] ; then
   if [ -f $MYDATA ] ; then
   for np in 1 2 4 8 12 16 24
   do
-    for nx in 50 100 150 200
-    do
-    $MPIRUN -np ${np}  $MONPROG --nx $nx > logs/log-NX${nx}-NPI${np}
-    done
+    $MONPROG --file $MYDATA --k 3 --max-iter 50 --mode tbb --nb-threads ${np} > logs/kmeans-10K-logs/log-TBB-NP${np}
   done
   else
     echo "ERREUR : data $MYDATA inexistant !!"

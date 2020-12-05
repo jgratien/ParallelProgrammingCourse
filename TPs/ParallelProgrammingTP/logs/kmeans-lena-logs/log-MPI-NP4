@@ -1,0 +1,9 @@
+NB CHANNELS : 3
+NROWS       : 128
+NCOLS       : 128
+Finished in 17 iterations
+Writing image output
+================================
+PERF INFO : 
+Kmeans_MPI:0.0142505
+================================

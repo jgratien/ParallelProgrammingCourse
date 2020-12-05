@@ -1,0 +1,9 @@
+NB CHANNELS : 3
+NROWS       : 6500
+NCOLS       : 13000
+Finished in 9 iterations
+Writing image output
+================================
+PERF INFO : 
+Kmeans_tbb:8.59913
+================================
