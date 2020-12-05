@@ -149,8 +149,8 @@ src/TP3/clean: src/TP3/CMakeFiles/wave.exe.dir/clean
 
 # Recursive "all" directory target.
 src/TP4/all: src/TP4/CMakeFiles/img_kmean.exe.dir/all
+src/TP4/all: src/TP4/CMakeFiles/img_tbb.exe.dir/all
 src/TP4/all: src/TP4/CMakeFiles/img_mpi.exe.dir/all
-src/TP4/all: src/TP4/CMakeFiles/img2.exe.dir/all
 src/TP4/all: src/TP4/CMakeFiles/img_kmean_mpi.exe.dir/all
 src/TP4/all: src/TP4/CMakeFiles/img.exe.dir/all
 
@@ -163,8 +163,8 @@ src/TP4/preinstall:
 
 # Recursive "clean" directory target.
 src/TP4/clean: src/TP4/CMakeFiles/img_kmean.exe.dir/clean
+src/TP4/clean: src/TP4/CMakeFiles/img_tbb.exe.dir/clean
 src/TP4/clean: src/TP4/CMakeFiles/img_mpi.exe.dir/clean
-src/TP4/clean: src/TP4/CMakeFiles/img2.exe.dir/clean
 src/TP4/clean: src/TP4/CMakeFiles/img_kmean_mpi.exe.dir/clean
 src/TP4/clean: src/TP4/CMakeFiles/img.exe.dir/clean
 
@@ -447,7 +447,7 @@ src/TP3/CMakeFiles/wave.exe.dir/clean:
 src/TP4/CMakeFiles/img_kmean.exe.dir/all:
 	$(MAKE) -f src/TP4/CMakeFiles/img_kmean.exe.dir/build.make src/TP4/CMakeFiles/img_kmean.exe.dir/depend
 	$(MAKE) -f src/TP4/CMakeFiles/img_kmean.exe.dir/build.make src/TP4/CMakeFiles/img_kmean.exe.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles --progress-num=19,20 "Built target img_kmean.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles --progress-num=17,18 "Built target img_kmean.exe"
 .PHONY : src/TP4/CMakeFiles/img_kmean.exe.dir/all
 
 # Build rule for subdir invocation for target.
@@ -468,13 +468,40 @@ src/TP4/CMakeFiles/img_kmean.exe.dir/clean:
 .PHONY : src/TP4/CMakeFiles/img_kmean.exe.dir/clean
 
 #=============================================================================
+# Target rules for target src/TP4/CMakeFiles/img_tbb.exe.dir
+
+# All Build rule for target.
+src/TP4/CMakeFiles/img_tbb.exe.dir/all:
+	$(MAKE) -f src/TP4/CMakeFiles/img_tbb.exe.dir/build.make src/TP4/CMakeFiles/img_tbb.exe.dir/depend
+	$(MAKE) -f src/TP4/CMakeFiles/img_tbb.exe.dir/build.make src/TP4/CMakeFiles/img_tbb.exe.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles --progress-num=23,24 "Built target img_tbb.exe"
+.PHONY : src/TP4/CMakeFiles/img_tbb.exe.dir/all
+
+# Build rule for subdir invocation for target.
+src/TP4/CMakeFiles/img_tbb.exe.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 src/TP4/CMakeFiles/img_tbb.exe.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles 0
+.PHONY : src/TP4/CMakeFiles/img_tbb.exe.dir/rule
+
+# Convenience name for target.
+img_tbb.exe: src/TP4/CMakeFiles/img_tbb.exe.dir/rule
+
+.PHONY : img_tbb.exe
+
+# clean rule for target.
+src/TP4/CMakeFiles/img_tbb.exe.dir/clean:
+	$(MAKE) -f src/TP4/CMakeFiles/img_tbb.exe.dir/build.make src/TP4/CMakeFiles/img_tbb.exe.dir/clean
+.PHONY : src/TP4/CMakeFiles/img_tbb.exe.dir/clean
+
+#=============================================================================
 # Target rules for target src/TP4/CMakeFiles/img_mpi.exe.dir
 
 # All Build rule for target.
 src/TP4/CMakeFiles/img_mpi.exe.dir/all:
 	$(MAKE) -f src/TP4/CMakeFiles/img_mpi.exe.dir/build.make src/TP4/CMakeFiles/img_mpi.exe.dir/depend
 	$(MAKE) -f src/TP4/CMakeFiles/img_mpi.exe.dir/build.make src/TP4/CMakeFiles/img_mpi.exe.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles --progress-num=23,24 "Built target img_mpi.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles --progress-num=21,22 "Built target img_mpi.exe"
 .PHONY : src/TP4/CMakeFiles/img_mpi.exe.dir/all
 
 # Build rule for subdir invocation for target.
@@ -495,40 +522,13 @@ src/TP4/CMakeFiles/img_mpi.exe.dir/clean:
 .PHONY : src/TP4/CMakeFiles/img_mpi.exe.dir/clean
 
 #=============================================================================
-# Target rules for target src/TP4/CMakeFiles/img2.exe.dir
-
-# All Build rule for target.
-src/TP4/CMakeFiles/img2.exe.dir/all:
-	$(MAKE) -f src/TP4/CMakeFiles/img2.exe.dir/build.make src/TP4/CMakeFiles/img2.exe.dir/depend
-	$(MAKE) -f src/TP4/CMakeFiles/img2.exe.dir/build.make src/TP4/CMakeFiles/img2.exe.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles --progress-num=17,18 "Built target img2.exe"
-.PHONY : src/TP4/CMakeFiles/img2.exe.dir/all
-
-# Build rule for subdir invocation for target.
-src/TP4/CMakeFiles/img2.exe.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 src/TP4/CMakeFiles/img2.exe.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles 0
-.PHONY : src/TP4/CMakeFiles/img2.exe.dir/rule
-
-# Convenience name for target.
-img2.exe: src/TP4/CMakeFiles/img2.exe.dir/rule
-
-.PHONY : img2.exe
-
-# clean rule for target.
-src/TP4/CMakeFiles/img2.exe.dir/clean:
-	$(MAKE) -f src/TP4/CMakeFiles/img2.exe.dir/build.make src/TP4/CMakeFiles/img2.exe.dir/clean
-.PHONY : src/TP4/CMakeFiles/img2.exe.dir/clean
-
-#=============================================================================
 # Target rules for target src/TP4/CMakeFiles/img_kmean_mpi.exe.dir
 
 # All Build rule for target.
 src/TP4/CMakeFiles/img_kmean_mpi.exe.dir/all:
 	$(MAKE) -f src/TP4/CMakeFiles/img_kmean_mpi.exe.dir/build.make src/TP4/CMakeFiles/img_kmean_mpi.exe.dir/depend
 	$(MAKE) -f src/TP4/CMakeFiles/img_kmean_mpi.exe.dir/build.make src/TP4/CMakeFiles/img_kmean_mpi.exe.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles --progress-num=21,22 "Built target img_kmean_mpi.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles --progress-num=19,20 "Built target img_kmean_mpi.exe"
 .PHONY : src/TP4/CMakeFiles/img_kmean_mpi.exe.dir/all
 
 # Build rule for subdir invocation for target.

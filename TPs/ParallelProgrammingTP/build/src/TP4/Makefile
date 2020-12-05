@@ -172,6 +172,21 @@ img_kmean.exe/fast:
 .PHONY : img_kmean.exe/fast
 
 # Convenience name for target.
+src/TP4/CMakeFiles/img_tbb.exe.dir/rule:
+	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f CMakeFiles/Makefile2 src/TP4/CMakeFiles/img_tbb.exe.dir/rule
+.PHONY : src/TP4/CMakeFiles/img_tbb.exe.dir/rule
+
+# Convenience name for target.
+img_tbb.exe: src/TP4/CMakeFiles/img_tbb.exe.dir/rule
+
+.PHONY : img_tbb.exe
+
+# fast build rule for target.
+img_tbb.exe/fast:
+	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img_tbb.exe.dir/build.make src/TP4/CMakeFiles/img_tbb.exe.dir/build
+.PHONY : img_tbb.exe/fast
+
+# Convenience name for target.
 src/TP4/CMakeFiles/img_mpi.exe.dir/rule:
 	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f CMakeFiles/Makefile2 src/TP4/CMakeFiles/img_mpi.exe.dir/rule
 .PHONY : src/TP4/CMakeFiles/img_mpi.exe.dir/rule
@@ -185,21 +200,6 @@ img_mpi.exe: src/TP4/CMakeFiles/img_mpi.exe.dir/rule
 img_mpi.exe/fast:
 	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img_mpi.exe.dir/build.make src/TP4/CMakeFiles/img_mpi.exe.dir/build
 .PHONY : img_mpi.exe/fast
-
-# Convenience name for target.
-src/TP4/CMakeFiles/img2.exe.dir/rule:
-	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f CMakeFiles/Makefile2 src/TP4/CMakeFiles/img2.exe.dir/rule
-.PHONY : src/TP4/CMakeFiles/img2.exe.dir/rule
-
-# Convenience name for target.
-img2.exe: src/TP4/CMakeFiles/img2.exe.dir/rule
-
-.PHONY : img2.exe
-
-# fast build rule for target.
-img2.exe/fast:
-	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img2.exe.dir/build.make src/TP4/CMakeFiles/img2.exe.dir/build
-.PHONY : img2.exe/fast
 
 # Convenience name for target.
 src/TP4/CMakeFiles/img_kmean_mpi.exe.dir/rule:
@@ -257,33 +257,6 @@ img.s: img.cpp.s
 img.cpp.s:
 	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img.exe.dir/build.make src/TP4/CMakeFiles/img.exe.dir/img.cpp.s
 .PHONY : img.cpp.s
-
-img2.o: img2.cpp.o
-
-.PHONY : img2.o
-
-# target to build an object file
-img2.cpp.o:
-	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img2.exe.dir/build.make src/TP4/CMakeFiles/img2.exe.dir/img2.cpp.o
-.PHONY : img2.cpp.o
-
-img2.i: img2.cpp.i
-
-.PHONY : img2.i
-
-# target to preprocess a source file
-img2.cpp.i:
-	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img2.exe.dir/build.make src/TP4/CMakeFiles/img2.exe.dir/img2.cpp.i
-.PHONY : img2.cpp.i
-
-img2.s: img2.cpp.s
-
-.PHONY : img2.s
-
-# target to generate assembly for a file
-img2.cpp.s:
-	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img2.exe.dir/build.make src/TP4/CMakeFiles/img2.exe.dir/img2.cpp.s
-.PHONY : img2.cpp.s
 
 img_kmean.o: img_kmean.cpp.o
 
@@ -366,6 +339,33 @@ img_mpi.cpp.s:
 	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img_mpi.exe.dir/build.make src/TP4/CMakeFiles/img_mpi.exe.dir/img_mpi.cpp.s
 .PHONY : img_mpi.cpp.s
 
+img_tbb.o: img_tbb.cpp.o
+
+.PHONY : img_tbb.o
+
+# target to build an object file
+img_tbb.cpp.o:
+	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img_tbb.exe.dir/build.make src/TP4/CMakeFiles/img_tbb.exe.dir/img_tbb.cpp.o
+.PHONY : img_tbb.cpp.o
+
+img_tbb.i: img_tbb.cpp.i
+
+.PHONY : img_tbb.i
+
+# target to preprocess a source file
+img_tbb.cpp.i:
+	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img_tbb.exe.dir/build.make src/TP4/CMakeFiles/img_tbb.exe.dir/img_tbb.cpp.i
+.PHONY : img_tbb.cpp.i
+
+img_tbb.s: img_tbb.cpp.s
+
+.PHONY : img_tbb.s
+
+# target to generate assembly for a file
+img_tbb.cpp.s:
+	cd /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build && $(MAKE) -f src/TP4/CMakeFiles/img_tbb.exe.dir/build.make src/TP4/CMakeFiles/img_tbb.exe.dir/img_tbb.cpp.s
+.PHONY : img_tbb.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -374,9 +374,9 @@ help:
 	@echo "... depend"
 	@echo "... img_kmean.exe"
 	@echo "... edit_cache"
+	@echo "... img_tbb.exe"
 	@echo "... img_mpi.exe"
 	@echo "... install"
-	@echo "... img2.exe"
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... img_kmean_mpi.exe"
@@ -386,9 +386,6 @@ help:
 	@echo "... img.o"
 	@echo "... img.i"
 	@echo "... img.s"
-	@echo "... img2.o"
-	@echo "... img2.i"
-	@echo "... img2.s"
 	@echo "... img_kmean.o"
 	@echo "... img_kmean.i"
 	@echo "... img_kmean.s"
@@ -398,6 +395,9 @@ help:
 	@echo "... img_mpi.o"
 	@echo "... img_mpi.i"
 	@echo "... img_mpi.s"
+	@echo "... img_tbb.o"
+	@echo "... img_tbb.i"
+	@echo "... img_tbb.s"
 .PHONY : help
 
 

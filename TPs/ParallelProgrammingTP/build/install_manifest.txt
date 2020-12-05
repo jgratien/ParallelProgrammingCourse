@@ -9,7 +9,7 @@
 /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/lu.exe
 /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/wave.exe
 /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img.exe
-/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img2.exe
 /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_mpi.exe
 /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_kmean.exe
 /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_kmean_mpi.exe
+/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_tbb.exe

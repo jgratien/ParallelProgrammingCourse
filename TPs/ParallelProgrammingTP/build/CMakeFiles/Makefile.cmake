@@ -85,8 +85,8 @@ set(CMAKE_DEPEND_INFO_FILES
   "src/TP3/CMakeFiles/lu.exe.dir/DependInfo.cmake"
   "src/TP3/CMakeFiles/wave.exe.dir/DependInfo.cmake"
   "src/TP4/CMakeFiles/img_kmean.exe.dir/DependInfo.cmake"
+  "src/TP4/CMakeFiles/img_tbb.exe.dir/DependInfo.cmake"
   "src/TP4/CMakeFiles/img_mpi.exe.dir/DependInfo.cmake"
-  "src/TP4/CMakeFiles/img2.exe.dir/DependInfo.cmake"
   "src/TP4/CMakeFiles/img_kmean_mpi.exe.dir/DependInfo.cmake"
   "src/TP4/CMakeFiles/img.exe.dir/DependInfo.cmake"
   )

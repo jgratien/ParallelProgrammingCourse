@@ -19,13 +19,14 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen/LU>
-
+#include <chrono> 
 #include "MatrixVector/DenseMatrix.h"
 #include "MatrixVector/CSRMatrix.h"
 #include "MatrixVector/LinearAlgebra.h"
 #include "MatrixVector/MatrixGenerator.h"
 
 #include "Utils/Timer.h"
+using namespace std::chrono;
 
 int main(int argc, char** argv)
 {
@@ -73,7 +74,7 @@ int main(int argc, char** argv)
     EigenVectorType x(nrows) ;
 
     for(std::size_t i=0;i<nrows;++i)
-      x(i) = i+1 ;
+      x(i) = i+1 ;;
 
     EigenVectorType y ;
     {
@@ -89,6 +90,7 @@ int main(int argc, char** argv)
 
   if(my_rank==0)
   {
+    auto start = high_resolution_clock::now();
     
     DenseMatrix matrix ;
 
@@ -128,6 +130,8 @@ int main(int argc, char** argv)
       int nrows_local_proc_zero = nrows/nb_proc;
    
       if(r>0) nrows_local_proc_zero ++;
+
+      cout<<"\nProcessor ZERO is dealing with "<<nrows_local_proc_zero<<" rows"<<std::endl;
       begin += nrows_local_proc_zero;
       
 
@@ -180,7 +184,7 @@ int main(int argc, char** argv)
       // EXTRACT LOCAL DATA FROM MASTER PROC
       double s ;
       int beg = 0 ;
-      cout<<"\nresult computed by processor 0  ";
+      //cout<<"\nresult computed by processor 0  ";
       for(int i = 0; i<nrows_local_proc_zero; i++)
 	      
       {   
@@ -192,8 +196,9 @@ int main(int argc, char** argv)
 		  beg++;
 	  }
 
-            result.at(i) = s; cout<<result.at(i)<<" ";    }
-
+            result.at(i) = s; 
+	    //cout<<result.at(i)<<" ";    
+      }
       int begs =  nrows_local_proc_zero;
       MPI_Status status;
 
@@ -205,34 +210,41 @@ int main(int argc, char** argv)
 	    
 	    if (t<r) size_to_receive++;
 
-            std::vector<double> result_to_receive(size_to_receive, 0.0);
+            std::vector<double> result_to_receive(size_to_receive);
 
 	    
 	    MPI_Recv(&result_to_receive[0], size_to_receive, MPI_DOUBLE, t, 3000, MPI_COMM_WORLD, &status);
-	    cout<<"\nReceived result from processor "<<t<<" and the first element is "<<result_to_receive[0]<<"  "<<result_to_receive[1]<<"   "<<result_to_receive[2];
-	    cout<<"\nResult received from processor "<<t<<std::endl;
-	     for(int u=0; u<size_to_receive; u++)
+	    //cout<<"\nReceived result from processor "<<t<<" and the first element is "<<result_to_receive[0]<<"  "<<result_to_receive[1]<<"   "<<result_to_receive[2];
+	    //cout<<"\nResult received from processor "<<t<<std::endl;
+	    /* for(int u=0; u<size_to_receive; u++)
 	                 {
 			   result.at(begs+u) = result_to_receive.at(u);
-			  cout<<result_to_receive.at(u)<<" "; 
-			 }
+			  //cout<<result_to_receive.at(u)<<" "; 
+			 }*/
+
+	     std::copy(result_to_receive.begin(), result_to_receive.end(), result.begin()+begs);
 	     begs += size_to_receive;
 	   
 	   }
 
 
       // EXTRACT LOCAL MATRIX DATA
-      double norm = 0;
-      std::cout<<"\nResult of dense matrix vector multiplication is : ";
-      for (int z=0; z<nrows_int; z++) 
+      //double norm = 0;
+      //std::cout<<"\nResult of dense matrix vector multiplication is : ";
+      /*for (int z=0; z<nrows_int; z++) 
       {
         std::cout<<result.at(z)<<" ";
         norm += result.at(z)*result.at(z);
       
       }
       norm = sqrt(norm);
-      std::cout<<"\nNorm of the resulting vector = "<<norm<<std::endl;
+      std::cout<<"\nNorm of the resulting vector = "<<norm<<std::endl;*/
    
+       auto stop = high_resolution_clock::now(); 
+       auto duration2 = duration_cast<microseconds>(stop - start); 
+       cout <<"\n\nThe dense matrix vector multiplication took "<< duration2.count()<<" microseconds" << std::endl; 
+       
+ 
 
       }
   else
@@ -240,58 +252,44 @@ int main(int argc, char** argv)
     // COMPUTE LOÂii²CAL MATRICE LOCAL VECTOR
 
     DenseMatrix local_matrix ;
-    std::size_t nrows ;
-    std::size_t local_nrows ;
-    std::vector<double> local_vector;
-    
-
-    
-      // RECV DATA FROM MASTER PROC
+    int nrows = 0 ;
+    int local_nrows=0 ;      // RECV DATA FROM MASTER PROC
       
      // RECV Global Size
-      int nrows_to_receive = 0;
-      MPI_Bcast(&nrows_to_receive, 1, MPI_INT, 0, MPI_COMM_WORLD);
-      std::cout<<" receive Broadcasted "<<my_rank<<" value = "<<nrows_to_receive;
-      nrows = nrows_to_receive;
-       
-      
-
+      MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
+     
       // RECV LOCAL SIZE
-      int nrows_local_receive = 0;
+      
       MPI_Status status;
-      MPI_Recv(&nrows_local_receive, 1, MPI_INT, 0, 1000, MPI_COMM_WORLD, &status);
-      std::cout<<" receive local_rows "<<my_rank<<" value = "<<nrows_local_receive<<std::endl;
-      local_nrows = nrows_local_receive;
-      local_vector.resize(nrows_to_receive*nrows_local_receive);
+      MPI_Recv(&local_nrows, 1, MPI_INT, 0, 1000, MPI_COMM_WORLD, &status);
+      
+      
+      std::vector<double> local_vector(nrows*local_nrows);
       //RECV MATRIX DATA
-      //std::vector<double> local_values (nrows_local_receive*nrows_to_receive);
-      MPI_Recv(local_vector.data(), nrows_local_receive*nrows_to_receive, MPI_DOUBLE, 0, 2000, MPI_COMM_WORLD, &status);
-      cout<<"\nlocal vector of processor "<<my_rank<<" starts with "<<local_vector[0]<<std::endl;      
+      MPI_Recv(local_vector.data(), nrows*local_nrows, MPI_DOUBLE, 0, 2000, MPI_COMM_WORLD, &status);
 
     
     
     
      // BROAD CAST VECTOR X
-      //o* ... */
       std::vector<double> x_to_receive(nrows);
       x_to_receive.resize(nrows);
       MPI_Bcast(x_to_receive.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
         
-      int beg = 0 ;
-      double s;
+     
+      
       std::vector<double> result_to_send(local_nrows, 0.0);
       
       for(int i = 0; i<local_nrows; i++)
       {   
-	      s = 0 ;
+	     double s = 0 ;
 	      for(int j=0; j<nrows; j++)
 	  {
-		  double* ptr0 = local_vector.data() + beg;
-		  s += (*ptr0)*x_to_receive.at(j);
+		 
+		  s += local_vector[i*nrows+j] * x_to_receive.at(j);
 	  }
 
          result_to_send.at(i) = s;
-         //cout<<"\nresult from processor "<<my_rank<<" is  "<<s<<std::endl; 
     }
 
       MPI_Send(&result_to_send[0], local_nrows, MPI_DOUBLE, 0, 3000, MPI_COMM_WORLD);

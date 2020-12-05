@@ -300,6 +300,19 @@ img_kmean.exe/fast:
 .PHONY : img_kmean.exe/fast
 
 #=============================================================================
+# Target rules for targets named img_tbb.exe
+
+# Build rule for target.
+img_tbb.exe: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 img_tbb.exe
+.PHONY : img_tbb.exe
+
+# fast build rule for target.
+img_tbb.exe/fast:
+	$(MAKE) -f src/TP4/CMakeFiles/img_tbb.exe.dir/build.make src/TP4/CMakeFiles/img_tbb.exe.dir/build
+.PHONY : img_tbb.exe/fast
+
+#=============================================================================
 # Target rules for targets named img_mpi.exe
 
 # Build rule for target.
@@ -311,19 +324,6 @@ img_mpi.exe: cmake_check_build_system
 img_mpi.exe/fast:
 	$(MAKE) -f src/TP4/CMakeFiles/img_mpi.exe.dir/build.make src/TP4/CMakeFiles/img_mpi.exe.dir/build
 .PHONY : img_mpi.exe/fast
-
-#=============================================================================
-# Target rules for targets named img2.exe
-
-# Build rule for target.
-img2.exe: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 img2.exe
-.PHONY : img2.exe
-
-# fast build rule for target.
-img2.exe/fast:
-	$(MAKE) -f src/TP4/CMakeFiles/img2.exe.dir/build.make src/TP4/CMakeFiles/img2.exe.dir/build
-.PHONY : img2.exe/fast
 
 #=============================================================================
 # Target rules for targets named img_kmean_mpi.exe
@@ -374,8 +374,8 @@ help:
 	@echo "... lu.exe"
 	@echo "... wave.exe"
 	@echo "... img_kmean.exe"
+	@echo "... img_tbb.exe"
 	@echo "... img_mpi.exe"
-	@echo "... img2.exe"
 	@echo "... img_kmean_mpi.exe"
 	@echo "... img.exe"
 .PHONY : help

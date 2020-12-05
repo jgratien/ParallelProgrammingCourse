@@ -5,95 +5,110 @@
  *      Author: gratienj
  */
 
-//#ifndef SRC_IMGPROCESSING_KMEANALGO_H_
-//#define SRC_IMGPROCESSING_KMEANALGO_H_
+#ifndef SRC_IMGPROCESSING_KMEANALGO_H_
+#define SRC_IMGPROCESSING_KMEANALGO_H_
+#include <cmath>
+#include <cstdint>
+#define MAX_UCHAR 255
+#include <iostream>
+#include <time.h>
+#include <omp.h>
+#include <chrono>
+#include <ctime>
+#include <limits>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <iostream>
+#include <random>
+#include <algorithm>
+using namespace std;
+using namespace chrono;
+using namespace cv;
 
-/*namespace PPTP
+namespace PPTP
 {
 
 	class KMeanAlgo
 	{
-	public:
+
+       private:
+	       int nbchannels = 3;
+	       int nbcentroids = 1;
+	       //std::vector<uchar> centroids;
+
+       public:
 		KMeanAlgo(int nb_channels, int nb_centroids)
-	        : nb_channels(nb_channels)
-		, m_nb_centroid(nb_centroids)
-	    {}
+	        : nbchannels(nb_channels)
+		, nbcentroids(nb_centroids)
+		{
+		  //centroids.reserve(nb_channels*nb_centroids);
+		}
+		
+		
 		virtual ~KMeanAlgo() {}
 
-		void compute_centroids(cv::Mat const& image)
-		{
+		int nearest_centroid(std::vector<uchar>& pix, std::vector<double>& cent, int index)
+		    {
 			using namespace cv ;
-			m_centroids.resize(m_nb_centroids*m_nb_channels);
 
+		      int z=0;
+		      double sum=0;
+		      double r = fabs((double)pix[index] - cent[0]);
+		      double g = fabs((double)pix[index+1] - cent[1]);
+		      double b = fabs((double)pix[index+2] - cent[2]);
+		      double min = r*r + g*g + b*b;
 
-			//INIT INITIAL CENTROID
+		      for(int t=1; t<this->nbcentroids;t++)
+		      {
+		      r = fabs((double)pix[index] - cent[3*t]);
+		      g = fabs((double)pix[index+1] - cent[3*t+1]);
+		      b = fabs((double)pix[index+2] - cent[3*t+2]);
+		      sum = r*r + g*g + b*b;
+
+                               if (sum<min)
+			       {
+			         min = sum; z = t;}
+		       }
+		    
+		        return z;	
+	         }
+
 		
-
-
-			//COMPUTE NEAREST CENTROID
-			for(int i=0; i<image.nrows; i++)
-
-			{
-			   for(int j=1;j<image.cols-1;j++)
-			   {
-			   
-			     uchar pixel = image.at<uchar>(i,j) ;
-			     
-			     // CALCULATE NEAREST CENTROID
-
-
-			   
-			   
-			   
-			   
-			    }
-			
-			
-	
-
-
-		}
-
-		void compute_segmentation(cv::Mat& image)
+		
+		double compute_displacement(std::vector<double>& new_centroids, std::vector<double>& centroids)
 		{
-                      using namespace cv ;
+                      /*using namespace cv ;
 		      switch(nb_channels)
 		      {
 		        case 1:
-		          for(std::size_t i=1;i<image.rows-1;++i)
-		          {
-		            for(int j=1;j<image.cols-1;++j)
-		            {
-		              uchar pixel = image.at<uchar>(i,j) ;
-		            }
-		          }
 		          break ;
 		        case 3:
-		          Mat_<Vec3b> _I = image;
-		          for(std::size_t i=1;i<image.rows-1;++i)
-		          {
-		            for(int j=1;j<image.cols-1;++j)
-		            {
-		              for(int k=0;k<3;++k)
-		              {
-		                uchar pixel = _I(i,j)[k] ;
-		              }
-		            }
-		          }
 		          break ;
-		      }
+		      }*/
+			double rc = (new_centroids[0] - centroids[0]);
+                	double gc = (new_centroids[1] - centroids[1]);
+                   	double bc = (new_centroids[2] - centroids[2]);
+			double disp = rc*rc + gc*gc + bc*bc;
+			for(int i=1; i<this->nbcentroids;i++)
+			    {
+			   	rc = (new_centroids[3*i] - centroids[3*i]);
+                	        gc = (new_centroids[3*i+1] - centroids[3*i+1]);
+                   	        bc = (new_centroids[3*i+2] - centroids[3*i+2]);
+				double max = rc*rc + gc*gc + bc*bc;
+				if (max>disp) disp=max;
+			     }
+                        //disp = sqrt(disp);
+                        return disp;
+
 		}
 
-		void process(cv::Mat& image)
+		/*void process(cv::Mat& image)
 		{
-			compute_centroids(image) ;
-			compute_segmentation(image) ;
-		}
+			//compute_centroids(image) ;
+			//compute_segmentation(image) ;
+		}*/
 
-	private :
-	    int m_nb_channels = 3 ;
-		int m_nb_centroid = 0 ;
-		std::vector<uchar> m_centroids ;
 	};
 }
 

@@ -66,34 +66,6 @@ file(INSTALL DESTINATION "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  if(EXISTS "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img2.exe" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img2.exe")
-    file(RPATH_CHECK
-         FILE "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img2.exe"
-         RPATH "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-1.10.7/gcc-7.3.0/lib:/gext/jean-marc.gratien/ModuleHPC2020/local/opencv/lib64")
-  endif()
-  list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img2.exe")
-  if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
-    message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
-  endif()
-  if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
-    message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
-  endif()
-file(INSTALL DESTINATION "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin" TYPE EXECUTABLE FILES "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP4/img2.exe")
-  if(EXISTS "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img2.exe" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img2.exe")
-    file(RPATH_CHANGE
-         FILE "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img2.exe"
-         OLD_RPATH "/softs/mpi/openmpi-1.10.7/gcc-7.3.0/lib:/gext/jean-marc.gratien/ModuleHPC2020/local/opencv/lib64:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
-         NEW_RPATH "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-1.10.7/gcc-7.3.0/lib:/gext/jean-marc.gratien/ModuleHPC2020/local/opencv/lib64")
-    if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/softs/binutils/2.32/bin/strip" "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img2.exe")
-    endif()
-  endif()
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   if(EXISTS "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_mpi.exe" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_mpi.exe")
     file(RPATH_CHECK
@@ -173,6 +145,34 @@ file(INSTALL DESTINATION "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs
          NEW_RPATH "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-1.10.7/gcc-7.3.0/lib:/gext/jean-marc.gratien/ModuleHPC2020/local/opencv/lib64")
     if(CMAKE_INSTALL_DO_STRIP)
       execute_process(COMMAND "/softs/binutils/2.32/bin/strip" "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_kmean_mpi.exe")
+    endif()
+  endif()
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  if(EXISTS "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_tbb.exe" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_tbb.exe")
+    file(RPATH_CHECK
+         FILE "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_tbb.exe"
+         RPATH "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-1.10.7/gcc-7.3.0/lib:/gext/jean-marc.gratien/ModuleHPC2020/local/opencv/lib64")
+  endif()
+  list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
+   "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_tbb.exe")
+  if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  endif()
+  if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  endif()
+file(INSTALL DESTINATION "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin" TYPE EXECUTABLE FILES "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP4/img_tbb.exe")
+  if(EXISTS "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_tbb.exe" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_tbb.exe")
+    file(RPATH_CHANGE
+         FILE "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_tbb.exe"
+         OLD_RPATH "/softs/mpi/openmpi-1.10.7/gcc-7.3.0/lib:/gext/jean-marc.gratien/ModuleHPC2020/local/opencv/lib64:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+         NEW_RPATH "/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-1.10.7/gcc-7.3.0/lib:/gext/jean-marc.gratien/ModuleHPC2020/local/opencv/lib64")
+    if(CMAKE_INSTALL_DO_STRIP)
+      execute_process(COMMAND "/softs/binutils/2.32/bin/strip" "$ENV{DESTDIR}/gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/img_tbb.exe")
     endif()
   endif()
 endif()
