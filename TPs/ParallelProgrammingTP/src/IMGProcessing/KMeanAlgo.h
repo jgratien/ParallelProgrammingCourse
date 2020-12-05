@@ -44,12 +44,20 @@ namespace PPTP
 				, m_nb_centroid(nb_centroids)
 				, m_maxiter(max_iter)
 			{
-				clst_count.assign(nb_centroids * nb_threads, 0);
+				// For OMP we try to get rid
+				// of every concurrent access
+				// by multiplying data structures
+				clst_count.assign(
+					(mode == "omp") ?
+					nb_centroids * nb_threads
+					: nb_centroids, 0);
 				for (int i = 0; i < nb_centroids; i++) {
 					centroids.push_back(new uchar[nb_channels]);
 					new_centroids.push_back(new uchar[nb_channels]);
-					for (int j = 0; j < nb_threads; j++)
-						clst_colorsum.push_back(new double[nb_channels]);
+					clst_colorsum.push_back(new double[nb_channels]);
+					if (mode == "omp")
+						for (int j = 1; j < nb_threads; j++)
+							clst_colorsum.push_back(new double[nb_channels]);
 				}
 			}
 
@@ -86,6 +94,10 @@ namespace PPTP
 							temp_sum[ch] += clst_colorsum[th * m_nb_centroid + i][ch];
 							clst_colorsum[th * m_nb_centroid + i][ch] = 0;
 						}
+						// For TBB mode we only allocated
+						// one array per centroid as we're
+						// using TBB reductions
+						if (mode == "tbb") break;
 					}
 					for (int ch = 0; ch < nb_channels; ch++) {
 						new_centroids[i][ch] =
@@ -118,40 +130,109 @@ namespace PPTP
 
 			void segment(cv::Mat& image) {
 				using namespace cv;
+				int th = 0;
 				int openmp_active = mode == "omp";
-				#pragma omp parallel for collapse(2) if (openmp_active)
-				for(int i = 0; i < image.rows; i++)
-					for(int j = 0; j < image.cols; j++) {
-						// get thread id if on parallel mode
-						int th = 0;
-						if (mode == "omp") th = omp_get_thread_num();
+				if (mode == "tbb") {
+					// In TBB we try splitting the
+					// one-loop segmentation task into
+					// 2 loops to take advantage of the
+					// TBB parallel reduction operator
+					// without dealing with concurrency
 
-						int cent_ind = nrst_centroid_index(image, i, j);
-						clst_count[th * m_nb_centroid + cent_ind] += 1;
-						if (nb_channels == 1)
-							clst_colorsum[th * m_nb_centroid + cent_ind][0] +=
-								image.at<uchar>(i, j);
-						else
-							for (int ch = 0; ch < nb_channels; ch++)
-								clst_colorsum[th * m_nb_centroid + cent_ind][ch] +=
-									image.at<cv::Vec3b>(i, j)[ch];
-						clustered_img[i * image.cols + j] = cent_ind;
-					}
+					// Getting centroid of each pixel
+					tbb::parallel_for(0, image.rows,
+						[&](int i)
+						{
+							tbb::parallel_for(0, image.cols,
+								[&](int j)
+								{
+									clustered_img[i * image.cols + j] =
+										nrst_centroid_index(image, i, j);
+								});
+						});
+
+					// Reducing into clusters channel-wise
+					// colors sum & elements count
+					tbb::parallel_for(0, m_nb_centroid,
+						[&](int cent){
+							clst_count[cent] = tbb::parallel_reduce(
+								tbb::blocked_range<int>(0, image.rows * image.cols),
+								0.0,
+								[&](tbb::blocked_range<int> rng, double total){
+									for (int i = rng.begin(); i < rng.end(); i++)
+										total += ((clustered_img[i] == cent) ? 1 : 0);
+									return total;
+								}, std::plus<double>());
+							tbb::parallel_for(0, nb_channels,
+											  [&](int ch){
+												  clst_colorsum[cent][ch] = tbb::parallel_reduce(
+													  tbb::blocked_range<int>(0, image.rows * image.cols),
+													  0.0,
+													  [&](tbb::blocked_range<int> rng, double total){
+														  for (int i = rng.begin(); i < rng.end(); i++)
+															  if (clustered_img[i] == cent) {
+																  if (nb_channels == 1)
+																	  total += image.at<uchar>(
+																		  i / image.cols, i % image.cols);
+																  else
+																	  total += image.at<Vec3b>(
+																		  i / image.cols, i % image.cols)[ch];
+															  }
+														  return total;
+													  }, std::plus<double>());
+											  });
+						});
+				} else {
+					#pragma omp parallel for collapse(2) firstprivate(th) if(openmp_active)
+					for(int i = 0; i < image.rows; i++)
+						for(int j = 0; j < image.cols; j++) {
+							// get thread id if on parallel mode
+							if (mode == "omp") th = omp_get_thread_num();
+
+							int cent_ind = nrst_centroid_index(image, i, j);
+							clst_count[th * m_nb_centroid + cent_ind] += 1;
+							if (nb_channels == 1)
+								clst_colorsum[th * m_nb_centroid + cent_ind][0] +=
+									image.at<uchar>(i, j);
+							else
+								for (int ch = 0; ch < nb_channels; ch++)
+									clst_colorsum[th * m_nb_centroid + cent_ind][ch] +=
+										image.at<cv::Vec3b>(i, j)[ch];
+							clustered_img[i * image.cols + j] = cent_ind;
+						}
+				}
 			}
 
 			void map_segmentation(cv::Mat& image) {
 				using namespace cv ;
 				int openmp_active = mode == "omp";
-				#pragma omp parallel for collapse(2) if (openmp_active)
-				for(int i = 0; i < image.rows; i++)
-					for(int j = 0; j < image.cols; j++)
-						if (nb_channels == 1)
-							image.at<uchar>(i,j) =
-								centroids[clustered_img[i * image.cols + j]][0];
-						else
-							for(int k = 0; k < nb_channels; k++)
-								image.at<Vec3b>(i,j)[k] =
-									centroids[clustered_img[i * image.cols + j]][k];
+				if (mode == "tbb")
+					tbb::parallel_for(0, image.rows,
+						[&](int i)
+						{
+							tbb::parallel_for(0, image.cols,
+								[&](int j)
+								{
+									if (nb_channels == 1)
+										image.at<uchar>(i,j) =
+											centroids[clustered_img[i * image.cols + j]][0];
+									else
+										for(int k = 0; k < nb_channels; k++)
+											image.at<Vec3b>(i,j)[k] =
+												centroids[clustered_img[i * image.cols + j]][k];
+								});
+						});
+				else
+					#pragma omp parallel for collapse(2) if(openmp_active)
+					for(int i = 0; i < image.rows; i++)
+						for(int j = 0; j < image.cols; j++)
+							if (nb_channels == 1)
+								image.at<uchar>(i,j) =
+									centroids[clustered_img[i * image.cols + j]][0];
+							else
+								for(int k = 0; k < nb_channels; k++)
+									image.at<Vec3b>(i,j)[k] =
+										centroids[clustered_img[i * image.cols + j]][k];
 			}
 
 			void process(cv::Mat& image) {
