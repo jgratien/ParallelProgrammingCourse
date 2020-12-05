@@ -164,23 +164,23 @@ namespace PPTP
 									return total;
 								}, std::plus<double>());
 							tbb::parallel_for(0, nb_channels,
-											  [&](int ch){
-												  clst_colorsum[cent][ch] = tbb::parallel_reduce(
-													  tbb::blocked_range<int>(0, image.rows * image.cols),
-													  0.0,
-													  [&](tbb::blocked_range<int> rng, double total){
-														  for (int i = rng.begin(); i < rng.end(); i++)
-															  if (clustered_img[i] == cent) {
-																  if (nb_channels == 1)
-																	  total += image.at<uchar>(
-																		  i / image.cols, i % image.cols);
-																  else
-																	  total += image.at<Vec3b>(
-																		  i / image.cols, i % image.cols)[ch];
-															  }
-														  return total;
-													  }, std::plus<double>());
-											  });
+								[&](int ch){
+									clst_colorsum[cent][ch] = tbb::parallel_reduce(
+										tbb::blocked_range<int>(0, image.rows * image.cols),
+										0.0,
+										[&](tbb::blocked_range<int> rng, double total){
+											for (int i = rng.begin(); i < rng.end(); i++)
+												if (clustered_img[i] == cent) {
+													if (nb_channels == 1)
+														total += image.at<uchar>(
+															i / image.cols, i % image.cols);
+													else
+														total += image.at<Vec3b>(
+															i / image.cols, i % image.cols)[ch];
+												}
+											return total;
+										}, std::plus<double>());
+								});
 						});
 				} else {
 					#pragma omp parallel for collapse(2) firstprivate(th) if(openmp_active)
