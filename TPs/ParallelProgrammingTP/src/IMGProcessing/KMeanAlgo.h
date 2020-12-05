@@ -20,6 +20,7 @@ namespace PPTP
 	{
 		private :
 			int nb_channels;
+			std::string mode;
 			int nb_threads;
 			int m_nb_centroid;
 			int m_maxiter;
@@ -35,9 +36,10 @@ namespace PPTP
 			uchar* clustered_img;
 
 		public:
-			KMeanAlgo(int nb_channels, int nb_centroids,
-					  int max_iter, int nb_threads)
+			KMeanAlgo(int nb_channels, int nb_centroids, int max_iter,
+					  std::string mode, int nb_threads)
 				: nb_channels(nb_channels)
+				, mode(mode)
 				, nb_threads(nb_threads)
 				, m_nb_centroid(nb_centroids)
 				, m_maxiter(max_iter)
@@ -116,22 +118,31 @@ namespace PPTP
 
 			void segment(cv::Mat& image) {
 				using namespace cv;
-				int cent_ind;
+				int openmp_active = mode == "omp";
+				#pragma omp parallel for collapse(2) if (openmp_active)
 				for(int i = 0; i < image.rows; i++)
 					for(int j = 0; j < image.cols; j++) {
-						cent_ind = nrst_centroid_index(image, i, j);
-						clst_count[cent_ind] += 1;
+						// get thread id if on parallel mode
+						int th = 0;
+						if (mode == "omp") th = omp_get_thread_num();
+
+						int cent_ind = nrst_centroid_index(image, i, j);
+						clst_count[th * m_nb_centroid + cent_ind] += 1;
 						if (nb_channels == 1)
-							clst_colorsum[cent_ind][0] += image.at<uchar>(i, j);
+							clst_colorsum[th * m_nb_centroid + cent_ind][0] +=
+								image.at<uchar>(i, j);
 						else
 							for (int ch = 0; ch < nb_channels; ch++)
-								clst_colorsum[cent_ind][ch] += image.at<cv::Vec3b>(i, j)[ch];
+								clst_colorsum[th * m_nb_centroid + cent_ind][ch] +=
+									image.at<cv::Vec3b>(i, j)[ch];
 						clustered_img[i * image.cols + j] = cent_ind;
 					}
 			}
 
 			void map_segmentation(cv::Mat& image) {
 				using namespace cv ;
+				int openmp_active = mode == "omp";
+				#pragma omp parallel for collapse(2) if (openmp_active)
 				for(int i = 0; i < image.rows; i++)
 					for(int j = 0; j < image.cols; j++)
 						if (nb_channels == 1)
@@ -144,68 +155,6 @@ namespace PPTP
 			}
 
 			void process(cv::Mat& image) {
-				bool converged = false;
-				int iter = 0;
-				init_centroids(image);
-				while (!converged && iter < m_maxiter) {
-					// nearest centroids computing
-					segment(image);
-
-					// computing centroids
-					compute_centroids();
-
-					// verify convergence by comparing
-					// old && new centroids
-					converged = true;
-					int cent = 0, ch;
-					while (converged && cent < m_nb_centroid) {
-						ch = 0;
-						while (converged && ch < nb_channels) {
-							converged = centroids[cent][ch] == new_centroids[cent][ch];
-							ch++;
-						}
-						cent++;
-					}
-					centroids.swap(new_centroids);
-					iter++;
-				}
-				// change pixels color
-				std::cout << "Finished in " << iter << " iterations" << std::endl;
-				map_segmentation(image);
-			}
-
-			void omp_process(cv::Mat& image) {
-				bool converged = false;
-				int iter = 0;
-				init_centroids(image);
-				while (!converged && iter < m_maxiter) {
-					// nearest centroids computing
-					segment(image);
-
-					// computing centroids
-					compute_centroids();
-
-					// verify convergence by comparing
-					// old && new centroids
-					converged = true;
-					int cent = 0, ch;
-					while (converged && cent < m_nb_centroid) {
-						ch = 0;
-						while (converged && ch < nb_channels) {
-							converged = centroids[cent][ch] == new_centroids[cent][ch];
-							ch++;
-						}
-						cent++;
-					}
-					centroids.swap(new_centroids);
-					iter++;
-				}
-				// change pixels color
-				std::cout << "Finished in " << iter << " iterations" << std::endl;
-				map_segmentation(image);
-			}
-
-			void tbb_process(cv::Mat& image) {
 				bool converged = false;
 				int iter = 0;
 				init_centroids(image);

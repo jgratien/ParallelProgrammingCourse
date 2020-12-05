@@ -66,8 +66,8 @@ int main( int argc, char** argv )
 
     // Setup threads number
     int nb_threads = vm["nb-threads"].as<int>();
-    omp_set_num_threads(nb_threads);
-    tbb::task_scheduler_init init(nb_threads);
+    if (mode == "omp")      omp_set_num_threads(nb_threads);
+    else if (mode == "tbb") tbb::task_scheduler_init init(nb_threads);
 
     cout<<"NB CHANNELS : "<<image.channels()<<std::endl;
     cout<<"NROWS       : "<<image.rows<<std::endl;
@@ -81,10 +81,9 @@ int main( int argc, char** argv )
     {   // Timer scope
         // Starting timer count
         PPTP::Timer::Sentry sentry(timer, "Kmeans_" + mode);
-        PPTP::KMeanAlgo algo(channels, nb_centroids, maxiter, nb_threads);
-        if (mode == "seq")      algo.process(image);
-        else if (mode == "omp") algo.omp_process(image);
-        else                    algo.tbb_process(image);
+        PPTP::KMeanAlgo algo(channels, nb_centroids, maxiter,
+                             mode, nb_threads);
+        algo.process(image);
     }// Stopping timer
 
     boost::to_upper(mode);
