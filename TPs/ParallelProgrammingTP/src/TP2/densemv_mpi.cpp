@@ -111,8 +111,6 @@ int main(int argc, char** argv)
       x[i] = i+1 ;
 
     {
-	
-      //Timer::Sentry sentry(timer,"DenseMV_PARALLEL") ;
 
       // SEND GLOBAL SIZE
       int nrows_to_send = nrows;
@@ -133,7 +131,6 @@ int main(int argc, char** argv)
 
       for (int i=1; i<nb_proc;++i)
       {
-        //std::cout<<" SEND MATRIX DATA to proc "<<i<<std::endl ;
 
         // SEND LOCAL SIZE to PROC I
 	int nrows_local = nrows/nb_proc;
@@ -154,7 +151,6 @@ int main(int argc, char** argv)
       int vector_size = nrows;
       double *ptr_vec = x.data();
       MPI_Bcast(ptr_vec, vector_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-      //std::cout << "vector size to send = " << vector_size << std::endl;
      
 
       double total_sum=0;
@@ -165,8 +161,7 @@ int main(int argc, char** argv)
       // COMPUTE LOCAL MULT OF PROC 0
       std::vector<double> local_y(nrows_local_proc_zero);
       {
-        //Timer::Sentry sentry(timer,"DenseMV_PROC0") ;
-	//std::cout << "start mult 0" << std::endl;
+	
 	for(int i=0; i<nrows_local_proc_zero; i++)
 	{
 	  double sum=0;
@@ -185,7 +180,6 @@ int main(int argc, char** argv)
       MPI_Status status;
       for(int i=1; i<nb_proc; i++)
       {
-        //std::vector<double> local_y_to_receive;
         
 	int nrows_local = nrows/nb_proc;
 	int r = nrows%nb_proc;
@@ -195,7 +189,6 @@ int main(int argc, char** argv)
 	std::vector<double> local_y_to_receive(nrows_local);
 
 	MPI_Recv(local_y_to_receive.data(), nrows_local, MPI_DOUBLE, i, 3000, MPI_COMM_WORLD, &status);
-	//std::cout << "local y received from proc " << i << " size " << local_y_to_receive.size() << std::endl;
 
 	for(int k=0; k<local_y_to_receive.size(); k++)
 	{
@@ -208,7 +201,7 @@ int main(int argc, char** argv)
       double norm = std::sqrt(total_sum);
       std::cout << "||y_parallel||=" << norm << std::endl;
     }
-
+   
 
      {
       std::vector<double> y(nrows);
@@ -218,7 +211,7 @@ int main(int argc, char** argv)
       }
       double normy = PPTP::norm2(y) ;
       std::cout<<"||y||="<<normy<<std::endl ;
-    } 
+     } 
 
     timer.printInfo() ;
 
@@ -238,20 +231,20 @@ int main(int argc, char** argv)
       // RECV GLOBAL SIZE
       int nrows_to_receive;
       MPI_Bcast(&nrows_to_receive, 1, MPI_INT, 0, MPI_COMM_WORLD);
-      //std::cout<<" receive Bcast "<<my_rank<< " value = " << nrows_to_receive<< std::endl;
+      
 
       // RECV LOCAL SIZE
       int nrows_local_to_receive;
       MPI_Status status;
       MPI_Recv(&nrows_local_to_receive, 1, MPI_INT, 0, 1000, MPI_COMM_WORLD, &status);
-      //std::cout<<" receive local "<<my_rank<< " value = " << nrows_local_to_receive<<std::endl;
+      
 
 
       // RECV MATRIX DATA
 
       std::vector<double> local_values (nrows_local_to_receive*nrows_to_receive);
       MPI_Recv(local_values.data(), nrows_local_to_receive*nrows_to_receive, MPI_DOUBLE, 0, 2000, MPI_COMM_WORLD, &status);
-      //DenseMatrix local_matrix_to_receive(local_values, nrows_local_to_receive);
+      
 
       // BROAD CAST VECTOR X
       std::vector<double> x(nrows_to_receive);
