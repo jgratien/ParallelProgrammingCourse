@@ -241,17 +241,16 @@ int main( int argc, char** argv )
 			MPI_Status status;
 			std::vector<double> final_receive(nrows_local*ncols*3);
 			MPI_Recv(final_receive.data(), nrows_local*ncols*3, MPI_UNSIGNED_CHAR, i, 8000, MPI_COMM_WORLD, &status);
-			int starts=0;
 			for (int ro=begf; ro<begf+nrows_local; ro++)
 			{
 				for(int co=0;co<ncols;co++)
-				{    
+				{      
+				        int index = (ro-begf)*ncols*3 + co*3;	
 					Vec3b& img = image.at<Vec3b>(ro,co);	
-					img[0] = final_receive[starts+3*co];
-					img[1] = final_receive[starts+3*co+1];
-					img[2] = final_receive[starts+3*co+2];
+					img[0] = final_receive[index];
+					img[1] = final_receive[index+1];
+					img[2] = final_receive[index+2];
 				}
-				starts += 3*ncols; 
 			}  
 			begf += nrows_local;  
 		}
