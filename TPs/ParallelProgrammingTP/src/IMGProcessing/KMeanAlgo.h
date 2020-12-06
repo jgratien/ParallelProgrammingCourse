@@ -150,68 +150,57 @@ namespace PPTP
 
 		void compute_nearest_centroid(std::vector<unsigned long> &sum, std::vector<int> &nb)
 		{
-			// Sum all the nearest pixels to each centroid in order to recalculate the centroid values 
-#pragma omp parallel shared(image_flat, m_total_sum, m_total_nb)
-			{
-				// Init private variables
-				std::vector<int> pv_nb(nb_centroids, 0);
-				std::vector<unsigned long> pv_sum(nb_centroids*nb_channels, 0);
-#pragma omp for 		
-				for (int j = 0; j < (image_flat.size() / nb_channels); j++)		
-				{
-					double dist = 999;
-					int centroid_id = 0;
-					
-					for (int i = 0; i < nb_centroids; i++)
-					{
-						double compared_dist = calculate_euclidean_distance(nb_channels * j, i);
-						if (compared_dist < dist)
-						{
-							dist = compared_dist;
-							centroid_id = i;
-						}
-					}
-					for (int i = 0; i < nb_channels; i++)
-						pv_sum[centroid_id * nb_channels + i] += image_flat[nb_channels * j + i];
-					pv_nb[centroid_id]++;
+			// Sum all the nearest pixels to each centroid in order to recalculate the centroid values
+			std::mutex m;
+			tbb::parallel_for(tbb::blocked_range<int>(0, image_flat.size() / nb_channels),
+							  [&](tbb::blocked_range<int> r) {
+								  for (int j = r.begin(); j < r.end(); ++j)
+								  {
+									  double dist = 999;
+									  int centroid_id = 0;
+									  //std::cout << "\nWORK TWO\n";
 
-				}
-#pragma omp critical
-				{
-					for (int i =0; i<nb_centroids; i++) 
-						m_total_nb[i]+=pv_nb[i];
-					for (int i =0; i<nb_centroids*nb_channels; i++) 
-						m_total_sum[i]+=pv_sum[i];
-				}
-			}
+									  for (int i = 0; i < nb_centroids; i++)
+									  {
+										  double compared_dist = calculate_euclidean_distance(nb_channels * j, i);
+										  if (compared_dist < dist)
+										  {
+											  dist = compared_dist;
+											  centroid_id = i;
+										  }
+									  }
+									  m.lock();
+									  for (int i = 0; i < nb_channels; i++)
+										  sum[centroid_id * nb_channels + i] += image_flat[nb_channels * j + i];
+									  nb[centroid_id]++;
+									  m.unlock();
+								  }
+							  }); 
 		}
 
 		void update_image_flat(std::vector<uchar> &image_flat)
 		{
-#pragma omp parallel shared(image_flat)
-			{
-				// Update all the pixel values depending on their nearest centroid
-#pragma omp for 
-				for (int j = 0; j < (image_flat.size() / nb_channels); j++)
-				{
-					double dist = 999;
-					int centroid_id = 0;
+			tbb::parallel_for(tbb::blocked_range<int>(0, image_flat.size() / nb_channels),
+							  [&](tbb::blocked_range<int> r) {
+								  for (int j = r.begin(); j < r.end(); ++j)
+								  {
+									  double dist = 999;
+									  int centroid_id = 0;
 
-					for (int i = 0; i < nb_centroids; i++)
-					{
-						double compared_dist = calculate_euclidean_distance(nb_channels * j, i);
-						if (compared_dist < dist)
-						{
-							dist = compared_dist;
-							centroid_id = i;
-						}
-					}
+									  for (int i = 0; i < nb_centroids; i++)
+									  {
+										  double compared_dist = calculate_euclidean_distance(nb_channels * j, i);
+										  if (compared_dist < dist)
+										  {
+											  dist = compared_dist;
+											  centroid_id = i;
+										  }
+									  }
 
-					for (int i = 0; i < nb_channels; i++)
-						image_flat[nb_channels * j + i] = m_centroids[centroid_id * nb_channels + i];
-			
-				}
-			}
+									  for (int i = 0; i < nb_channels; i++)
+										  image_flat[nb_channels * j + i] = m_centroids[centroid_id * nb_channels + i];
+								  }
+							  });
 		}
 	};
 } // namespace PPTP

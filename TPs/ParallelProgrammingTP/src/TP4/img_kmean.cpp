@@ -53,7 +53,7 @@ int main(int argc, char **argv)
   
   // Set the number of threads
   int nb_threads = vm["nb-threads"].as<int>();
-  omp_set_num_threads(nb_threads);
+  tbb::task_scheduler_init init(nb_threads);
 
   std::string img_file = vm["file"].as<std::string>();
   Mat image;
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     // Print exec time
     cout << "-----------------"
      	<< "\nMETHOD : "
-      	<< " OPENMP "
+      	<< " TBB "
        	<< "\nEXECUTION TIME: "
      	<< exec_time.count()
        	<< " MicroSecs"
