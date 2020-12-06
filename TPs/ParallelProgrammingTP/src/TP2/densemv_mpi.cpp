@@ -36,6 +36,8 @@ int main(int argc, char** argv)
       ("help", "produce help")
       ("nrows",value<int>()->default_value(0), "matrix size")
       ("nx",value<int>()->default_value(0), "nx grid size")
+      ("zero",value<double>()->default_value(1.0), "MASTER_AMOUNT_WORK")
+
       ("file",value<std::string>(), "file input")
       ("eigen",value<int>()->default_value(0), "use eigen package") ;
   variables_map vm;
@@ -53,6 +55,12 @@ int main(int argc, char** argv)
   int nb_proc = 1 ;
   MPI_Comm_size(MPI_COMM_WORLD,&nb_proc) ;
   MPI_Comm_rank(MPI_COMM_WORLD,&my_rank) ;
+  //MPI_Request request;
+  //MPI_Status status;
+  MPI_Request reqs[4];
+  MPI_Status stats[2];
+  double norm =0.0;
+  double normT = 0.0;
 
   using namespace PPTP ;
   using namespace std;
@@ -72,7 +80,6 @@ int main(int argc, char** argv)
     generator.genLaplacian(nx,matrix) ;
 
     EigenVectorType x(nrows) ;
-
     for(std::size_t i=0;i<nrows;++i)
       x(i) = i+1 ;;
 
@@ -87,13 +94,12 @@ int main(int argc, char** argv)
 
   }
 
-
+   //auto start = high_resolution_clock::now();
   if(my_rank==0)
   {
-    auto start = high_resolution_clock::now();
-    
+    //auto start = high_resolution_clock::now();
     DenseMatrix matrix ;
-
+    MPI_Request request;
     if(vm.count("file"))
     {
       std::string file = vm["file"].as<std::string>() ;
@@ -105,7 +111,6 @@ int main(int argc, char** argv)
       generator.genLaplacian(nx,matrix) ;
     }
 
-
     std::size_t nrows = matrix.nrows();
     std::vector<double> x;
     x.resize(nrows) ;
@@ -114,36 +119,48 @@ int main(int argc, char** argv)
       x[i] = i+1 ;
 
     
-      //int nrows_to_send = nrows;
-      //MPI_Bcast(&nrows_to_send, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    {
+      std::vector<double> y(nrows);
+      {
+        Timer::Sentry sentry(timer,"DenseMV") ;
+        matrix.mult(x,y) ;
+      }
+      double normy = PPTP::norm2(y) ;
+      std::cout<<"||y||="<<normy<<std::endl ;
+    }
+    
+       auto start = high_resolution_clock::now();
 
-      // SEND GLOBAL SIZE
+    // SEND GLOBAL SIZE
       int nrows_int = nrows;
-      int nrows_local = nrows/nb_proc;
-      int r = nrows % nb_proc; 
+      /*int nrows_local = (nrows/nb_proc)/2;
+      int r = nrows % nb_proc;*/ 
       MPI_Bcast(&nrows_int, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
       // SEND MATRIX
       
       int begin = 0;
-      
-      int nrows_local_proc_zero = nrows/nb_proc;
+      double zero = vm["zero"].as<double>() ;
+ 
+      int nrows_local_proc_zero =  (int)((nrows/nb_proc)/zero);
    
-      if(r>0) nrows_local_proc_zero ++;
-
+     // if(r>0) nrows_local_proc_zero++; 
+     
+        int nrows_remain = nrows - nrows_local_proc_zero;
+	int r = nrows_remain%(nb_proc-1);
+     
       cout<<"\nProcessor ZERO is dealing with "<<nrows_local_proc_zero<<" rows"<<std::endl;
       begin += nrows_local_proc_zero;
       
 
-    
       for (int i=1; i<nb_proc; ++i)
       {
         std::cout<<" SEND MATRIX DATA to proc "<<i<<std::endl ;
 
         // SEND LOCAL SIZE to PROC I
-        int nrows_local = nrows/nb_proc;
+        int nrows_local = nrows_remain/(nb_proc-1);
 
-	if(i<r) { nrows_local++;}
+	if(i<r+1) { nrows_local++;}
 
 	MPI_Send(&nrows_local, 1, MPI_INT, i, 1000, MPI_COMM_WORLD);
         double const * ptr = values.data() + begin*nrows;
@@ -156,14 +173,17 @@ int main(int argc, char** argv)
    
       // BROAD CAST VECTOR X
       
-      //std::vector<double> x_to_send;
+      //std::vector<double> x_to_sendi;
+       //MPI_Ibarrier(MPI_COMM_WORLD, &request);
        MPI_Bcast(x.data(), nrows_int, MPI_DOUBLE, 0, MPI_COMM_WORLD); 
+      //MPI_Waitall(4, reqs, stats);
 
- 
+      //MPI_Barrier(MPI_COMM_WORLD);
+
      
   
 
-    {
+    /*{
       std::vector<double> y(nrows);
       {
         Timer::Sentry sentry(timer,"DenseMV") ;
@@ -171,19 +191,18 @@ int main(int argc, char** argv)
       }
       double normy = PPTP::norm2(y) ;
       std::cout<<"||y||="<<normy<<std::endl ;
-    }
+    }*/
 
 
     // COMPUTE LOCAL MATRICE LOCAL VECTOR ON PROC 0
-    DenseMatrix local_matrix ;
-    std::size_t local_nrows ;
-    std::vector<double> result;
-    result.resize(nrows);
+    //std::vector<double> result;
+    //result.resize(nrows);
 
     
       // EXTRACT LOCAL DATA FROM MASTER PROC
       double s ;
       int beg = 0 ;
+      //double norm=0;
       //cout<<"\nresult computed by processor 0  ";
       for(int i = 0; i<nrows_local_proc_zero; i++)
 	      
@@ -196,19 +215,18 @@ int main(int argc, char** argv)
 		  beg++;
 	  }
 
-            result.at(i) = s; 
-	    //cout<<result.at(i)<<" ";    
+           // result.at(i) = s; 
+	    norm += s*s;    
       }
-      int begs =  nrows_local_proc_zero;
+      /*beg =  nrows_local_proc_zero;
       MPI_Status status;
-
       // COMPUTE LOCAL SIZE
       for (int t=1; t<nb_proc; t++)
           
       {    
 	    int size_to_receive = nrows/nb_proc;
 	    
-	    if (t<r) size_to_receive++;
+	    /*if (t<r) size_to_receive++;
 
             std::vector<double> result_to_receive(size_to_receive);
 
@@ -222,27 +240,22 @@ int main(int argc, char** argv)
 			  //cout<<result_to_receive.at(u)<<" "; 
 			 }*/
 
-	     std::copy(result_to_receive.begin(), result_to_receive.end(), result.begin()+begs);
-	     begs += size_to_receive;
+	     /*std::copy(result_to_receive.begin(), result_to_receive.end(), result.begin()+beg);
+	     beg += size_to_receive;
 	   
-	   }
+	   }*/
+             //MPI_Waitall(4, reqs, stats);
+	     //MPI_Barrier(MPI_COMM_WORLD);
+             double normT;
+	     MPI_Reduce(&norm, &normT, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
 
-      // EXTRACT LOCAL MATRIX DATA
-      //double norm = 0;
-      //std::cout<<"\nResult of dense matrix vector multiplication is : ";
-      /*for (int z=0; z<nrows_int; z++) 
-      {
-        std::cout<<result.at(z)<<" ";
-        norm += result.at(z)*result.at(z);
-      
-      }
-      norm = sqrt(norm);
-      std::cout<<"\nNorm of the resulting vector = "<<norm<<std::endl;*/
+        normT = sqrt(normT);
+        std::cout<<"\nNorm of the resulting vector = "<<normT<<std::endl;
    
        auto stop = high_resolution_clock::now(); 
-       auto duration2 = duration_cast<microseconds>(stop - start); 
-       cout <<"\n\nThe dense matrix vector multiplication took "<< duration2.count()<<" microseconds" << std::endl; 
+       auto duration2 = duration_cast<milliseconds>(stop - start); 
+       cout <<"\n\nThe dense matrix vector multiplication took "<< duration2.count()<<" milliseconds" << std::endl; 
        
  
 
@@ -253,7 +266,9 @@ int main(int argc, char** argv)
 
     DenseMatrix local_matrix ;
     int nrows = 0 ;
-    int local_nrows=0 ;      // RECV DATA FROM MASTER PROC
+    int local_nrows=0 ;
+    // RECV DATA FROM MASTER PROC
+    //MPI_Request request;
       
      // RECV Global Size
       MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -262,7 +277,8 @@ int main(int argc, char** argv)
       
       MPI_Status status;
       MPI_Recv(&local_nrows, 1, MPI_INT, 0, 1000, MPI_COMM_WORLD, &status);
-      
+       cout<<"\nProcessor "<<my_rank<<" is dealing with "<<local_nrows<<" rows"<<std::endl;
+ 
       
       std::vector<double> local_vector(nrows*local_nrows);
       //RECV MATRIX DATA
@@ -270,16 +286,20 @@ int main(int argc, char** argv)
 
     
     
-    
+       
      // BROAD CAST VECTOR X
       std::vector<double> x_to_receive(nrows);
-      x_to_receive.resize(nrows);
+      //MPI_Ibarrier(MPI_COMM_WORLD, &request);
       MPI_Bcast(x_to_receive.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+ //MPI_Waitall(4, reqs, stats);
+
+       //MPI_Barrier(MPI_COMM_WORLD);
+
         
      
       
-      std::vector<double> result_to_send(local_nrows, 0.0);
-      
+      //std::vector<double> result_to_send(local_nrows, 0.0);
+     double norm=0.0; 
       for(int i = 0; i<local_nrows; i++)
       {   
 	     double s = 0 ;
@@ -289,12 +309,38 @@ int main(int argc, char** argv)
 		  s += local_vector[i*nrows+j] * x_to_receive.at(j);
 	  }
 
-         result_to_send.at(i) = s;
+         //result_to_send.at(i) = s;
+	 norm += s*s;
     }
 
-      MPI_Send(&result_to_send[0], local_nrows, MPI_DOUBLE, 0, 3000, MPI_COMM_WORLD);
+     // MPI_Send(&result_to_send[0], local_nrows, MPI_DOUBLE, 0, 3000, MPI_COMM_WORLD);
+            // MPI_Waitall(4, reqs, stats);
+             double normT=0.0;
+	     MPI_Reduce(&norm, &normT, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+
+
 
   } 
+    
+             //MPI_Barrier(MPI_COMM_WORLD);
+	     // MPI_Wait(&request, MPI_STATUS_IGNORE);
+	     //MPI_Reduce(&norm, &normT, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+
+
+	     /*if(my_rank==0)
+         {
+
+
+	     MPI_Reduce(&norm, &normT, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+                    normT = sqrt(normT);
+        std::cout<<"\nNorm of the resulting vector = "<<normT<<std::endl;
+   
+       auto stop = high_resolution_clock::now(); 
+       auto duration2 = duration_cast<milliseconds>(stop - start); 
+       cout <<"\n\nThe dense matrix vector multiplication took "<< duration2.count()<<" milliseconds" << std::endl;}*/ 
+
+
+
   MPI_Finalize(); 
   timer.printInfo() ;
   return 0 ;
@@ -314,5 +360,3 @@ int main(int argc, char** argv)
 #include <boost/program_options/variables_map.hpp>
 
 #include <string>
-#include <vector>
-#include <fstream>
