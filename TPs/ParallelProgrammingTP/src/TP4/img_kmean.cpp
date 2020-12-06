@@ -14,17 +14,13 @@
 #include <chrono>
 #include <map>
 #include <mpi.h>
-#include <mutex>
-#include "tbb/blocked_range.h"
-#include "tbb/parallel_for.h"
-#include "tbb/task_scheduler_init.h"
-#include "omp.h"
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include <IMGProcessing/KMeanAlgo.h>
+
 
 using namespace cv;
 using namespace std;
@@ -37,7 +33,6 @@ int main(int argc, char **argv)
   desc.add_options()
     ("help", "produce help")
     ("file", value<std::string>(), "image file")
-    ("nb-threads", value<int>()->default_value(1), "number of threads")
     ("show", value<int>()->default_value(0), "show image")
     ("seg", value<int>()->default_value(0), "kmean segmentation")
     ("nb-centroids", value<int>()->default_value(1), "centroids number (k value)");
@@ -50,10 +45,9 @@ int main(int argc, char **argv)
     std::cout << desc << "\n";
     return 1;
   }
-  
-  // Set the number of threads
-  int nb_threads = vm["nb-threads"].as<int>();
-  tbb::task_scheduler_init init(nb_threads);
+
+  // Start MPI process
+  MPI_Init(&argc,&argv) ;
 
   std::string img_file = vm["file"].as<std::string>();
   Mat image;
@@ -73,9 +67,6 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  cout << "NB CHANNELS : " << image.channels() << std::endl;
-  cout << "NROWS       : " << image.rows << std::endl;
-  cout << "NCOLS       : " << image.cols << std::endl;
   const int channels = image.channels();
 
   int nb_centroids = vm["nb-centroids"].as<int>();
@@ -83,31 +74,49 @@ int main(int argc, char **argv)
 
   if (vm["seg"].as<int>() == 1)
   {
-    PPTP::KMeanAlgo algo(channels, nb_centroids);
+	// KMean class initiation
+    	PPTP::KMeanAlgo algo(channels, nb_centroids);
+	
+	// Print the image characteristics
+	if (algo.get_proc_rank() == 0)
+	{
+		cout << "NB CHANNELS : " << image.channels() << std::endl;
+		cout << "NROWS       : " << image.rows << std::endl;
+		cout << "NCOLS       : " << image.cols << std::endl;
+	}
+
+	// Start of the execution time
+ 	auto start = high_resolution_clock::now();
     
-    auto start = high_resolution_clock::now();
+	// Process the image
+    	algo.process(image);
     
-    // Process the image
-    algo.process(image);
+	// End of execution time
+    	auto stop = high_resolution_clock::now();
+
+	// Calculate the execution time
+    	auto exec_time = duration_cast<microseconds>(stop - start);
     
-    auto stop = high_resolution_clock::now();
-    // Calculate Time in microsecs
-    auto exec_time = duration_cast<microseconds>(stop - start);
-    
-    // Save result
-    imwrite("./Seg_Image.jpg", image);
-    
-    // Print exec time
-    cout << "-----------------"
-     	<< "\nMETHOD : "
-      	<< " TBB "
-       	<< "\nEXECUTION TIME: "
-     	<< exec_time.count()
-       	<< " MicroSecs"
-       	<< "\n-----------------"
-       	<< std::endl;
+    	if (algo.get_proc_rank() == 0)
+    	{
+		// Save the result
+    		imwrite("./Seg_Image.jpg", image);
+
+		// Print the execution time and the method
+  		std::cout << "-----------------"
+       			<< "\nMETHOD : "
+       			<< " MPI "
+       			<< "\nEXECUTION TIME: "
+     	  		<< exec_time.count()
+       			<< " MicroSecs"
+       			<< "\n-----------------"
+       			<< std::endl;
+     	}
   }
+  // End MPI process
+  MPI_Finalize();
 
   return 0;
 }
+
 
