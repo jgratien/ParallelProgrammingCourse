@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     double start, end;
     
     MPI_Status status;
-    MPI_Request req;
+    MPI_Request req,req2;
 
     if(my_rank==0){
 
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
             {
 		double const *localDataPtr = dataVector.data() + local_nrows * nx + slaveLocalSize * nx * (i-1);
                 
-                MPI_Isend(localDataPtr, slaveLocalSize * nrows, MPI_DOUBLE, i, i * 3 + 1, MPI_COMM_WORLD, &req);
+                MPI_Isend(localDataPtr, slaveLocalSize * nrows, MPI_DOUBLE, i, i * 3 + 1, MPI_COMM_WORLD, &req2);
             }
 
         }
@@ -166,8 +166,6 @@ int main(int argc, char **argv)
         // COMPUTE LOCAL MATRICE LOCAL VECTOR ON PROC 0
         // DenseMatrix local_matrix;
         std::vector<double> local_y(local_nrows);
-        
-	{
             // compute parallel SPMV
             double tempSum = 0;
             for (int row = 0; row < local_nrows; row++)
@@ -180,14 +178,12 @@ int main(int argc, char **argv)
                 local_y[row] = tempSum;
                 local_norm += tempSum * tempSum;
             }
-	
         MPI_Wait(&req, MPI_STATUS_IGNORE);
-        }
+        MPI_Wait(&req2, MPI_STATUS_IGNORE);
     }
 
     else
     {
-        MPI_Request req2;
         // DenseMatrix local_matrix;
         int nrows;
         int slaveLocalSize;

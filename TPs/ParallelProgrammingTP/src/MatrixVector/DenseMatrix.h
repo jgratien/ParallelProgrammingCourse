@@ -29,7 +29,7 @@ namespace PPTP
 
       std::vector<double> const &getValues() const
       {
-      return (m_values);
+        return (m_values);
       }
 
       void setChunkSize(int chunk_size)
@@ -42,7 +42,6 @@ namespace PPTP
         m_nrows = nrows ;
         if(m_nrows>0)
         {
-          m_values.resize(m_nrows*m_nrows) ;
           m_values.assign(m_nrows*m_nrows,0.) ;
         }
       }
@@ -104,9 +103,14 @@ namespace PPTP
       {
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
-
-        {
-           // TODO OPENMP
+	#pragma omp parallel for
+        for (std::size_t irow = 0; irow < m_nrows; ++irow) {
+          double const* matrix_ptr = m_values.data() + irow * m_nrows;
+          double value = 0;
+          for(std::size_t jcol = 0; jcol < m_nrows; ++jcol) {
+            value += matrix_ptr[jcol]*x[jcol];
+          }
+          y[irow] = value;
         }
       }
 
