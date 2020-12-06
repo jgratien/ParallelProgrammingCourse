@@ -20,7 +20,8 @@
 #include <boost/program_options/variables_map.hpp>
 #include <chrono>
 #include <IMGProcessing/KMeanAlgo.h>
-
+#include <iostream>
+#include <fstream>
 using namespace cv;
 using namespace std;
 
@@ -74,6 +75,16 @@ int main( int argc, char** argv )
 	const int ch = image.channels() ;  
 
 	const int k = vm["kmean"].as<int>();
+
+        std::ofstream benchmark;
+      benchmark.open ("report.csv");
+      double procs[7] = {1,2,4,8,12,16,24};
+      /*for(int iter =0; iter<7; iter++)
+             { 
+	        nb_proc = procs[iter];
+            	MPI_Comm_size(MPI_COMM_WORLD,&nb_proc) ;
+	        int my_rank = 0 ;
+	        MPI_Comm_rank(MPI_COMM_WORLD,&my_rank) ;*/
 
 
 	auto start = high_resolution_clock::now();
@@ -180,15 +191,15 @@ int main( int argc, char** argv )
 			//cout<<"successfully processed on processor zero for cycle "<<count<<std::endl;
 			//COLLECT RESULT DATA FROM OTHER PROCS AND ADDING CENTROIDS SUMS AND SIZE TO GET TOTAL OF ALL PROCS
 			// UPDATE CENTROIDS BASED ON Reduced VALUES AND CHECK DISPLACEMENT
-			std::vector <double> base_all(ch*k);
-			std::vector <int> size_all(k);
+			std::vector <double> base_all(ch*k,0.0);
+			std::vector <int> size_all(k,0.0);
 
 			MPI_Reduce(base.data(), base_all.data(), ch*k, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 			MPI_Reduce(size.data(), size_all.data(), k, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
 			for(int i=0;i<3*k;i++) cout<<base_all[i]<<"  ";
 			cout<<"\n "<<size_all.at(0)<<"  "<<size_all.at(1)<<"  "<<size_all.at(2)<<"   "<<size_all.at(3);
-			std::vector <double> new_centroids (ch*k);
+			std::vector <double> new_centroids (ch*k,0.0);
 			for(int j=0; j<ch*k; j++)
 			{  
 				new_centroids[j] = base_all[j]/(size_all.at(j/ch));
@@ -272,7 +283,9 @@ int main( int argc, char** argv )
 		auto stop = high_resolution_clock::now(); 
 
 		auto duration = duration_cast<milliseconds>(stop - start); 
-		cout <<"\n\nThe process took "<< duration.count()<<" milliseconds" << std::endl; 
+		cout <<"\n\nThe process took "<< duration.count()<<" milliseconds" << std::endl;
+
+	        benchmark<<nb_proc<<","<<duration.count()<<"\n";	
 		imwrite("./Kmeans_Segmented_Image_MPI.jpg",image) ;          }        
 
 
@@ -305,7 +318,7 @@ int main( int argc, char** argv )
 		MPI_Bcast(&flag_to_receive, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
 		int size = ch*k;
-		std::vector<double> centroids(ch*k);
+		std::vector<double> centroids(ch*k,0.0);
 
 		while(flag_to_receive==1)
 
@@ -331,7 +344,7 @@ int main( int argc, char** argv )
 			}
 
 			std::vector <double> base_all(ch*k,0.0);
-			std::vector <int> size_all(k);
+			std::vector <int> size_all(k,0);
 
 			MPI_Reduce(base.data(),base_all.data(), ch*k, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 			MPI_Reduce(size.data(), size_all.data(), k, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);	
@@ -360,7 +373,8 @@ int main( int argc, char** argv )
 		}
 		MPI_Send(final_send.data(), nrows_local*ncols*3, MPI_DOUBLE, 0, 8000, MPI_COMM_WORLD);
 	}  
-
+         
+	benchmark.close();
 	// break; 
 	MPI_Finalize();
 	return 0 ;}  
