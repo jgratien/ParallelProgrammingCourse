@@ -1,5 +1,5 @@
 /*
- * KMeanAlgo_parallel_tbb.h
+ * KMeanAlgo_parallel_omp4.h
  *
  *  Created on: Nov 4, 2020
  *      Author: gratienj
@@ -19,21 +19,22 @@ using namespace cv;
 using namespace std;
 using namespace tbb;
 
-typedef tbb::spin_mutex mtxType;
-mtxType mtx;
-
-
 namespace PPTP
 {
 
 	class KMeanAlgoParTbb
 	{
 	public:
-		KMeanAlgoParTbb(int nb_channels, int nb_centroids, int nb_iterations)
+		KMeanAlgoParTbb(int nb_channels, int nb_centroids, int nb_iterations, int nb_threads)
 	    : nb_channels(nb_channels)
 		, m_nb_centroid(nb_centroids)
 		, nb_iterations(nb_iterations)
-	    {}
+		, nb_threads(nb_threads)
+	    {
+		centroids_occurences.resize(m_nb_centroid*nb_threads);
+		updated_centroids.resize(m_nb_centroid*nb_channels*nb_threads);
+		m_centroids.resize(m_nb_centroid*nb_channels);
+	    }
 		virtual ~KMeanAlgoParTbb() {}
 		
 
@@ -42,116 +43,173 @@ namespace PPTP
 			using namespace cv ;
 	
 			bool centroids_convergence=true;
-		      	/*****COMPUTE NEAREST CENTROID*****/
+		      	
+			/*****COMPUTE NEAREST CENTROID*****/
+			compteur=0;
 			
-			//std::map<std::tuple<int,int>, int> collection_centroid_id;
+			centroids_occurences.clear();
+			updated_centroids.clear();
+
+			centroids_occurences.resize(m_nb_centroid*nb_threads);
+			updated_centroids.resize(m_nb_centroid*nb_channels*nb_threads);
+				
 			
-			//TO PARALLELISE
-		
-			tbb::parallel_for(std::size_t(0), (size_t)image.rows, [&](std::size_t i)
+			switch(nb_channels)
 			{
-				int centroid_id =0;
-				for(int j=0;j<image.cols;j++)
+				case 1:
 				{
-					// CALCUL NEAREST CENTROID
-					// not a critical section
-					{	
-						//mtxType::scoped_lock lock(mtx);
-						centroid_id = calc_closest_centroid(image, i, j);
-						//collection_centroid_id.emplace(std::make_tuple(i,j),centroid_id);
-						auto pixel_coord = std::make_tuple(i,j);
-						if(collection_centroid_id.count(pixel_coord)==0 || collection_centroid_id[pixel_coord]!= centroid_id)
+					//TO PARALLELISE
+					tbb::parallel_for(size_t(0), (size_t)nb_threads, [&](std::size_t id_thread){
+						
+						/*****SPLIT DE L'IMAGE PAR THREADS****/
+						int begin=0;
+						int nrows_local = image.rows/nb_threads;
+						int reste = image.rows%nb_threads;
+						if((int)id_thread<reste)
+						{
+							nrows_local++;
+							begin=id_thread*nrows_local;
+						}
+						else
+						{
+							begin=id_thread*nrows_local + reste;
+						}	
+						for(int i=begin;i<begin + nrows_local;i++)
 						{
 							
-							mtxType::scoped_lock lock(mtx);	
-							collection_centroid_id[pixel_coord]=centroid_id;
-							centroids_convergence=false;
+							int centroid_id=0;
+							for(int j=0;j<image.cols;j++)
+							{
+								// CALCUL NEAREST CENTROID
+							
+								centroid_id = calc_closest_centroid(image, i, j);
+								auto pixel_coord = std::make_tuple(i,j);
+								if(collection_centroids_ids[i*image.cols+j]!= centroid_id)
+								{
+									compteur++;	
+									centroids_convergence=false;
+									collection_centroids_ids[i*image.cols+j]=centroid_id;
+									collection_pixel[i*image.cols+j]=pixel_coord;
+								}	
+								{
+									centroids_occurences[centroid_id+id_thread*m_nb_centroid]++;
+									updated_centroids[centroid_id+id_thread*m_nb_centroid]+=image.at<uchar>(i,j);
+								}						
+							}	
 						}
-					}
+					});
+					break;
 				}
-			});
+				case 3:
+				{			
+					Mat_<Vec3b> _I = image;
+					//TO PARALLELISE
+					tbb::parallel_for(size_t(0), (size_t)nb_threads, [&](std::size_t id_thread){
+						int begin=0;
+						int nrows_local = image.rows/nb_threads;
+						int reste = image.rows%nb_threads;
+						if((int)id_thread<reste)
+						{
+							nrows_local++;
+							begin=id_thread*nrows_local;
+						}
+						else
+						{
+							begin=id_thread*nrows_local + reste;
+						}	
+						for(int i=begin;i<begin + nrows_local;i++)
+						{
+							//cout<<"id thread: "<<id_thread<<endl;
+							int centroid_id=0;
+							for(int j=0;j<image.cols;j++)
+							{
+								// CALCUL NEAREST CENTROID
+						
+								centroid_id = calc_closest_centroid(image, i, j);
+								auto pixel_coord = std::make_tuple(i,j);
+								if(collection_centroids_ids[i*image.cols+j]!= centroid_id)
+								{
+									compteur++;	
+									centroids_convergence=false;
+									collection_centroids_ids[i*image.cols+j]=centroid_id;
+									collection_pixel[i*image.cols+j]=pixel_coord;
+								}	
+								{
+									for(int k=0;k<3;k++)
+									{
+										updated_centroids[nb_channels*(centroid_id+id_thread*m_nb_centroid)+k]+=_I(i,j)[k];
+									}	
+									centroids_occurences[centroid_id + id_thread*m_nb_centroid]++;
+								}						
+							}	
+						}
+					});
+					
+					break;
+				}
+			}
+
 			return centroids_convergence;
 		}
 
 		void update_centroids_tbb(cv::Mat& image)
 		{
 			using namespace cv;
-
-			std::vector<uchar> updated_centroids;
-			std::vector<int> centroids_occurences;
-			centroids_occurences.resize(m_nb_centroid);
-			updated_centroids.resize(m_nb_centroid*nb_channels);
+	
+			std::vector<double> updated_centroids_reduced;
+			std::vector<double> centroids_occurences_reduced;
+			
+			centroids_occurences_reduced.resize(m_nb_centroid);
+			updated_centroids_reduced.resize(m_nb_centroid*nb_channels);
+			
 			switch(nb_channels)
 			{
 				case 1:
-					//TO PARALLELISE
-					tbb::parallel_for(std::size_t(0), collection_centroid_id.size(), [&](std::size_t r)
-					{
-						int i,j;
-						auto it = collection_centroid_id.begin();
-						advance(it, r);
-						for(int c=0;c<m_nb_centroid;c++)
-						{
-							if( it->second == c){
-								tie(i, j)=it->first;
-								//critical sesssion
-								{
-									mtxType::scoped_lock lock(mtx);
-									updated_centroids[c]+=image.at<uchar>(i,j);
-									centroids_occurences[c]++;
-								}
-							}
-						}
-				
-					});
-
+				{
 					for(int c=0; c<m_nb_centroid; c++)
 					{
-						if(centroids_occurences[c] !=0)
-							updated_centroids[c]/=centroids_occurences[c];
+						for(int id=0;id<nb_threads;id++)
+						{
+							centroids_occurences_reduced[c]+=centroids_occurences[c+id*m_nb_centroid];
+							updated_centroids_reduced[c]+=updated_centroids[c+id*m_nb_centroid];
+						}
+						if(centroids_occurences_reduced[c] !=0)
+							updated_centroids_reduced[c]/=centroids_occurences_reduced[c];
 					}
 					break;
+				}
 				case 3:
+				{
 					Mat_<Vec3b> _I = image;
-
-					//TO PARALLELSIE
 					
-					tbb::parallel_for(std::size_t(0), collection_centroid_id.size(), [&](std::size_t r)
-					{
-						int i,j;
-						auto it = collection_centroid_id.begin();
-						advance(it,r);
-
-						for(int c=0; c<m_nb_centroid; c++)
+					for(int c=0; c<m_nb_centroid; c++)
+					{	
+						for(int id=0;id<nb_threads;id++)
 						{
-							if(it->second == c){
-								tie(i,j)=it->first;
-								//critical session
-								{
-									mtxType::scoped_lock lock(mtx);
-									centroids_occurences[c]++;
-									for(int k=3*c;k<3*c +3;k++)
-									{
-										updated_centroids[k]+=_I(i,j)[k];
-									}
-								}
+							centroids_occurences_reduced[c]+=centroids_occurences[c+id*m_nb_centroid];
+							for(int k=0;k<nb_channels;k++){
+								updated_centroids_reduced[nb_channels*c+k]+=updated_centroids[nb_channels*(c+id*m_nb_centroid)+k];
 							}
 						}
-					});
-
-					for(int c=0; c<m_nb_centroid; c++)
-					{
-						if(centroids_occurences[c] !=0)
+						if(centroids_occurences_reduced[c] !=0)
 						{
 							for(int k=0;k<nb_channels;k++){
-							updated_centroids[c+k]/=centroids_occurences[c];
+							updated_centroids_reduced[c*nb_channels+k]/=centroids_occurences_reduced[c];
 							}
 						}	
 					}
 					break;
+				}
 
 			}
-			m_centroids.swap(updated_centroids);
+			m_centroids.resize(updated_centroids_reduced.size());
+
+			
+			for(unsigned int i=0; i<updated_centroids_reduced.size(); i++)
+			{
+				//cout<<" delta centroid: "<<(uchar)updated_centroids[i]-m_centroids[i]<<endl;
+				m_centroids[i]=(uchar)updated_centroids_reduced[i];
+			}
 
  		}
 
@@ -159,16 +217,17 @@ namespace PPTP
 		{
                       using namespace cv ;
 
+
 		      switch(nb_channels)
 		      {
 		        case 1:
 			  	//TO PARALLELISE
-				tbb::parallel_for(std::size_t(0), (size_t)image.rows, [&](std::size_t i)	
-		          	{
-					int cluster_id=0;
+		          	tbb::parallel_for(std::size_t(0), (size_t)image.rows, [&](std::size_t i)	
+				{
+					int cluster_id =0;
 		            		for(int j=0;j<image.cols;++j)
 		           	 	{
-						cluster_id=collection_centroid_id[std::make_tuple(i,j)];
+						cluster_id=collection_centroids_ids[i*image.cols+j];
 			      			image.at<uchar>(i,j)=m_centroids[cluster_id];
 		            		}
 		          	});
@@ -177,14 +236,14 @@ namespace PPTP
 			case 3:
 		       		Mat_<Vec3b> _I = image;
 		          	//TO PARALLELISE
-			  	
-				tbb::parallel_for(std::size_t(0), (size_t)image.rows, [&](std::size_t i)	
-		          	{
-		            		int cluster_id=0;
+		          	tbb::parallel_for(std::size_t(0), (size_t)image.rows, [&](std::size_t i)	
+				{
+		            		
+		      			int cluster_id =0;
 					for(int j=0;j<image.cols;++j)
 		            		{
 		              	
-						cluster_id=collection_centroid_id[std::make_tuple(i,j)];
+						cluster_id=collection_centroids_ids[i*image.cols+j];
 						for(int k=0;k<3;++k)
 		              			{
 							_I(i,j)[k]=m_centroids[3*cluster_id+k];	
@@ -201,18 +260,17 @@ namespace PPTP
 			std::cout<<"Centroid_init"<<std::endl;
 			init_centroid(image);
 			
-			//std::map<std::tuple<int,int>, int> collection_centroid_id;
 			std::cout<<"compute centroids"<<std::endl;
 			int iterations=0;
 			bool convergence_centroids=false;
 			
-			while(iterations<nb_iterations && !convergence_centroids){
+			while(iterations<nb_iterations && convergence_centroids==false){
 				std::cout<<"iteration number: "<<iterations<<std::endl;
 				convergence_centroids=compute_centroids_tbb(image) ;
+				//std::cout<<"compteur: "<<compteur<<endl;
 				update_centroids_tbb(image);
 				iterations++;
 			}
-			//Mat img_seg;
 			std::cout<<"compute segmentation"<<std::endl; 
 			compute_segmentation_tbb(image) ;
 		}
@@ -221,8 +279,9 @@ namespace PPTP
 
 		
 		void init_centroid(Mat& image){
-		      	m_centroids.resize(m_nb_centroid*nb_channels);
-		      	//INIT INITTIAL CENTROID
+		      	collection_centroids_ids.resize(image.rows*image.cols);
+			collection_pixel.resize(image.rows*image.cols);
+			//INIT INITTIAL CENTROID
 
 			int row_id=0;
 			int col_id=0;
@@ -259,7 +318,6 @@ namespace PPTP
 					for(int c=1; c<m_nb_centroid; c++)
 					{	
 						do{
-							//std::cout<<"looping over "<<c<<std::endl;	
 							row_id=(int)(rand()%image.rows);
 							col_id=(int)(rand()%image.cols);
 							dist=0;
@@ -333,8 +391,14 @@ namespace PPTP
 	    	int nb_channels  =3  ;
 		int m_nb_centroid = 0 ;
 		int nb_iterations = 50;
+		int compteur =0; //utile seulement pour debugger
+		int nb_threads=1;
 		std::vector<uchar> m_centroids ;
-		std::map<std::tuple<int,int>,int> collection_centroid_id;
+		std::vector<std::tuple<int,int>> collection_pixel;
+		std::vector<int> collection_centroids_ids;
+
+		std::vector<double> updated_centroids;
+		std::vector<double> centroids_occurences;
 	};
 }
 

@@ -113,7 +113,7 @@ namespace PPTP
 						if(centroids_occurences[c] !=0)
 						{
 							for(int k=0;k<nb_channels;k++){
-							updated_centroids[c+k]/=centroids_occurences[c];
+							updated_centroids[c*nb_channels+k]/=centroids_occurences[c];
 							}
 						}	
 					}
@@ -121,7 +121,7 @@ namespace PPTP
 
 			}
 			m_centroids.resize(updated_centroids.size());
-			for(int i=0; i<updated_centroids.size();i++)
+			for(unsigned int i=0; i<updated_centroids.size();i++)
 			{
 				m_centroids[i]=(uchar)updated_centroids[i];
 			}

@@ -20,7 +20,9 @@
 #include <boost/program_options/variables_map.hpp>
 #include <IMGProcessing/KMeanAlgo.h>
 #include <IMGProcessing/KMeanAlgo_parallel_omp.h>
+//#include <IMGProcessing/KMeanAlgo_parallel_omp4.h>
 #include <IMGProcessing/KMeanAlgo_parallel_tbb.h>
+//#include <IMGProcessing/KMeanAlgo_parallel_tbb4.h>
 #include "Utils/Timer.h"
 #include "tbb/tbb.h"
 
@@ -41,7 +43,7 @@ int main( int argc, char** argv )
         ("nb-centroids",value<int>()->default_value(0), "nb centroids")
         ("nb-iterations",value<int>()->default_value(50), "nb iterations")
 	("mode", value<int>()->default_value(0), "0:sequential 1:openmp 2:tbb")
-    	("nb-threads", value<int>()->default_value(0), "nb threads");
+    	("nb-threads", value<int>()->default_value(1), "nb threads");
     	
     	
     variables_map vm;
@@ -85,7 +87,17 @@ int main( int argc, char** argv )
     
     cout<<"NB CENTROIDS       : "<<nb_centroids<<std::endl ;
     cout<<"NB ITERATIONS MAX       : "<<nb_iterations<<std::endl ;
-    
+    int nb_procs = omp_get_num_procs();
+    cout<<"NB PROCS		:"<<nb_procs<<endl;
+    int nb_available_threads=omp_get_max_threads();
+    cout<<"NB AVAILABLE_THREADS	:"<<nb_available_threads<<endl;
+   
+
+    int nb_threads = vm["nb-threads"].as<int>();
+    if(nb_threads>0){
+	omp_set_num_threads(nb_threads);
+    }
+    cout<<"NB THREADS:		"<<nb_threads<<endl;
     if(vm["seg"].as<int>()==1)
     {
 	const int mode= vm["mode"].as<int>();    
@@ -100,24 +112,16 @@ int main( int argc, char** argv )
 		}
 		case 1:
 		{
-			int nb_threads = vm["nb-threads"].as<int>();
-			if(nb_threads>0){
-				omp_set_num_threads(nb_threads);
-			}
-			PPTP::KMeanAlgoParOmp algo(channels, nb_centroids, nb_iterations);
+			PPTP::KMeanAlgoParOmp algo(channels, nb_centroids, nb_iterations, nb_threads);
 			Timer::Sentry sentry(timer, "Parallel OMP Kmeans");
 			algo.process_omp(image);
 			break;
 		}
 		case 2:
 		{
-			int nb_threads = vm["nb-threads"].as<int>();	
-			if(nb_threads>0){
-				tbb::task_scheduler_init init(nb_threads);
-			}
+			PPTP::KMeanAlgoParTbb algo(channels, nb_centroids, nb_iterations, nb_threads);
+				
 			Timer::Sentry sentry(timer, "Parallel TBB Kmeans");
-			cout<<"on est la"<<endl;
-			PPTP::KMeanAlgoParTbb algo(channels, nb_centroids, nb_iterations);
 			algo.process_tbb(image);
 			break;
 		}
