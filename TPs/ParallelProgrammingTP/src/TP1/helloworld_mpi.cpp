@@ -32,8 +32,9 @@ int main(int argc, char** argv)
   }
 
   // Initialize MPI
-  // MPI_Init(argc,arcv) ;
-
+  MPI_Init(&argc,&argv) ;
+  int my_rank = 0;
+  int nb_procs = 1;
 
   PPTP::Timer timer ;
   {
@@ -42,16 +43,44 @@ int main(int argc, char** argv)
 
     //#pragma omp ....CREATE PARALLEL SECTION
     {
-      int my_rank = 0 ;
-      int nb_procs = 1 ;
       // get nb procs
+	  int error = MPI_Comm_size(MPI_COMM_WORLD, &nb_procs);
       // get process rank
+	  error += MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
       std::cout<<"Hello world ("<<my_rank<<","<<nb_procs<<")"<<std::endl ;
     }
+  }
+  {
+	  if (my_rank == 0)
+	  {
+		  int value = 10;
+
+		  MPI_Send(&value, 1, MPI_INT, my_rank+1, 0, MPI_COMM_WORLD);
+		  MPI_Recv(&value, 1, MPI_INT, nb_procs-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+		  std::cout << "FINAL PINGPONG VALUE " << value << std::endl;
+	  }
+	  else if (my_rank == nb_procs - 1) {
+
+		  int value;	
+		  MPI_Recv(&value, 1, MPI_INT, my_rank-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		  value += my_rank;
+		  MPI_Send(&value, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+
+	  }
+	  else {
+		  int value; 
+
+		  MPI_Recv(&value, 1, MPI_INT, my_rank-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+		  value += my_rank;
+
+		  MPI_Send(&value, 1, MPI_INT, my_rank+1, 0, MPI_COMM_WORLD);
+	  }
   }
   timer.printInfo() ;
 
   // Finalyze MPI
-  // MPI_Finalize() ;
+  MPI_Finalize() ;
   return 0 ;
 }

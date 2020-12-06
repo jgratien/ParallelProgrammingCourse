@@ -99,10 +99,17 @@ namespace PPTP
       {
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
+	#pragma omp parallel for 
+	for (std::size_t irow = 0; irow<m_nrows; ++irow)
+	{
+		double const* matrix_ptr = m_values.data() + irow*m_nrows;
 
-        {
-           // TODO OPENMP
-        }
+		double value = 0;
+		for (std::size_t jcol = 0; jcol<m_nrows; ++jcol)
+		{
+			y[irow] += matrix_ptr[jcol] * x[jcol];
+		}
+	}
       }
 
       void omptaskmult(VectorType const& x, VectorType& y) const
@@ -111,9 +118,31 @@ namespace PPTP
         assert(y.size()>=m_nrows) ;
 
         std::size_t nb_task = (m_nrows+m_chunk_size-1)/m_chunk_size ;
-        {
-            //TODO TASK OPENMP
-        }
+        #pragma omp parallel
+		{
+			#pragma omp single
+			{
+				for (std::size_t task = 0; task < nb_task; ++task) {
+					#pragma omp task
+					{
+						for (std::size_t task = 0; task < nb_task; ++task) {
+							std::size_t first = task * m_chunk_size;
+							std::size_t end = std::min((task + 1)*m_chunk_size, m_nrows);
+							for (std::size_t irow = first; irow < end; ++irow) {
+								double const* matrix_ptr = m_values.data() + irow * m_nrows;
+								double value = 0;
+								for (std::size_t jcol = 0; jcol < m_nrows; ++jcol)
+								{
+									value += matrix_ptr[jcol] * x[jcol];
+								}
+								y[irow] = value;
+								matrix_ptr += m_nrows;
+							};
+						}
+					}
+				}
+			}
+		}
       }
 
       void omptilemult(VectorType const& x, VectorType& y) const

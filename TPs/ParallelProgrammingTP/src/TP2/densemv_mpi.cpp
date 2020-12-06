@@ -51,7 +51,7 @@ int main(int argc, char** argv)
   int my_rank = 0 ;
   int nb_proc = 1 ;
   MPI_Comm_size(MPI_COMM_WORLD,&nb_proc) ;
-  MPI_Comm_size(MPI_COMM_WORLD,&my_rank) ;
+  MPI_Comm_rank(MPI_COMM_WORLD,&my_rank) ;
 
   using namespace PPTP ;
 
@@ -112,7 +112,8 @@ int main(int argc, char** argv)
     {
 
       // SEND GLOBAL SIZE
-
+	int nrows_to_send = nrows;
+	MPI_Bcast(&nrows_to_send, 1, MPI_INT, 0, MPI_COMM_WORLD); 
 
       // SEND MATRIX
       for (int i=1; i<nb_proc;++i)
@@ -161,14 +162,16 @@ int main(int argc, char** argv)
   else
   {
     // COMPUTE LOCAL MATRICE LOCAL VECTOR
-
+	
     DenseMatrix local_matrix ;
     std::size_t nrows ;
     std::size_t local_nrows ;
 
     {
       // RECV DATA FROM MASTER PROC
-
+	int nrows_to_recieve;
+	MPI_Bcast(&nrows_to_recieve, 1, MPI_INT, 0, MPI_COMM_WORLD); 
+	std::cout<< "Bcast recieve " <<my_rank << " , " << nrows_to_recieve << std::endl;
       // RECV GLOBAL SIZE
 
       // RECV LOCAL SIZE
