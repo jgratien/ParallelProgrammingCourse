@@ -240,13 +240,14 @@ int main( int argc, char** argv )
 			if(i<r) nrows_local++;
 			MPI_Status status;
 			std::vector<double> final_receive(nrows_local*ncols*3);
-			MPI_Recv(final_receive.data(), nrows_local*ncols*3, MPI_UNSIGNED_CHAR, i, 8000, MPI_COMM_WORLD, &status);
+			MPI_Recv(final_receive.data(), nrows_local*ncols*3, MPI_DOUBLE, i, 8000, MPI_COMM_WORLD, &status);
 			for (int ro=begf; ro<begf+nrows_local; ro++)
 			{
 				for(int co=0;co<ncols;co++)
 				{      
 				        int index = (ro-begf)*ncols*3 + co*3;	
 					Vec3b& img = image.at<Vec3b>(ro,co);	
+					//cout<<"   "<<final_receive[index]<<"   "<<final_receive[index+1]<<"   "<<final_receive[index+2];
 					img[0] = final_receive[index];
 					img[1] = final_receive[index+1];
 					img[2] = final_receive[index+2];
@@ -336,7 +337,7 @@ int main( int argc, char** argv )
 				final_send[index+2] = centroids[3*z+2];
 			}
 		}
-		MPI_Send(final_send.data(), nrows_local*ncols*3, MPI_UNSIGNED_CHAR, 0, 8000, MPI_COMM_WORLD);
+		MPI_Send(final_send.data(), nrows_local*ncols*3, MPI_DOUBLE, 0, 8000, MPI_COMM_WORLD);
 	}  
 
 	// break; 
