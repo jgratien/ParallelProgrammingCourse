@@ -9,7 +9,6 @@
 #define SRC_IMGPROCESSING_KMEANALGO_H_
 #include <cmath>
 #include <cstdint>
-#define MAX_UCHAR 255
 #include <iostream>
 #include <time.h>
 #include <omp.h>
@@ -154,42 +153,17 @@ namespace PPTP
 
 			int i, j;
 			uchar pixel;
-
-			switch (m_nb_channels)
+			for (int k = 0; k < m_nb_centroid; k++)
 			{
-			//Grays Scale
-			case 1:
+				j = rand() % image.cols;
+				i = rand() % image.rows;
 
-				for (int k = 0; k < m_nb_centroid; k++)
+				for (int c = 0; c < m_nb_channels; c++)
 				{
-					j = rand() % image.cols;
-					i = rand() % image.rows;
-					pixel = image.at<uchar>(i, j);
+					pixel = m_nb_channels == 1 ? image.at<uchar>(i, j) : image.at<Vec3b>(i, j)[c];
 					m_centroids.push_back(pixel);
-					m_new_centroids[k] = (double)pixel;
+					m_new_centroids[k * m_nb_channels + c] = (double)pixel;
 				}
-				break;
-
-			//RGB
-			case 3:
-				Mat_<Vec3b> *_I = new Mat_<Vec3b>();
-				*_I = image;
-				std::cout << "Image copied by pointer" << std::endl;
-				for (int k = 0; k < m_nb_centroid; k++)
-				{
-
-					j = rand() % (image.cols - 2) + 1;
-					i = rand() % (image.rows - 2) + 1;
-					for (int c = 0; c < 3; c++)
-					{
-						pixel = (*_I)(i, j)[c];
-						m_centroids.push_back(pixel);
-						m_new_centroids[k * m_nb_channels + c] = (double)pixel;
-					}
-				}
-				delete _I;
-
-				break;
 			}
 		}
 
