@@ -37,6 +37,7 @@ int main(int argc, char **argv)
   desc.add_options()
     ("help", "produce help")
     ("file", value<std::string>(), "image file")
+    ("nb-threads", value<int>()->default_value(1), "number of threads")
     ("show", value<int>()->default_value(0), "show image")
     ("seg", value<int>()->default_value(0), "kmean segmentation")
     ("nb-centroids", value<int>()->default_value(1), "centroids number (k value)");
@@ -49,7 +50,10 @@ int main(int argc, char **argv)
     std::cout << desc << "\n";
     return 1;
   }
-
+  
+  // Set the number of threads
+  int nb_threads = vm["nb-threads"].as<int>();
+  omp_set_num_threads(nb_threads);
 
   std::string img_file = vm["file"].as<std::string>();
   Mat image;
@@ -96,7 +100,7 @@ int main(int argc, char **argv)
     // Print exec time
     cout << "-----------------"
      	<< "\nMETHOD : "
-      	<< " SERIAL "
+      	<< " OPENMP "
        	<< "\nEXECUTION TIME: "
      	<< exec_time.count()
        	<< " MicroSecs"
