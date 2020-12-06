@@ -138,7 +138,7 @@ int main(int argc, char **argv)
     localNrows = slaveLocalNrows + rest;
 
     //Setting & Bcasting data distr buffer
-    std::size_t base_buff[4] = {nb_centroids, nb_channels, cols, slaveLocalNrows};
+    std::size_t base_buff[4] = {std::size_t(nb_centroids), nb_channels, cols, slaveLocalNrows};
     if (nbProc - 1)
     {
       MPI_Ibcast(&base_buff, 4, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD, &req0);
@@ -202,7 +202,7 @@ int main(int argc, char **argv)
       for (int i = 0; i < nb_centroids; i++)
       {
         temp = 0;
-        for (int c = 0; c < nb_channels; c++)
+        for (size_t c = 0; c < nb_channels; c++)
         {
           newCentroidsGlobal[i * nb_channels + c] = (float)newCentroidsGlobal[i * nb_channels + c] / (cluster_sizes_global[i] == 0 ? 1.0 : (float)cluster_sizes_global[i]);
           temp += (newCentroidsGlobal[i * nb_channels + c] - (float)centroids[i * nb_channels + c]) * (newCentroidsGlobal[i * nb_channels + c] - (float)centroids[i * nb_channels + c]);
@@ -211,7 +211,7 @@ int main(int argc, char **argv)
       }
 
       max_displ = 0;
-      for (int i = 0; i < nb_centroids; i++)
+      for (size_t i = 0; i < nb_centroids; i++)
       {
         if (displacement[i] > max_displ)
         {
@@ -226,7 +226,7 @@ int main(int argc, char **argv)
 
       //Stop conditions
       n_iter += 1;
-      stop = max_displ <= epsilon | n_iter == (max_iterations - 1);
+      stop = (max_displ <= epsilon) | (n_iter == (max_iterations - 1));
 
       //Notifying the other slave processors
       MPI_Bcast(&stop, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
@@ -258,6 +258,7 @@ int main(int argc, char **argv)
 
     Mat *outPutImage = new Mat(rows, cols, (nb_channels == 1) ? CV_8UC1 : CV_8UC3, flatImage.data());
 
+    img_file.resize(img_file.size() - 4);
     string fileName = img_file + "_MPI_Segmented.jpg";
 
     imwrite(fileName, *outPutImage);

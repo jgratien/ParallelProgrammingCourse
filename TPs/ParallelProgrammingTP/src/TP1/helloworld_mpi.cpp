@@ -32,26 +32,26 @@ int main(int argc, char** argv)
   }
 
   // Initialize MPI
-  // MPI_Init(argc,arcv) ;
+  MPI_Init(&argc,&argv) ;
 
 
   PPTP::Timer timer ;
   {
     PPTP::Timer::Sentry sentry(timer,"HelloWord") ;
-
-
-    //#pragma omp ....CREATE PARALLEL SECTION
     {
       int my_rank = 0 ;
       int nb_procs = 1 ;
       // get nb procs
+      nb_procs = MPI::COMM_WORLD.Get_size(); //Or MPI_Comm_size(MPI_COMM_WORLD, &nb_procs);
       // get process rank
-      std::cout<<"Hello world ("<<my_rank<<","<<nb_procs<<")"<<std::endl ;
+      my_rank = MPI::COMM_WORLD.Get_rank();
+      std::cout<<"Hello world, my rank : "<<my_rank<<", number of processors : "<<nb_procs<<")"<<std::endl ;
     }
+
   }
   timer.printInfo() ;
 
   // Finalyze MPI
-  // MPI_Finalize() ;
+  MPI_Finalize() ;
   return 0 ;
 }

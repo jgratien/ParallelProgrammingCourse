@@ -13,6 +13,7 @@
 void init_centroids(cv::Mat const &image, int nb_channels, int nb_centroid, std::vector<uchar> &centroids)
 {
     using namespace cv;
+    uchar pixel = 0;
 
     std::cout << "Initialization started for " << nb_centroid << " centroids" << std::endl;
 
@@ -22,7 +23,6 @@ void init_centroids(cv::Mat const &image, int nb_channels, int nb_centroid, std:
     srand((unsigned)time(&t));
 
     int i, j;
-    uchar pixel;
 
     for (int k = 0; k < nb_centroid; k++)
     {
@@ -41,7 +41,6 @@ void init_centroids(cv::Mat const &image, int nb_channels, int nb_centroid, std:
 uint32_t argClosest(double &distance, int index, std::vector<u_char> const &flat_image, int nb_channels, int nb_centroids, std::vector<u_char> centroids)
 {
     using namespace cv;
-
     uchar pixel = 0;
     double temp = 0;
     uint32_t c = 0;
@@ -78,7 +77,6 @@ void update_centroid(std::vector<u_char> const &flat_image,
 {
     using namespace cv;
 
-    uchar pixel = 0;
     double distance = 0;
     uint32_t c = 0;
 
