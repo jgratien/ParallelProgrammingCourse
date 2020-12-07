@@ -63,8 +63,9 @@ int main( int argc, char** argv )
 
 	std::ofstream benchmark;
 
-	benchmark.open ("SEQUENTIAL_Benchmark_Report.csv");
-	benchmark << "Kmeans, Time(ms),SEQUENTIAL\n";
+	
+	benchmark.open ("OPEN_MP_Benchmark_Report.csv");
+	benchmark << "Kmeans, Time(ms),OPEN_MP\n";
 	int kmeans[17] = {1,2,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60};
 	for(int iter =0; iter<17; iter++)
 	{
@@ -282,9 +283,10 @@ int main( int argc, char** argv )
 			cout <<"\n\nThe process WITH OPEN_MP took "<< duration.count()<<" milliseconds for K = "<<k<< std::endl; 
 		//cout << "The OPEN_MP version is "<<acc<<" milliseconds faster than sequential"<< std::endl;
 
-		else cout <<"\n\nThe process WITHOUT OPEN_MP took "<< duration.count()<<" milliseconds with K ="<<k<< std::endl; 
+		else cout <<"\n\nThe process WITHOUT OPEN_MP took "<< duration.count()<<" milliseconds with K = "<<k<< std::endl; 
 
-		benchmark<<k<<","<<duration.count()<<",Sequential\n";
+		benchmark<<k<<","<<duration.count()<<",OPEN_MP\n";
+		
 
 
 
