@@ -55,17 +55,12 @@ int main( int argc, char** argv )
 
 	using namespace std;
 
-	std::string img_file = vm["file"].as<std::string>() ;
-	Mat image;
-	image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);   // Read the file
-	int ncols = image.cols;
-	int nrows = image.rows;
 
-	if(! image.data )                              // Check for invalid input
+/*	if(! image.data )                              // Check for invalid input
 	{
 		cout <<  "Could not open or find the image" << std::endl ;
 		return -1;
-	}
+	}*/
 
 
 
@@ -77,12 +72,18 @@ int main( int argc, char** argv )
 	{
 		auto start = high_resolution_clock::now();
 
+		std::string img_file = vm["file"].as<std::string>() ;
+		Mat image;
 		image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);   // Read the file
+		int ncols = image.cols;
+		int nrows = image.rows;
+
+
 		const int k = kmeans[iter];
 
 		/*cout<<"NB CHANNELS : "<<image.channels()<<std::endl ;
-		cout<<"NROWS       : "<<image.rows<<std::endl ;
-		cout<<"NCOLS       : "<<image.cols<<std::endl ;*/
+		  cout<<"NROWS       : "<<image.rows<<std::endl ;
+		  cout<<"NCOLS       : "<<image.cols<<std::endl ;*/
 		const int ch = image.channels();
 		std::vector<uchar> pixels (ncols*nrows*ch);
 		if(image.isContinuous())
@@ -109,8 +110,8 @@ int main( int argc, char** argv )
 				centroids[j*ch+2] = rand[2];
 
 				/*cout<<"\nRed value for randomly initialised centroid number "<< j+1<<" is ="<<centroids[j*ch]<<std::endl; 
-				cout<<"Green value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j*ch+1]<<std::endl; 
-				cout<<"Blue value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j*ch+2]<<std::endl;*/}
+				  cout<<"Green value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j*ch+1]<<std::endl; 
+				  cout<<"Blue value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j*ch+2]<<std::endl;*/}
 
 
 			else {
@@ -188,23 +189,23 @@ int main( int argc, char** argv )
 			std::vector <double> new_centroids(ch*k,0.0) ;
 			//cout<<"Done with centroid sums of cycle "<<count+1<<std::endl;
 
-		/*	for(int i=0; i<k; i++)
-			{
+				for(int i=0; i<k; i++)
+				{
 				if(ch==3){	new_centroids[ch*i] = base_all[l*i] /base_all[l*i+3] ;
-					new_centroids[ch*i+1] = base_all[l*i+1]/base_all[l*i+3] ;
-					new_centroids[ch*i+2] = base_all[l*i+2]/base_all[l*i+3] ; 
-					size2[i] = base_all[l*i+3];
-					cout<<"\nRed value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i]<<std::endl; 
-					cout<<"Green value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+1]<<std::endl; 
-					cout<<"Blue value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+2]<<std::endl;}
+				new_centroids[ch*i+1] = base_all[l*i+1]/base_all[l*i+3] ;
+				new_centroids[ch*i+2] = base_all[l*i+2]/base_all[l*i+3] ; 
+				size2[i] = base_all[l*i+3];
+				/*cout<<"\nRed value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i]<<std::endl; 
+				cout<<"Green value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+1]<<std::endl; 
+				cout<<"Blue value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+2]<<std::endl;*/}
 
 				else{
-					cout<<"\n\nGrayscale value of centroid "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[i];
+				cout<<"\n\nGrayscale value of centroid "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[i];
 				}
 
 
 
-			}*/
+				}
 
 			disp = algo.compute_displacement(new_centroids,centroids);
 
@@ -217,10 +218,12 @@ int main( int argc, char** argv )
 
 			count++;
 		}
+
+		cout<<"Count for K ="<<k<<" is "<<count<<endl;
 		//cout<<"\n\nKmeans has done its work, now it's  time to display the new image"<<std::endl;
 
 		//#pragma omp parallel for
-		/*for (int i=0; i<k; i++)
+		for (int i=0; i<k; i++)
 		{
 			cout<<"\nRed value for FINAL centroid number "<<i+1<<" is = "<<centroids[ch*i]<<std::endl;
 
@@ -229,7 +232,7 @@ int main( int argc, char** argv )
 
 			cout<<"Number of pixels belonging to centorid number "<< i+1 <<" is = "<<size2[i]<<std::endl;
 
-		}*/
+		}
 
 		tbb::parallel_for( tbb::blocked_range<int>(0,nrows),
 				[&](tbb::blocked_range<int> r)
@@ -263,9 +266,9 @@ int main( int argc, char** argv )
 				}});
 		auto stop = high_resolution_clock::now(); 
 		auto duration = duration_cast<milliseconds>(stop - start);
-	       	cout <<"\n\nThe process took "<< duration.count()<<" milliseconds for TBB with K = "<<k<< std::endl;
+		cout <<"\n\nThe process took "<< duration.count()<<" milliseconds for TBB with K = "<<k<< std::endl;
 
-			benchmark<<k<<","<<duration.count()<<",TBB\n";		
+		benchmark<<k<<","<<duration.count()<<",TBB\n";		
 
 
 
@@ -274,7 +277,7 @@ int main( int argc, char** argv )
 		//cout<<"\nNew Image Displayed with "<<k<<" amount of colors"<<std::endl;	 
 
 		imwrite("./Seg_ImageTBB.jpg",image) ;}
-		return 0 ;        }
+	return 0 ;        }
 
 
 
