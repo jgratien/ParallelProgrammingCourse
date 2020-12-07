@@ -65,6 +65,7 @@ namespace PPTP
 				delete[] clustered_img;
 				for (auto p: clst_colorsum) delete[] p;
 				for (auto p: centroids) delete[] p;
+				for (auto p: new_centroids) delete[] p;
 			}
 
 			void init_centroids(cv::Mat& image) {
