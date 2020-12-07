@@ -209,10 +209,10 @@ cout<<"\n\nKmeans has done its work, now it's  time to display the new image"<<s
 //#pragma omp parallel for
 for (int i=0; i<k; i++)
 {
-	cout<<"\nRed value for FINAL centroid number "<<i+1<<" is = "<<centroids[i]<<std::endl;
+	cout<<"\nRed value for FINAL centroid number "<<i+1<<" is = "<<centroids[ch*i]<<std::endl;
 
-	cout<<"Green value for FINAL centroid number "<<i+1<<" is = "<<centroids[i+1]<<std::endl; 
-	cout<<"Blue value for FINAL centroid number "<<i+1<<" is = "<<centroids[i+2]<<std::endl; 
+	cout<<"Green value for FINAL centroid number "<<i+1<<" is = "<<centroids[ch*i+1]<<std::endl; 
+	cout<<"Blue value for FINAL centroid number "<<i+1<<" is = "<<centroids[ch*i+2]<<std::endl; 
 
 	cout<<"Number of pixels belonging to centorid number "<< i+1 <<" is = "<<size2[i]<<std::endl;
 
@@ -236,9 +236,9 @@ tbb::parallel_for( tbb::blocked_range<int>(0,nrows),
 
 				if(ch==3)
 				{   Vec3b& pix = image.at<Vec3b>(y,x);
-				pix[0] = (unsigned char)centroids[z];
-				pix[1] = (unsigned char)centroids[z+1];
-				pix[2] = (unsigned char)centroids[z+2];}
+				pix[0] = (unsigned char)centroids[ch*z];
+				pix[1] = (unsigned char)centroids[ch*z+1];
+				pix[2] = (unsigned char)centroids[ch*z+2];}
 
 				else{
 				uchar& pix = image.at<uchar>(y,x);
