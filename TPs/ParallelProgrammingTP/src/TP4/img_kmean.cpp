@@ -262,9 +262,9 @@ int main( int argc, char** argv )
 
 			if(ch==3)
 			{   Vec3b& pix = image.at<Vec3b>(y,x);
-				pix[0] = (unsigned char)centroids[ch*z];
-				pix[1] = (unsigned char)centroids[ch*z+1];
-				pix[2] = (unsigned char)centroids[ch*z+2];}
+				pix[0] = centroids[ch*z];
+				pix[1] = centroids[ch*z+1];
+				pix[2] = centroids[ch*z+2];}
 
 			else{
 				uchar& pix = image.at<uchar>(y,x);
