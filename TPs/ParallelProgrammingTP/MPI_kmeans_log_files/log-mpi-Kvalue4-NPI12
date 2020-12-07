@@ -5,85 +5,85 @@ NB CHANNELS : 3
 NROWS       : 1920
 NCOLS       : 1072
 iteration number: 0
-epsilon: 35.4205
+epsilon: 31.81
 --------------------------------
 iteration number: 1
-epsilon: 16.6135
+epsilon: 16.1266
 --------------------------------
 iteration number: 2
-epsilon: 10.8795
+epsilon: 9.56643
 --------------------------------
 iteration number: 3
-epsilon: 7.02996
+epsilon: 6.03704
 --------------------------------
 iteration number: 4
-epsilon: 5.15758
+epsilon: 4.30396
 --------------------------------
 iteration number: 5
-epsilon: 3.56697
+epsilon: 3.42393
 --------------------------------
 iteration number: 6
-epsilon: 3.21232
+epsilon: 3.02616
 --------------------------------
 iteration number: 7
-epsilon: 2.6492
+epsilon: 2.60993
 --------------------------------
 iteration number: 8
-epsilon: 2.25552
+epsilon: 2.21379
 --------------------------------
 iteration number: 9
-epsilon: 2.69335
+epsilon: 2.281
 --------------------------------
 iteration number: 10
-epsilon: 2.36843
+epsilon: 2.16141
 --------------------------------
 iteration number: 11
-epsilon: 1.85806
+epsilon: 1.9808
 --------------------------------
 iteration number: 12
-epsilon: 1.83195
+epsilon: 1.85806
 --------------------------------
 iteration number: 13
-epsilon: 1.45711
+epsilon: 2.08195
 --------------------------------
 iteration number: 14
-epsilon: 1.90776
+epsilon: 1.77494
 --------------------------------
 iteration number: 15
-epsilon: 1.70711
+epsilon: 1.4784
 --------------------------------
 iteration number: 16
-epsilon: 1.11603
+epsilon: 1.03657
 --------------------------------
 iteration number: 17
 epsilon: 1.03657
 --------------------------------
 iteration number: 18
-epsilon: 0.957107
---------------------------------
-iteration number: 19
 epsilon: 1.11603
 --------------------------------
-iteration number: 20
+iteration number: 19
 epsilon: 0.957107
+--------------------------------
+iteration number: 20
+epsilon: 0.853553
 --------------------------------
 iteration number: 21
 epsilon: 0.853553
 --------------------------------
 iteration number: 22
-epsilon: 0.853553
+epsilon: 0.5
 --------------------------------
 iteration number: 23
-epsilon: 0.5
+epsilon: 0.603553
 --------------------------------
 iteration number: 24
-epsilon: 0.603553
---------------------------------
-iteration number: 25
 epsilon: 0.5
 --------------------------------
-iteration number: 26
+iteration number: 25
 epsilon: 0.603553
+--------------------------------
+iteration number: 26
+epsilon: 0.25
 --------------------------------
 iteration number: 27
 epsilon: 0.25
@@ -95,12 +95,9 @@ iteration number: 29
 epsilon: 0.25
 --------------------------------
 iteration number: 30
-epsilon: 0.25
---------------------------------
-iteration number: 31
 epsilon: 0
 --------------------------------
 ================================
 PERF INFO : 
-KMEANS SEGMENTATION WITH MPI:2.66257
+KMEANS SEGMENTATION WITH MPI:3.04827
 ================================

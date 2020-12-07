@@ -6,158 +6,29 @@ NCOLS       : 1072
 starting processing ... 
 computation of centroids ... 
 iteration number: 0
-epsilon: 30.8423
+epsilon: 20.1246
 -------------------------------
 iteration number: 1
-epsilon: 8.92635
+epsilon: 4.70747
 -------------------------------
 iteration number: 2
-epsilon: 4.52931
+epsilon: 2.63299
 -------------------------------
 iteration number: 3
-epsilon: 2.1392
+epsilon: 1.85349
 -------------------------------
 iteration number: 4
-epsilon: 1.86525
+epsilon: 1.1547
 -------------------------------
 iteration number: 5
-epsilon: 2.73853
+epsilon: 0.804738
 -------------------------------
 iteration number: 6
-epsilon: 0.910684
--------------------------------
-iteration number: 7
-epsilon: 1.48803
--------------------------------
-iteration number: 8
-epsilon: 1.74536
--------------------------------
-iteration number: 9
-epsilon: 2.06538
--------------------------------
-iteration number: 10
-epsilon: 1.91068
--------------------------------
-iteration number: 11
-epsilon: 1.71542
--------------------------------
-iteration number: 12
-epsilon: 1.65604
--------------------------------
-iteration number: 13
-epsilon: 1.52016
--------------------------------
-iteration number: 14
-epsilon: 1
--------------------------------
-iteration number: 15
-epsilon: 0.666667
--------------------------------
-iteration number: 16
-epsilon: 1.21676
--------------------------------
-iteration number: 17
-epsilon: 1.21676
--------------------------------
-iteration number: 18
-epsilon: 3.03032
--------------------------------
-iteration number: 19
-epsilon: 1.33333
--------------------------------
-iteration number: 20
-epsilon: 3.2821
--------------------------------
-iteration number: 21
-epsilon: 2.53512
--------------------------------
-iteration number: 22
-epsilon: 1.04875
--------------------------------
-iteration number: 23
-epsilon: 1.75931
--------------------------------
-iteration number: 24
-epsilon: 2.62611
--------------------------------
-iteration number: 25
-epsilon: 3.94344
--------------------------------
-iteration number: 26
-epsilon: 3.06372
--------------------------------
-iteration number: 27
-epsilon: 1.41421
--------------------------------
-iteration number: 28
-epsilon: 1.8165
--------------------------------
-iteration number: 29
-epsilon: 1.72718
--------------------------------
-iteration number: 30
-epsilon: 2.99258
--------------------------------
-iteration number: 31
-epsilon: 2.82777
--------------------------------
-iteration number: 32
-epsilon: 2.44949
--------------------------------
-iteration number: 33
-epsilon: 0.666667
--------------------------------
-iteration number: 34
-epsilon: 1.75931
--------------------------------
-iteration number: 35
-epsilon: 1.04875
--------------------------------
-iteration number: 36
-epsilon: 1.33333
--------------------------------
-iteration number: 37
-epsilon: 1.86525
--------------------------------
-iteration number: 38
-epsilon: 0.804738
--------------------------------
-iteration number: 39
-epsilon: 1.62611
--------------------------------
-iteration number: 40
-epsilon: 1.56185
--------------------------------
-iteration number: 41
-epsilon: 2.73205
--------------------------------
-iteration number: 42
-epsilon: 2.93784
--------------------------------
-iteration number: 43
-epsilon: 0.804738
--------------------------------
-iteration number: 44
-epsilon: 2.55851
--------------------------------
-iteration number: 45
-epsilon: 0.804738
--------------------------------
-iteration number: 46
-epsilon: 2.1044
--------------------------------
-iteration number: 47
-epsilon: 3.46771
--------------------------------
-iteration number: 48
-epsilon: 3.24802
--------------------------------
-iteration number: 49
-epsilon: 1.82137
+epsilon: 0
 -------------------------------
 segmentation starting ... 
 end!
 ================================
 PERF INFO : 
-KMEANS SEGMENTATION WITH TBB:11.5117
+KMEANS SEGMENTATION WITH TBB:1.80453
 ================================

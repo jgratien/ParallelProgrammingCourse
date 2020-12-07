@@ -87,5 +87,5 @@ segmentation starting ...
 end!
 ================================
 PERF INFO : 
-KMEANS SEGMENTATION WITH OPENMP:9.58886
+KMEANS SEGMENTATION WITH OPENMP:9.59162
 ================================

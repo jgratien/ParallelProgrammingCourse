@@ -36,5 +36,5 @@ segmentation starting ...
 end!
 ================================
 PERF INFO : 
-KMEANS SEGMENTATION WITH OPENMP:3.43548
+KMEANS SEGMENTATION WITH OPENMP:3.36416
 ================================

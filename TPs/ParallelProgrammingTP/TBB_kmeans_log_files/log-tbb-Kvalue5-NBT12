@@ -6,158 +6,71 @@ NCOLS       : 1072
 starting processing ... 
 computation of centroids ... 
 iteration number: 0
-epsilon: 31.9449
+epsilon: 19.9745
 -------------------------------
 iteration number: 1
-epsilon: 12.8167
+epsilon: 11.4863
 -------------------------------
 iteration number: 2
-epsilon: 7.77253
+epsilon: 6.60844
 -------------------------------
 iteration number: 3
-epsilon: 4.15842
+epsilon: 3.982
 -------------------------------
 iteration number: 4
-epsilon: 3.28138
+epsilon: 1.99736
 -------------------------------
 iteration number: 5
-epsilon: 1.74003
+epsilon: 1.45558
 -------------------------------
 iteration number: 6
-epsilon: 1.8129
+epsilon: 1.25558
 -------------------------------
 iteration number: 7
-epsilon: 1.4
+epsilon: 0.94641
 -------------------------------
 iteration number: 8
-epsilon: 1.37566
+epsilon: 0.848528
 -------------------------------
 iteration number: 9
-epsilon: 2.05723
+epsilon: 0.74641
 -------------------------------
 iteration number: 10
-epsilon: 1.43117
+epsilon: 0.682843
 -------------------------------
 iteration number: 11
-epsilon: 2.76652
+epsilon: 0.482843
 -------------------------------
 iteration number: 12
-epsilon: 0.965685
+epsilon: 0.682843
 -------------------------------
 iteration number: 13
-epsilon: 1.14641
+epsilon: 0.4
 -------------------------------
 iteration number: 14
 epsilon: 0.965685
 -------------------------------
 iteration number: 15
-epsilon: 1.45558
+epsilon: 0.682843
 -------------------------------
 iteration number: 16
-epsilon: 1.19362
+epsilon: 0.4
 -------------------------------
 iteration number: 17
-epsilon: 1.37566
+epsilon: 0.565685
 -------------------------------
 iteration number: 18
-epsilon: 1.33137
+epsilon: 0.4
 -------------------------------
 iteration number: 19
-epsilon: 2.02901
+epsilon: 0.4
 -------------------------------
 iteration number: 20
-epsilon: 1.91452
--------------------------------
-iteration number: 21
-epsilon: 2.49018
--------------------------------
-iteration number: 22
-epsilon: 3.14035
--------------------------------
-iteration number: 23
-epsilon: 2.24499
--------------------------------
-iteration number: 24
-epsilon: 1.39362
--------------------------------
-iteration number: 25
-epsilon: 0.74641
--------------------------------
-iteration number: 26
-epsilon: 1.43631
--------------------------------
-iteration number: 27
-epsilon: 0.930056
--------------------------------
-iteration number: 28
-epsilon: 2.38732
--------------------------------
-iteration number: 29
-epsilon: 2.00641
--------------------------------
-iteration number: 30
-epsilon: 0.765685
--------------------------------
-iteration number: 31
-epsilon: 0.682843
--------------------------------
-iteration number: 32
-epsilon: 0.829253
--------------------------------
-iteration number: 33
-epsilon: 0.829253
--------------------------------
-iteration number: 34
-epsilon: 0.74641
--------------------------------
-iteration number: 35
-epsilon: 0.889898
--------------------------------
-iteration number: 36
-epsilon: 1.43117
--------------------------------
-iteration number: 37
-epsilon: 1.13137
--------------------------------
-iteration number: 38
-epsilon: 0.682843
--------------------------------
-iteration number: 39
-epsilon: 1.33843
--------------------------------
-iteration number: 40
-epsilon: 1.0899
--------------------------------
-iteration number: 41
-epsilon: 1.5798
--------------------------------
-iteration number: 42
-epsilon: 0.34641
--------------------------------
-iteration number: 43
-epsilon: 0.765685
--------------------------------
-iteration number: 44
-epsilon: 0.829253
--------------------------------
-iteration number: 45
-epsilon: 0.889898
--------------------------------
-iteration number: 46
-epsilon: 0.629253
--------------------------------
-iteration number: 47
-epsilon: 1.04853
--------------------------------
-iteration number: 48
-epsilon: 1.17566
--------------------------------
-iteration number: 49
-epsilon: 0.6
+epsilon: 0
 -------------------------------
 segmentation starting ... 
 end!
 ================================
 PERF INFO : 
-KMEANS SEGMENTATION WITH TBB:12.7748
+KMEANS SEGMENTATION WITH TBB:5.50273
 ================================
