@@ -1,0 +1,77 @@
+#!/bin/bash
+
+### script pour executer des jobs sur Cluster Cemef
+### [ 04/2019 ]
+
+### indiquer nombre de core et duree max de votre job hh:mm:ss
+#OAR -l core=24,walltime=00:50:00
+### indiquer le nom de votre job
+#OAR -n job_exemple
+#OAR -O %jobid%.out
+#OAR -E %jobid%.out
+
+### execution par oar de $MONPROG avec $MYDATA
+### usage : oarsub -S ./job_exemple.sh
+### usage : oarsub -l core=32 -S ./job_exemple.sh
+
+### indiquer votre executable
+MONPROG=./bin/img_kmean.exe
+MONPROG_MPI=./bin/img_kmean_mpi.exe
+### indiquer votre fichier de donnees
+MYDATA=./test/TP4/cat.jpeg
+
+
+### en execution standand, rien a changer ci-apres
+
+echo DEBUT
+date
+
+#NP=$(cat $OAR_NODE_FILE | wc -l)
+#echo execution sur $NP coeurs
+#echo sur les nodes $(cat $OAR_NODE_FILE)
+
+#MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun \
+#  -n $NP \
+#  -machinefile $OAR_NODE_FILE "
+ 
+MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun"
+
+set -x
+export OMP_NUM_THREADS=1
+
+#### MPI, Open MP and TBB
+if [ -f $MONPROG ] ; then
+  if [ -f $MYDATA ] ; then
+  for nb in 1 2 4 8 12 16 24
+  do
+    for k in 2 3 4 5
+    do
+    $MONPROG --kmean-value ${k} --file $MYDATA --seg-openmp 1 --nb-threads ${nb} > OPENMP_kmeans_log_files/log-openmp-Kvalue${k}-NBT${nb}
+    $MONPROG --kmean-value ${k} --file $MYDATA --seg-tbb 1 --nb-threads ${nb} > TBB_kmeans_log_files/log-tbb-Kvalue${k}-NBT${nb}
+    $MPIRUN -np ${nb}  $MONPROG_MPI --kmean-value ${k} --file $MYDATA > MPI_kmeans_log_files/log-mpi-Kvalue${k}-NPI${nb}
+    done
+  done
+  else
+    echo "ERREUR : data $MYDATA inexistant !!"
+  fi
+else
+   echo "ERREUR : programme $MONPROG inexistant !!"
+fi
+
+#### Sequential kmeans 
+if [ -f $MONPROG ] ; then
+  if [ -f $MYDATA ] ; then
+    for k in 2 3 4 5
+    do
+    $MONPROG --kmean-value ${k} --file $MYDATA --seg 1 > SEQ_kmeans_log_files/log-seq-Kvalue${k}
+    done
+  else
+    echo "ERREUR : data $MYDATA inexistant !!"
+  fi
+else
+   echo "ERREUR : programme $MONPROG inexistant !!"
+fi
+
+
+date
+echo FIN

@@ -1,0 +1,37 @@
+--------------------------------------------------------------------------
+This command should be launched with OAR scheduler (oarsub)
+--------------------------------------------------------------------------
+NB CHANNELS : 3
+NROWS       : 1920
+NCOLS       : 1072
+iteration number: 0
+epsilon: 124.145
+--------------------------------
+iteration number: 1
+epsilon: 59.5512
+--------------------------------
+iteration number: 2
+epsilon: 25.3134
+--------------------------------
+iteration number: 3
+epsilon: 12.1106
+--------------------------------
+iteration number: 4
+epsilon: 5.54677
+--------------------------------
+iteration number: 5
+epsilon: 2.44949
+--------------------------------
+iteration number: 6
+epsilon: 1.36603
+--------------------------------
+iteration number: 7
+epsilon: 1
+--------------------------------
+iteration number: 8
+epsilon: 0
+--------------------------------
+================================
+PERF INFO : 
+KMEANS SEGMENTATION WITH MPI:0.806288
+================================

@@ -1,0 +1,112 @@
+--------------------------------------------------------------------------
+This command should be launched with OAR scheduler (oarsub)
+--------------------------------------------------------------------------
+NB CHANNELS : 3
+NROWS       : 1920
+NCOLS       : 1072
+iteration number: 0
+epsilon: 46.2874
+--------------------------------
+iteration number: 1
+epsilon: 20.2405
+--------------------------------
+iteration number: 2
+epsilon: 9.6242
+--------------------------------
+iteration number: 3
+epsilon: 5.33655
+--------------------------------
+iteration number: 4
+epsilon: 4.18376
+--------------------------------
+iteration number: 5
+epsilon: 3.83659
+--------------------------------
+iteration number: 6
+epsilon: 3.56704
+--------------------------------
+iteration number: 7
+epsilon: 3.71256
+--------------------------------
+iteration number: 8
+epsilon: 3.18756
+--------------------------------
+iteration number: 9
+epsilon: 2.95375
+--------------------------------
+iteration number: 10
+epsilon: 2.72272
+--------------------------------
+iteration number: 11
+epsilon: 2.26556
+--------------------------------
+iteration number: 12
+epsilon: 2.05851
+--------------------------------
+iteration number: 13
+epsilon: 1.80905
+--------------------------------
+iteration number: 14
+epsilon: 1.47647
+--------------------------------
+iteration number: 15
+epsilon: 1.21995
+--------------------------------
+iteration number: 16
+epsilon: 1.27647
+--------------------------------
+iteration number: 17
+epsilon: 0.965685
+--------------------------------
+iteration number: 18
+epsilon: 0.965685
+--------------------------------
+iteration number: 19
+epsilon: 0.965685
+--------------------------------
+iteration number: 20
+epsilon: 0.8
+--------------------------------
+iteration number: 21
+epsilon: 1.02925
+--------------------------------
+iteration number: 22
+epsilon: 0.482843
+--------------------------------
+iteration number: 23
+epsilon: 0.882843
+--------------------------------
+iteration number: 24
+epsilon: 0.682843
+--------------------------------
+iteration number: 25
+epsilon: 0.94641
+--------------------------------
+iteration number: 26
+epsilon: 0.4
+--------------------------------
+iteration number: 27
+epsilon: 0.2
+--------------------------------
+iteration number: 28
+epsilon: 0.482843
+--------------------------------
+iteration number: 29
+epsilon: 0.4
+--------------------------------
+iteration number: 30
+epsilon: 0.2
+--------------------------------
+iteration number: 31
+epsilon: 0.2
+--------------------------------
+iteration number: 32
+epsilon: 0.2
+--------------------------------
+iteration number: 33
+epsilon: 0
+--------------------------------
+================================
+PERF INFO : 
+KMEANS SEGMENTATION WITH MPI:4.64714
+================================

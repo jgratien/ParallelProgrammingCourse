@@ -1,0 +1,163 @@
+NB PROCS: 24
+NB AVAILABLE_THREADS: 2
+NB CHANNELS : 3
+NROWS       : 1920
+NCOLS       : 1072
+starting processing ... 
+computation of centroids ... 
+iteration number: 0
+epsilon: 31.3329
+-------------------------------
+iteration number: 1
+epsilon: 11.2826
+-------------------------------
+iteration number: 2
+epsilon: 9.01993
+-------------------------------
+iteration number: 3
+epsilon: 6.62527
+-------------------------------
+iteration number: 4
+epsilon: 4.04007
+-------------------------------
+iteration number: 5
+epsilon: 4.52991
+-------------------------------
+iteration number: 6
+epsilon: 2.85943
+-------------------------------
+iteration number: 7
+epsilon: 3.03572
+-------------------------------
+iteration number: 8
+epsilon: 1.67504
+-------------------------------
+iteration number: 9
+epsilon: 2.68541
+-------------------------------
+iteration number: 10
+epsilon: 1.83195
+-------------------------------
+iteration number: 11
+epsilon: 2.40776
+-------------------------------
+iteration number: 12
+epsilon: 2.03078
+-------------------------------
+iteration number: 13
+epsilon: 2.44984
+-------------------------------
+iteration number: 14
+epsilon: 0.612372
+-------------------------------
+iteration number: 15
+epsilon: 2.54779
+-------------------------------
+iteration number: 16
+epsilon: 1.31948
+-------------------------------
+iteration number: 17
+epsilon: 2.58972
+-------------------------------
+iteration number: 18
+epsilon: 1.03657
+-------------------------------
+iteration number: 19
+epsilon: 0.5
+-------------------------------
+iteration number: 20
+epsilon: 1.66257
+-------------------------------
+iteration number: 21
+epsilon: 1.06066
+-------------------------------
+iteration number: 22
+epsilon: 0.91257
+-------------------------------
+iteration number: 23
+epsilon: 1.16257
+-------------------------------
+iteration number: 24
+epsilon: 0.603553
+-------------------------------
+iteration number: 25
+epsilon: 2.78078
+-------------------------------
+iteration number: 26
+epsilon: 1.78657
+-------------------------------
+iteration number: 27
+epsilon: 0.353553
+-------------------------------
+iteration number: 28
+epsilon: 0.853553
+-------------------------------
+iteration number: 29
+epsilon: 1.10355
+-------------------------------
+iteration number: 30
+epsilon: 1.31948
+-------------------------------
+iteration number: 31
+epsilon: 0.5
+-------------------------------
+iteration number: 32
+epsilon: 1.30902
+-------------------------------
+iteration number: 33
+epsilon: 1.86843
+-------------------------------
+iteration number: 34
+epsilon: 1.39012
+-------------------------------
+iteration number: 35
+epsilon: 0.683013
+-------------------------------
+iteration number: 36
+epsilon: 1.21958
+-------------------------------
+iteration number: 37
+epsilon: 1.90134
+-------------------------------
+iteration number: 38
+epsilon: 0.707107
+-------------------------------
+iteration number: 39
+epsilon: 0.25
+-------------------------------
+iteration number: 40
+epsilon: 0.603553
+-------------------------------
+iteration number: 41
+epsilon: 1.16257
+-------------------------------
+iteration number: 42
+epsilon: 0.809017
+-------------------------------
+iteration number: 43
+epsilon: 1.16257
+-------------------------------
+iteration number: 44
+epsilon: 1.55105
+-------------------------------
+iteration number: 45
+epsilon: 0.603553
+-------------------------------
+iteration number: 46
+epsilon: 0.5
+-------------------------------
+iteration number: 47
+epsilon: 1.28657
+-------------------------------
+iteration number: 48
+epsilon: 0.853553
+-------------------------------
+iteration number: 49
+epsilon: 3.34521
+-------------------------------
+segmentation starting ... 
+end!
+================================
+PERF INFO : 
+KMEANS SEGMENTATION WITH TBB:13.0949
+================================

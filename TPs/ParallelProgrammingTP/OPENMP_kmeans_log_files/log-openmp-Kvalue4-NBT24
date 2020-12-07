@@ -1,0 +1,100 @@
+NB PROCS: 24
+NB AVAILABLE_THREADS: 24
+NB CHANNELS : 3
+NROWS       : 1920
+NCOLS       : 1072
+starting processing ... 
+computation of centroids ... 
+iteration number: 0
+epsilon: 16.9221
+-------------------------------
+iteration number: 1
+epsilon: 9.22871
+-------------------------------
+iteration number: 2
+epsilon: 6.92922
+-------------------------------
+iteration number: 3
+epsilon: 4.67214
+-------------------------------
+iteration number: 4
+epsilon: 4.13008
+-------------------------------
+iteration number: 5
+epsilon: 3.28171
+-------------------------------
+iteration number: 6
+epsilon: 2.6492
+-------------------------------
+iteration number: 7
+epsilon: 2.25552
+-------------------------------
+iteration number: 8
+epsilon: 2.69335
+-------------------------------
+iteration number: 9
+epsilon: 2.36843
+-------------------------------
+iteration number: 10
+epsilon: 1.85806
+-------------------------------
+iteration number: 11
+epsilon: 1.83195
+-------------------------------
+iteration number: 12
+epsilon: 1.45711
+-------------------------------
+iteration number: 13
+epsilon: 1.90776
+-------------------------------
+iteration number: 14
+epsilon: 1.70711
+-------------------------------
+iteration number: 15
+epsilon: 1.11603
+-------------------------------
+iteration number: 16
+epsilon: 1.28657
+-------------------------------
+iteration number: 17
+epsilon: 0.853553
+-------------------------------
+iteration number: 18
+epsilon: 1.11603
+-------------------------------
+iteration number: 19
+epsilon: 0.957107
+-------------------------------
+iteration number: 20
+epsilon: 0.853553
+-------------------------------
+iteration number: 21
+epsilon: 0.853553
+-------------------------------
+iteration number: 22
+epsilon: 0.5
+-------------------------------
+iteration number: 23
+epsilon: 0.603553
+-------------------------------
+iteration number: 24
+epsilon: 0.5
+-------------------------------
+iteration number: 25
+epsilon: 0.603553
+-------------------------------
+iteration number: 26
+epsilon: 0.25
+-------------------------------
+iteration number: 27
+epsilon: 0.25
+-------------------------------
+iteration number: 28
+epsilon: 0
+-------------------------------
+segmentation starting ... 
+end!
+================================
+PERF INFO : 
+KMEANS SEGMENTATION WITH OPENMP:8.71095
+================================

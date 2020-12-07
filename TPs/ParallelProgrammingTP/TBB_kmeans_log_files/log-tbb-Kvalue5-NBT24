@@ -1,0 +1,55 @@
+NB PROCS: 24
+NB AVAILABLE_THREADS: 24
+NB CHANNELS : 3
+NROWS       : 1920
+NCOLS       : 1072
+starting processing ... 
+computation of centroids ... 
+iteration number: 0
+epsilon: 24.012
+-------------------------------
+iteration number: 1
+epsilon: 13.281
+-------------------------------
+iteration number: 2
+epsilon: 7.73485
+-------------------------------
+iteration number: 3
+epsilon: 4.86776
+-------------------------------
+iteration number: 4
+epsilon: 3.72505
+-------------------------------
+iteration number: 5
+epsilon: 2.16929
+-------------------------------
+iteration number: 6
+epsilon: 1.41995
+-------------------------------
+iteration number: 7
+epsilon: 1.4899
+-------------------------------
+iteration number: 8
+epsilon: 0.882843
+-------------------------------
+iteration number: 9
+epsilon: 0.765685
+-------------------------------
+iteration number: 10
+epsilon: 0.2
+-------------------------------
+iteration number: 11
+epsilon: 0.629253
+-------------------------------
+iteration number: 12
+epsilon: 0.682843
+-------------------------------
+iteration number: 13
+epsilon: 0
+-------------------------------
+segmentation starting ... 
+end!
+================================
+PERF INFO : 
+KMEANS SEGMENTATION WITH TBB:3.67566
+================================
