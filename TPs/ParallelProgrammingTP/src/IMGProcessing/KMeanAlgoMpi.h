@@ -122,7 +122,7 @@ void gen_segmentation(std::vector<u_char> &flat_image,
     {
         for (int channel = 0; channel < nb_channels; channel++)
         {
-            flat_image[index * nb_channels + channel] = (int)centroids.at(mapping[index] + (channel + 2) % nb_channels);
+            flat_image[index * nb_channels + channel] = (uchar)centroids.at(mapping[index]*nb_channels + channel);
         }
     }
 }
