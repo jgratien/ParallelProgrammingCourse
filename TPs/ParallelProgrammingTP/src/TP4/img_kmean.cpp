@@ -40,6 +40,7 @@ int main( int argc, char** argv )
 		("max_it",value<int>()->default_value(50), "Max_iterations")
 		("openmp",value<int>()->default_value(1), "OPEN_MP")
 		("epsilon",value<double>()->default_value(0.9), "Epsilon")
+		("gray",value<int>()->default_value(0), "GRAYSCALE")
 		("kmean",value<int>()->default_value(4), "KMean k value") ;
 	variables_map vm;
 	store(parse_command_line(argc, argv, desc), vm);
@@ -54,31 +55,34 @@ int main( int argc, char** argv )
 
 
 	/*if(vm["show"].as<int>()==1)
-	{
-		namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
-		imshow( "Display window", image );                   // Show our image inside it.
-		waitKey(0);                                          // Wait for a keystroke in the window
-		return 0 ;
-	}*/
+	  {
+	  namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
+	  imshow( "Display window", image );                   // Show our image inside it.
+	  waitKey(0);                                          // Wait for a keystroke in the window
+	  return 0 ;
+	  }*/
 
 	std::ofstream benchmark;
 
-	
+
 	benchmark.open ("OPEN_MP_Benchmark_Report.csv");
 	benchmark << "Kmeans, Time(ms),OPEN_MP\n";
 	int kmeans[17] = {1,2,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60};
-	for(int iter =0; iter<17; iter++)
-	{
+	//for(int iter =0; iter<17; iter++)
+	//{
 		auto start = high_resolution_clock::now();
 
 		std::string img_file = vm["file"].as<std::string>() ;
 		Mat image;
-		image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);   // Read the file
+                const int gray = vm["gray"].as<int>() ;
+		if (gray==1)
+		image = imread(img_file.c_str(), CV_LOAD_IMAGE_ANYDEPTH);
+		else image = imread(img_file.c_str(),CV_LOAD_IMAGE_COLOR);
 		int ncols = image.cols;
 		int nrows = image.rows;
 
 
-		const int k = kmeans[iter];
+		const int k = kmeans[2];
 
 		/*cout<<"NB CHANNELS : "<<image.channels()<<std::endl ;
 		  cout<<"NROWS       : "<<image.rows<<std::endl ;
@@ -109,9 +113,9 @@ int main( int argc, char** argv )
 				centroids[j*ch+1] = rand[1];
 				centroids[j*ch+2] = rand[2];
 
-			/*	cout<<"\nRed value for randomly initialised centroid number "<< j+1<<" is ="<<centroids[j]<<std::endl; 
-				cout<<"Green value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j+1]<<std::endl; 
-				cout<<"Blue value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j+2]<<std::endl;*/}
+				/*	cout<<"\nRed value for randomly initialised centroid number "<< j+1<<" is ="<<centroids[j]<<std::endl; 
+					cout<<"Green value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j+1]<<std::endl; 
+					cout<<"Blue value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j+2]<<std::endl;*/}
 
 
 			else {
@@ -131,7 +135,7 @@ int main( int argc, char** argv )
 
 		{
 			std::vector <double> base(ch*k, 0.0)  ;
-		//	cout<<"\n\nParsing through image pixels to check centroid similarity, cycle number: "<<count+1<<std::endl;
+			//	cout<<"\n\nParsing through image pixels to check centroid similarity, cycle number: "<<count+1<<std::endl;
 
 
 #pragma omp declare reduction(vec_double_plus : std::vector<double>: std::transform(omp_out.begin(), omp_out.end(), omp_in.begin(), omp_out.begin(), std::plus<double>()))initializer(omp_priv = omp_orig) 
@@ -174,8 +178,8 @@ int main( int argc, char** argv )
 					new_centroids[ch*i+1] = base[ch*i+1]/size[i] ;
 					new_centroids[ch*i+2] = base[ch*i+2]/size[i] ; 
 					/*cout<<"\nRed value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i]<<std::endl; 
-					cout<<"Green value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+1]<<std::endl; 
-					cout<<"Blue value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+2]<<std::endl;*/}
+					  cout<<"Green value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+1]<<std::endl; 
+					  cout<<"Blue value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+2]<<std::endl;*/}
 
 				else{
 
@@ -247,16 +251,24 @@ int main( int argc, char** argv )
 		//cout<<"\n\nKmeans has done its work, now it's  time to display the new image"<<std::endl;
 
 		//#pragma omp parallel for
-	/*	for (int i=0; i<k; i++)
-		{
-			cout<<"\nRed value for FINAL centroid number "<<i+1<<" is = "<<centroids[i*ch]<<std::endl;
+		for (int i=0; i<k; i++)
+			{
+			if (ch==3)
+			{cout<<"\nRed value for FINAL centroid number "<<i+1<<" is = "<<centroids[i*ch]<<std::endl;
 
 			cout<<"Green value for FINAL centroid number "<<i+1<<" is = "<<centroids[i*ch+1]<<std::endl; 
 			cout<<"Blue value for FINAL centroid number "<<i+1<<" is = "<<centroids[i*ch+2]<<std::endl; 
 
-			cout<<"Number of pixels belonging to centorid number "<< i+1 <<" is = "<<size[i]<<std::endl;
+			cout<<"Number of pixels belonging to centorid number "<< i+1 <<" is = "<<size[i]<<std::endl;}
 
-		}*/         
+			else {
+				cout<<"Gray value for FINAL centroid number "<<i+1<<" is = "<<centroids[i]<<std::endl; 
+
+			cout<<"Number of pixels belonging to centorid number "<< i+1 <<" is = "<<size[i]<<std::endl;
+			
+			}
+
+			}         
 #pragma omp parallel for collapse(2) if(openmp==1)
 		for(int y=0; y<nrows; y++)
 		{
@@ -276,7 +288,7 @@ int main( int argc, char** argv )
 					pix = centroids[z];}
 			}
 		}
-		auto stop = high_resolution_clock::now(); 
+		auto stop = high_resolution_clock::now();
 		auto duration = duration_cast<milliseconds>(stop - start); 
 
 		if (openmp == 1) 
@@ -286,14 +298,14 @@ int main( int argc, char** argv )
 		else cout <<"\n\nThe process WITHOUT OPEN_MP took "<< duration.count()<<" milliseconds with K = "<<k<< std::endl; 
 
 		benchmark<<k<<","<<duration.count()<<",OPEN_MP\n";
-		
 
 
 
 
-		
-		imwrite("./Seg_Image_OPENMP.jpg",image) ;}
 
-		return 0 ;
-	}
+if(gray==1) 	imwrite("./Seg_Gray_Image_OPENMP.jpg",image); 
+else		imwrite("./Seg_Image_OPENMP.jpg",image) ;//}
+
+	return 0 ;
+}
 
