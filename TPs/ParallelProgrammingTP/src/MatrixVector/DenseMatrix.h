@@ -188,6 +188,8 @@ namespace PPTP
         }
       }
 
+      std::vector<double> get_values(){return m_values;}
+
     private:
       // number of lines
       std::size_t         m_nrows = 0;
