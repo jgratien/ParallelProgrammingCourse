@@ -118,7 +118,9 @@ int main( int argc, char** argv )
           break ;
       }
       timer.printInfo();
-      imwrite("../Seg_Image.jpg",image) ;
+      std::string path = "../Seg_Image-" + std::to_string(nb_centroids) + ".jpg";
+      imwrite(path, image);
+      //imwrite("../Seg_Image.jpg",image) ;
     }
 
     if(vm["seg-openmp"].as<int>()==1)
