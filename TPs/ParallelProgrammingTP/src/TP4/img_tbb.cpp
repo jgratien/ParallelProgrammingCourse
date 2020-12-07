@@ -91,13 +91,13 @@ int main( int argc, char** argv )
 		if(ch==3)
 		{	Vec3b& rand = image.at<Vec3b>(ro,co);
 
-			centroids[j] = rand[0];
-			centroids[j+1] = rand[1];
-			centroids[j+2] = rand[2];
+			centroids[j*ch] = rand[0];
+			centroids[j*ch+1] = rand[1];
+			centroids[j*ch+2] = rand[2];
 
-			cout<<"\nRed value for randomly initialised centroid number "<< j+1<<" is ="<<centroids[j]<<std::endl; 
-			cout<<"Green value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j+1]<<std::endl; 
-			cout<<"Blue value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j+2]<<std::endl;}
+			cout<<"\nRed value for randomly initialised centroid number "<< j+1<<" is ="<<centroids[j*ch]<<std::endl; 
+			cout<<"Green value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j*ch+1]<<std::endl; 
+			cout<<"Blue value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j*ch+2]<<std::endl;}
 
 
 		else {

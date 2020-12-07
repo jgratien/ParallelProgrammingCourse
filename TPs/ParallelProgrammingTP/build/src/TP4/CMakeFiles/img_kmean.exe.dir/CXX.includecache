@@ -6,6 +6,36 @@
 
 #IncludeRegexTransform: 
 
+../src/IMGProcessing/KMeanAlgo.h
+cmath
+-
+cstdint
+-
+iostream
+-
+time.h
+-
+omp.h
+-
+chrono
+-
+ctime
+-
+limits
+-
+opencv2/core/core.hpp
+-
+opencv2/highgui/highgui.hpp
+-
+opencv2/imgproc/imgproc.hpp
+-
+iostream
+-
+random
+-
+algorithm
+-
+
 /gext/fadi.bechara/build/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP4/img_kmean.cpp
 algorithm
 -
@@ -34,6 +64,8 @@ boost/program_options/cmdline.hpp
 boost/program_options/variables_map.hpp
 -
 chrono
+-
+IMGProcessing/KMeanAlgo.h
 -
 
 /gext/jean-marc.gratien/ModuleHPC2020/local/opencv/include/opencv/cxcore.h
