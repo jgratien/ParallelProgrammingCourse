@@ -94,15 +94,15 @@ namespace PPTP
 				}
 
 				n += 1;
-				std::cout << "+ Displacement at iteration " << n << " = " << max_displacement << std::endl;
+				//std::cout << "+ Displacement at iteration " << n << " = " << max_displacement << std::endl;
 
-				for (int i = 0; i < m_nb_centroid; i++)
-				{
-					std::cout << "++ Nb pixels for cluster" << i << " = " << m_cluster_sizes[i] << std::endl;
-				}
+				//for (int i = 0; i < m_nb_centroid; i++)
+				//{
+				//	std::cout << "++ Nb pixels for cluster" << i << " = " << m_cluster_sizes[i] << std::endl;
+				//}
 
-				std::cout << "----------------------------------------------------------\n"
-						  << std::endl;
+				//std::cout << "----------------------------------------------------------\n"
+				//		  << std::endl;
 
 			} while ((n < max_iterations) & (max_displacement > epsilon));
 
@@ -117,26 +117,26 @@ namespace PPTP
 				std::cout << "Optimal centroids computed after reaching minimum displacement, and " << n << " iterations." << std::endl;
 			}
 			//	2 - Displaying the resulting centroids values
-			for (int k = 0; k < m_nb_centroid; k++)
-			{
-				std::cout << "Centroid [ " << k << " ] : \t (";
-				if (m_nb_channels == 1)
-				{
-					std::cout << (int)m_centroids[k] << ")" << std::endl;
-				}
-				else
-				{
-					for (int c = 0; c < m_nb_channels - 1; c++)
-					{
-						std::cout << (int)m_centroids[k * m_nb_channels + c] << " , ";
-					}
-					std::cout << (int)m_centroids[k * m_nb_channels + m_nb_channels - 1] << ") " << std::endl;
-				}
-			}
+			//for (int k = 0; k < m_nb_centroid; k++)
+			//{
+			//	std::cout << "Centroid [ " << k << " ] : \t (";
+			//	if (m_nb_channels == 1)
+			//	{
+			//		std::cout << (int)m_centroids[k] << ")" << std::endl;
+			//	}
+			//	else
+			//	{
+			//		for (int c = 0; c < m_nb_channels - 1; c++)
+			//		{
+			//			std::cout << (int)m_centroids[k * m_nb_channels + c] << " , ";
+			//		}
+			//		std::cout << (int)m_centroids[k * m_nb_channels + m_nb_channels - 1] << ") " << std::endl;
+			//	}
+			//}
 		}
 
 		//Random centroids initialization based on image dimensions
-		void init_centroids(cv::Mat const &image, bool random = false)
+		void init_centroids(cv::Mat const &image, bool random = true)
 		{
 			using namespace cv;
 
@@ -345,7 +345,7 @@ namespace PPTP
 		}
 
 		//Kmeans + Image segmentation
-		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool randomInit = false, bool parallel = false)
+		void process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, bool randomInit = true, bool parallel = false)
 		{
 			std::cout << "Started segmentation..." << std::endl;
 			init_centroids(image, randomInit);

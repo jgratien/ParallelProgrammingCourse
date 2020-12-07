@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 
   using namespace boost::program_options;
   options_description desc;
-  desc.add_options()("help", "produce help")("file", value<std::string>(), "image file")("show", value<int>()->default_value(0), "show image")("seg", value<int>()->default_value(0), "kmean segmentation")("kmean-value", value<int>()->default_value(0), "KMean k value")("rgb", value<int>()->default_value(1), "RGB or GrayScale");
+  desc.add_options()("help", "produce help")("file", value<std::string>(), "image file")("show", value<int>()->default_value(0), "show image")("seg", value<int>()->default_value(0), "kmean segmentation")("kmean-value", value<int>()->default_value(0), "KMean k value")("rgb", value<int>()->default_value(1), "RGB or GrayScale")("parallel", value<int>()->default_value(0), "Parallel OMP");
   variables_map vm;
   store(parse_command_line(argc, argv, desc), vm);
   notify(vm);
@@ -38,30 +38,25 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  cout << "just entered" << endl;
   std::string img_file = vm["file"].as<std::string>();
   cout << "my image file : " << img_file << endl;
-  Mat image, image2;
+  Mat image;
 
   if (vm["rgb"].as<int>() == 1)
   {
-    image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);  // Read the file
-    image2 = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
+    image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
   }
   else
   {
-    image = imread(img_file.c_str(), CV_LOAD_IMAGE_GRAYSCALE);  // Read the file
-    image2 = imread(img_file.c_str(), CV_LOAD_IMAGE_GRAYSCALE); // Read the file
+    image = imread(img_file.c_str(), CV_LOAD_IMAGE_GRAYSCALE); // Read the file
   }
 
-  cout << "just entered" << endl;
   if (!image.data) // Check for invalid input
   {
     cout << "Could not open or find the image" << std::endl;
     return -1;
   }
 
-  cout << "image found good" << endl;
   if (vm["show"].as<int>() == 1)
   {
     namedWindow("Display window", WINDOW_AUTOSIZE); // Create a window for display.
@@ -75,8 +70,7 @@ int main(int argc, char **argv)
   cout << "NCOLS       : " << image.cols << std::endl;
   const int channels = image.channels();
 
-  double startSeq, endSeq;
-  double startPar, endPar;
+  double start, end;
 
   int nb_centroids = vm["kmean-value"].as<int>();
 
@@ -90,21 +84,13 @@ int main(int argc, char **argv)
     {
       cout << "=========GrayScale Kmeans=========" << endl;
     }
-    PPTP::KMeanAlgo algoSeq(channels, nb_centroids);
-    PPTP::KMeanAlgo algoPar(channels, nb_centroids);
-    algoSeq.init_centroids(image);
-    algoPar.init_centroids(image2);
-    algoPar.setCentroids(algoSeq.getCentroids());
+    PPTP::KMeanAlgo algo(channels, nb_centroids);
 
-    startSeq = now();
-    algoSeq.process(image, 100, 1, true, false);
-    endSeq = now();
+    start = now();
+    algo.process(image, 100, 1, true, (vm["parallel"].as<int>() == 1)); //3rd arg : true for random centroids in each run
+    end = now();
 
-    startPar = now();
-    algoPar.process(image2, 100, 1, true, true);
-    endPar = now();
-
-    std::cout << "Acceleration OpenMP / Sequential : " << (endSeq - startSeq) / (endPar - startPar) << std::endl;
+    std::cout << "Time : " << end - start << std::endl;
   }
 
   cout << "Writing image" << endl;
@@ -115,3 +101,4 @@ int main(int argc, char **argv)
 
   return 0;
 }
+
