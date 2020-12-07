@@ -78,7 +78,7 @@ int main( int argc, char** argv )
 	auto s = std::to_string(nb_proc);
 	std::ofstream benchmark;
 	benchmark.open (s+"_nbproc_report_MPI_.csv");
-	benchmark << "Kmeans, Time(ms),\n";
+	benchmark << "Kmeans, Time(ms),Nb_Proc\n";
 	int kmeans[11] = {1,2,4,8,12,16,24,28,32,36,40};
 	for(int iter =0; iter<11; iter++)
 	{ 
@@ -277,7 +277,7 @@ int main( int argc, char** argv )
 			auto duration = duration_cast<milliseconds>(stop - start); 
 			cout <<"\n\nThe process took "<< duration.count()<<" milliseconds for nb_proc size "<<nb_proc<<" with K = "<<k<< std::endl;
 
-			benchmark<<k<<","<<duration.count()<<"\n";	
+			benchmark<<k<<","<<duration.count()<<","<<nb_proc<<"\n";	
 			imwrite("./Kmeans_Segmented_Image_MPI.jpg",image) ;          }        
 
 
