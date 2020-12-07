@@ -1,0 +1,18 @@
+Kmeans, Time(ms),SEQUENTIAL
+1,544,Sequential
+2,2293,Sequential
+4,4712,Sequential
+8,5491,Sequential
+12,12992,Sequential
+16,18350,Sequential
+20,21197,Sequential
+24,45160,Sequential
+28,42467,Sequential
+32,29045,Sequential
+36,48519,Sequential
+40,77347,Sequential
+44,61634,Sequential
+48,74655,Sequential
+52,104987,Sequential
+56,82965,Sequential
+60,109958,Sequential
