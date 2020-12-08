@@ -135,7 +135,7 @@ int main(int argc, char** argv)
 
       			for (int i=1; i<nb_proc;++i)
       			{
-        			std::cout<<" SEND MATRIX DATA to proc "<<i<<std::endl ;
+        			//std::cout<<" SEND MATRIX DATA to proc "<<i<<std::endl ;
 
 	        		// SEND LOCAL SIZE to PROC I
 				int nrows_local = nrows/nb_proc;
@@ -154,7 +154,7 @@ int main(int argc, char** argv)
       			/***** BROAD CAST VECTOR X ******/
 			MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-        		std::cout<<" SEND VECTOR DATA to the procs"<<std::endl ;
+        		//std::cout<<" SEND VECTOR DATA to the procs"<<std::endl ;
     		}	
 
 		/****** COMPUTE LOCAL MATRICE LOCAL VECTOR ON PROC 0******/
@@ -208,14 +208,16 @@ int main(int argc, char** argv)
 	
 				MPI_Recv(local_values.data(), nrows_local, MPI_DOUBLE, i, 4000, MPI_COMM_WORLD, &status);
 
-		        	std::cout<<" RECEIVE LOCAL Y from proc "<<i<<" size "<<nrows_local<<std::endl ;
+		        	//std::cout<<" RECEIVE LOCAL Y from proc "<<i<<" size "<<nrows_local<<std::endl ;
 
 				y.insert(y.end(), local_values.begin(), local_values.end());
 				//pos+=nrows_local;
 			}
 		 }
-	      	 double normy = PPTP::norm2(y) ;
-	      	 std::cout<<"||y||="<<normy<<std::endl ; 
+	      	double normy = PPTP::norm2(y) ;
+	      	std::cout<<"||y||="<<normy<<std::endl ;
+		 
+  		timer.printInfo() ;
   	} 
   
   	else
@@ -233,7 +235,7 @@ int main(int argc, char** argv)
 
 			int nrows_to_receive;
 			MPI_Bcast(&nrows_to_receive, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			std::cout<<" receive Bcast"<<my_rank<<" value="<< nrows_to_receive<< std::endl;
+			//std::cout<<" receive Bcast"<<my_rank<<" value="<< nrows_to_receive<< std::endl;
 	     		nrows = (size_t)nrows_to_receive;	
 	
 			// RECV LOCAL SIZE
@@ -241,7 +243,7 @@ int main(int argc, char** argv)
 			MPI_Status status;	
 			MPI_Recv(&nrows_local_receive, 1, MPI_INT, 0,1000, MPI_COMM_WORLD, &status);
         
-			std::cout<<" receive local_rows"<<my_rank<<" value="<< nrows_local_receive<< std::endl;
+			//std::cout<<" receive local_rows"<<my_rank<<" value="<< nrows_local_receive<< std::endl;
       
 	     		local_nrows =(size_t)nrows_local_receive; 
 
@@ -257,7 +259,7 @@ int main(int argc, char** argv)
 	    	{
       			/******** BROAD CAST VECTOR X******/
 			MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD); 
-        		std::cout<<" RECEIVE VECTOR DATA from the master "<<std::endl ;
+        		//std::cout<<" RECEIVE VECTOR DATA from the master "<<std::endl ;
 	    	}
 
     		/****** COMPUTE LOCAL Y in current proc *****/
@@ -280,12 +282,12 @@ int main(int argc, char** argv)
     		/****** SEND THE LOCAL Y TO THE MASTER PROC TO COMPUTE THE GLOBAL Y *****/
 	    	MPI_Send(local_y.data(), local_nrows, MPI_DOUBLE, 0, 4000, MPI_COMM_WORLD);
 
-	        std::cout<<" SEND LOCAL Y from proc "<<my_rank<<" size "<<local_nrows<<std::endl ;
+	        //std::cout<<" SEND LOCAL Y from proc "<<my_rank<<" size "<<local_nrows<<std::endl ;
 	  }
   }
-  timer.printInfo() ;
 
   //Finalyze MPI
   MPI_Finalize();
+
   return 0 ;
 }
