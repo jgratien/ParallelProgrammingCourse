@@ -19,6 +19,7 @@
 #include <IMGProcessing/KMeanAlgo.h>
 #include <Utils/TimerNow.h>
 #include <boost/algorithm/string.hpp>
+#include <fstream>
 
 using namespace cv;
 using namespace std;
@@ -28,7 +29,8 @@ int main(int argc, char **argv)
 
   using namespace boost::program_options;
   options_description desc;
-  desc.add_options()("help", "produce help")("file", value<std::string>(), "image file")("show", value<int>()->default_value(0), "show image")("seg", value<int>()->default_value(0), "kmean segmentation")("kmean-value", value<int>()->default_value(0), "KMean k value")("rgb", value<int>()->default_value(1), "RGB or GrayScale")("mode", value<std::string>(), "seq | omp | tbb");
+    desc.add_options()("help", "produce help")("file", value<std::string>(), "image file")("show", value<int>()->default_value(0), "show image")("seg", value<int>()->default_value(0), "kmean segmentation")("kmean-value", value<int>()->default_value(3), "KMean k value")("rgb", value<int>()->default_value(1), "RGB or GrayScale")("mode", value<std::string>(), "seq | omp | tbb")("benchmark", value<int>()->default_value(0), "Generate benchmark");
+
   variables_map vm;
   store(parse_command_line(argc, argv, desc), vm);
   notify(vm);
@@ -38,6 +40,54 @@ int main(int argc, char **argv)
     std::cout << desc << "\n";
     return 1;
   }
+
+  //BENCHMARKING CASE
+  if (vm["benchmark"].as<int>() == 1)
+  {
+    std::string samplesDir = "../test/TP4/samples/";
+    std::string imageFileBase = samplesDir + "abstract";
+
+    std::string mode = vm["mode"].as<std::string>();
+    int nb_centroids = vm["kmean-value"].as<int>();
+
+    Mat imageBench;
+
+    std::ofstream myFile;
+    std::string logFile = "./myLogs/logKMeans_RGB_K" + std::to_string(nb_centroids) + "_"+mode+".csv";
+    myFile.open(logFile);
+
+    myFile << "mode,nRows,nCols,nChannels,nCentroids,nIterations,time,timePerCycle,\n";
+
+    for (int i = 1; i <= 5; i++)
+    {
+      double start = 0;
+      double end = 0;
+
+      std::string imageFile = imageFileBase + std::to_string(i) + ".jpg";
+      imageBench = imread(imageFile.c_str(), CV_LOAD_IMAGE_COLOR); // Read the file
+
+      const int channels = imageBench.channels();
+
+      // Check for invalid input
+      if (!imageBench.data)
+      {
+        cout << "Could not open or find the image : " << imageFile << std::endl;
+        return -1;
+      }
+
+      //Kmeans
+      PPTP::KMeanAlgo algo(channels, nb_centroids);
+
+      start = now();
+      int nb_iterations = algo.process(imageBench, 100, 1, mode);
+      end = now();
+      std::cout << "iterations : " << nb_iterations << " time : " << end - start << " mode : " << mode << std::endl;
+
+      myFile << mode << "," << imageBench.rows << "," << imageBench.cols << "," << channels << "," << nb_centroids << "," << nb_iterations << "," << end - start << "," << (end - start) / nb_iterations << ",\n";
+    }
+    myFile.close();
+    return 0;
+  } 
 
   std::string img_file = vm["file"].as<std::string>();
   Mat image;
