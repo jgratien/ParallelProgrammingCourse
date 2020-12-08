@@ -42,7 +42,7 @@ int main( int argc, char** argv )
 		("kmean",value<int>()->default_value(4), "KMEAN")
 		("epsilon",value<double>()->default_value(2.0), "EPSILON")
 		("compute-nb-cc",value<int>()->default_value(0), "compute cc")
-		("to-gray",value<int>()->default_value(0), "create gray image") ;
+		("gray",value<int>()->default_value(0), "create gray image") ;
 	variables_map vm;
 	store(parse_command_line(argc, argv, desc), vm);
 	notify(vm);
@@ -56,11 +56,11 @@ int main( int argc, char** argv )
 	using namespace std;
 
 
-/*	if(! image.data )                              // Check for invalid input
-	{
+	/*	if(! image.data )                              // Check for invalid input
+		{
 		cout <<  "Could not open or find the image" << std::endl ;
 		return -1;
-	}*/
+		}*/
 
 
 
@@ -74,7 +74,11 @@ int main( int argc, char** argv )
 
 		std::string img_file = vm["file"].as<std::string>() ;
 		Mat image;
-		image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);   // Read the file
+
+		const int gray = vm["gray"].as<int>() ;
+		if (gray==1)
+			image = imread(img_file.c_str(), CV_LOAD_IMAGE_ANYDEPTH);
+		else image = imread(img_file.c_str(),CV_LOAD_IMAGE_COLOR);
 		int ncols = image.cols;
 		int nrows = image.rows;
 
@@ -189,23 +193,27 @@ int main( int argc, char** argv )
 			std::vector <double> new_centroids(ch*k,0.0) ;
 			//cout<<"Done with centroid sums of cycle "<<count+1<<std::endl;
 
-				for(int i=0; i<k; i++)
-				{
+			for(int i=0; i<k; i++)
+			{
 				if(ch==3){	new_centroids[ch*i] = base_all[l*i] /base_all[l*i+3] ;
-				new_centroids[ch*i+1] = base_all[l*i+1]/base_all[l*i+3] ;
-				new_centroids[ch*i+2] = base_all[l*i+2]/base_all[l*i+3] ; 
-				size2[i] = base_all[l*i+3];
-				/*cout<<"\nRed value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i]<<std::endl; 
-				cout<<"Green value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+1]<<std::endl; 
-				cout<<"Blue value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+2]<<std::endl;*/}
+					new_centroids[ch*i+1] = base_all[l*i+1]/base_all[l*i+3] ;
+					new_centroids[ch*i+2] = base_all[l*i+2]/base_all[l*i+3] ; 
+					size2[i] = base_all[l*i+3];
+					/*cout<<"\nRed value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i]<<std::endl; 
+					  cout<<"Green value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+1]<<std::endl; 
+					  cout<<"Blue value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+2]<<std::endl;*/}
 
 				else{
-				cout<<"\n\nGrayscale value of centroid "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[i];
+					new_centroids[i] = base_all[l*i]/base_all[l*i+1] ; 
+					size2[i] = base_all[l*i+1];
+
+
+					cout<<"\n\nGrayscale value of centroid "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[i];
 				}
 
 
 
-				}
+			}
 
 			disp = algo.compute_displacement(new_centroids,centroids);
 
@@ -225,12 +233,18 @@ int main( int argc, char** argv )
 		//#pragma omp parallel for
 		for (int i=0; i<k; i++)
 		{
-			cout<<"\nRed value for FINAL centroid number "<<i+1<<" is = "<<centroids[ch*i]<<std::endl;
+			if(ch==3)
+			{cout<<"\nRed value for FINAL centroid number "<<i+1<<" is = "<<centroids[ch*i]<<std::endl;
 
-			cout<<"Green value for FINAL centroid number "<<i+1<<" is = "<<centroids[ch*i+1]<<std::endl; 
-			cout<<"Blue value for FINAL centroid number "<<i+1<<" is = "<<centroids[ch*i+2]<<std::endl; 
+				cout<<"Green value for FINAL centroid number "<<i+1<<" is = "<<centroids[ch*i+1]<<std::endl; 
+				cout<<"Blue value for FINAL centroid number "<<i+1<<" is = "<<centroids[ch*i+2]<<std::endl; 
 
-			cout<<"Number of pixels belonging to centorid number "<< i+1 <<" is = "<<size2[i]<<std::endl;
+				cout<<"Number of pixels belonging to centorid number "<< i+1 <<" is = "<<size2[i]<<std::endl;}
+
+			else {
+				cout<<"\nGray value for Final centroids number "<<i+1<<" is = "<<centroids[i]<<std::endl;
+				cout<<"Number of pixels belonging to centorid number "<< i+1 <<" is = "<<size2[i]<<std::endl;
+			}
 
 		}
 
@@ -270,14 +284,11 @@ int main( int argc, char** argv )
 
 		benchmark<<k<<","<<duration.count()<<",TBB\n";		
 
+		if(gray==1) 	imwrite("./Seg_Gray_TBB.jpg",image); 
+		else		imwrite("./Seg_RGB_Image_TBB.jpg",image) ;}
 
 
-
-
-		//cout<<"\nNew Image Displayed with "<<k<<" amount of colors"<<std::endl;	 
-
-		imwrite("./Seg_ImageTBB.jpg",image) ;}
-	return 0 ;        }
+		return 0 ;        }
 
 
 

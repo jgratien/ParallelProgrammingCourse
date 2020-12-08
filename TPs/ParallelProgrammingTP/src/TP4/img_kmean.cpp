@@ -65,11 +65,11 @@ int main( int argc, char** argv )
 	std::ofstream benchmark;
 
 
-	benchmark.open ("OPEN_MP_Benchmark_Report.csv");
-	benchmark << "Kmeans, Time(ms),OPEN_MP\n";
+	benchmark.open ("SEQUENTIAL_Benchmark_Report.csv");
+	benchmark << "Kmeans, Time(ms),SEQUENTIAL\n";
 	int kmeans[17] = {1,2,4,8,12,16,20,24,28,32,36,40,44,48,52,56,60};
-	//for(int iter =0; iter<17; iter++)
-	//{
+	for(int iter =0; iter<17; iter++)
+	{
 		auto start = high_resolution_clock::now();
 
 		std::string img_file = vm["file"].as<std::string>() ;
@@ -82,7 +82,7 @@ int main( int argc, char** argv )
 		int nrows = image.rows;
 
 
-		const int k = kmeans[2];
+		const int k = kmeans[iter];
 
 		/*cout<<"NB CHANNELS : "<<image.channels()<<std::endl ;
 		  cout<<"NROWS       : "<<image.rows<<std::endl ;
@@ -297,14 +297,14 @@ int main( int argc, char** argv )
 
 		else cout <<"\n\nThe process WITHOUT OPEN_MP took "<< duration.count()<<" milliseconds with K = "<<k<< std::endl; 
 
-		benchmark<<k<<","<<duration.count()<<",OPEN_MP\n";
+		benchmark<<k<<","<<duration.count()<<",SEQUENTIAL\n";
 
 
 
 
 
 if(gray==1) 	imwrite("./Seg_Gray_Image_OPENMP.jpg",image); 
-else		imwrite("./Seg_Image_OPENMP.jpg",image) ;//}
+else		imwrite("./Seg_Image_OPENMP.jpg",image) ;}
 
 	return 0 ;
 }
