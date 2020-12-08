@@ -39,7 +39,6 @@ namespace PPTP
 			m_centroids.reserve(nb_centroids * nb_channels);
 			m_cluster_sizes = new uint32_t[nb_centroids];
 			m_new_centroids = new double[m_nb_centroid * m_nb_channels];
-			std::cout << "KMeans algo constructed for nb channels = " << m_nb_centroid << std::endl;
 		}
 		//Destructor
 		virtual ~KMeanAlgo()
@@ -81,8 +80,6 @@ namespace PPTP
 
 			do
 			{
-				std::cout << "-------------------- ITERATION " << n + 1 << "----------------------------\n"
-						  << std::endl;
 				displacement = update_centroid(image, mode);
 
 				//We pick the max displacement from the returned per-cluster displacements vector
@@ -101,14 +98,7 @@ namespace PPTP
 
 			//Recap of the training phase
 			//	1 - Displaying the nb of iterations the algorithm had before stopping
-			if (n == (max_iterations - 1))
-			{
-				std::cout << "Optimal centroids computed after reaching max iterations : " << n + 1 << std::endl;
-			}
-			else
-			{
-				std::cout << "Optimal centroids computed after reaching minimum displacement, and " << n << " iterations." << std::endl;
-			}
+				std::cout << "NB Iterations : " << n + 1 << std::endl;
 			return (n+1);
 		}
 
@@ -118,8 +108,6 @@ namespace PPTP
 			using namespace cv;
 
 			m_mapping = new uint32_t[image.rows * image.cols];
-
-			std::cout << "Initialization started for " << m_nb_channels << " channels" << std::endl;
 
 			//Random seed for centroids random generation
 
@@ -482,12 +470,9 @@ namespace PPTP
 		process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, std::string mode = "seq")
 		{
 			int nb_iterations = 1;
-			std::string myMode = (mode == "seq" ? "Sequential" : (mode == "tbb" ? "TBB" : "OPENMP"));
-			std::cout << "Started segmentation, mode : " << myMode << std::endl;
 			init_centroids(image);
 			nb_iterations = compute_centroids(image, max_iterations, epsilon, mode);
 			compute_segmentation(image, mode);
-			std::cout << "Output generated : Done" << std::endl;
 			return(nb_iterations);
 		}
 	};

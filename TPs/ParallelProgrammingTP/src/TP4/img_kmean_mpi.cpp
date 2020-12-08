@@ -115,11 +115,11 @@ int main(int argc, char **argv)
     {
       if (nb_channels == 3)
       {
-        cout << "========= RGB Kmeans MPI =========" << endl;
+        cout << "========= RGB Kmeans | MODE : MPI | NB Clusters : "<< nb_centroids << "  =========" << endl;
       }
       else
       {
-        cout << "========= GrayScale Kmeans MPI =========" << endl;
+        cout << "========= GrayScale Kmeans | MODE : MPI | NB Clusters : "<< nb_centroids << "  =========" << endl;
       }
     }
 
@@ -187,7 +187,6 @@ int main(int argc, char **argv)
       //Compute local kmeans
       std::fill(newCentroids.begin(), newCentroids.end(), 0.0);
       std::fill(cluster_sizes.begin(), cluster_sizes.end(), 0);
-      cout << "\n------------ITERATION : " << n_iter + 1 << "-------------" << endl;
 
       update_centroid(flatImage, total_length, nb_centroids, nb_channels, centroids, cluster_sizes, newCentroids, mapping);
 
@@ -212,7 +211,7 @@ int main(int argc, char **argv)
       }
 
       max_displ = 0;
-      for (size_t i = 0; i < nb_centroids; i++)
+      for (auto i = 0; i < nb_centroids; i++)
       {
         if (displacement[i] > max_displ)
         {
@@ -220,7 +219,7 @@ int main(int argc, char **argv)
         }
       }
 
-      for (int i = 0; i < nb_centroids * nb_channels; i++)
+      for (auto i = 0; i < nb_centroids * nb_channels; i++)
       {
         centroids[i] = (u_char)newCentroidsGlobal[i];
       }
@@ -233,7 +232,7 @@ int main(int argc, char **argv)
       MPI_Bcast(&stop, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
       if (stop)
       {
-        std::cout << "stopped after iteration : " << n_iter << std::endl;
+        std::cout << "NB Iterations : " << n_iter << std::endl;
       }
       else
       {
@@ -258,6 +257,8 @@ int main(int argc, char **argv)
 
     end = now();
 
+    std::cout << "Optimal centroids computed after reaching minimum displacement, and " << n_iter << " iterations." << std::endl;
+
     std::cout << "Time : " << end - start << std::endl;
     std::cout << "Average Time per cycle : " << (end - start) / n_iter << std::endl;
 
@@ -265,6 +266,8 @@ int main(int argc, char **argv)
     string fileName = img_file + "_MPI_Segmented.jpg";
 
     imwrite(fileName, *outPutImage);
+
+    std::cout<<"Image written at : " <<fileName << std::endl;
 
     delete outPutImage;
   }

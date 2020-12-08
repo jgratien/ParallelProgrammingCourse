@@ -1,0 +1,8 @@
+NB CHANNELS : 3
+NROWS       : 2250
+NCOLS       : 4256
+========= RGB Kmeans | MODE : TBB | NB Clusters : 7  =========
+NB Iterations : 13
+Time : 0.419577
+Average Time per cycle : 0.0322751
+Image written at : ../test/TP4/samples/abstractLarge2_tbb_Segmented.jpg

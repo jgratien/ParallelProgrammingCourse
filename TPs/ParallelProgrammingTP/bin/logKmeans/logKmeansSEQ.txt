@@ -1,0 +1,8 @@
+NB CHANNELS : 3
+NROWS       : 2250
+NCOLS       : 4256
+========= RGB Kmeans | MODE : SEQ | NB Clusters : 7  =========
+NB Iterations : 9
+Time : 3.15587
+Average Time per cycle : 0.350652
+Image written at : ../test/TP4/samples/abstractLarge2_seq_Segmented.jpg

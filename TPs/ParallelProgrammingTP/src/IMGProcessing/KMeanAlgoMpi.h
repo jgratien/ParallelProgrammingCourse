@@ -15,8 +15,6 @@ void init_centroids(cv::Mat const &image, int nb_channels, int nb_centroid, std:
     using namespace cv;
     uchar pixel = 0;
 
-    std::cout << "Initialization started for " << nb_centroid << " centroids" << std::endl;
-
     //Random seed for centroids random generation
 
     time_t t;

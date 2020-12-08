@@ -18,6 +18,7 @@
 #include <boost/program_options/variables_map.hpp>
 #include <IMGProcessing/KMeanAlgo.h>
 #include <Utils/TimerNow.h>
+#include <boost/algorithm/string.hpp>
 
 using namespace cv;
 using namespace std;
@@ -39,7 +40,6 @@ int main(int argc, char **argv)
   }
 
   std::string img_file = vm["file"].as<std::string>();
-  cout << "my image file : " << img_file << endl;
   Mat image;
 
   if (vm["rgb"].as<int>() == 1)
@@ -70,6 +70,8 @@ int main(int argc, char **argv)
   cout << "NCOLS       : " << image.cols << std::endl;
   const int channels = image.channels();
   std::string mode = vm["mode"].as<std::string>();
+  std::string modeDispl = mode;
+  boost::to_upper(modeDispl);
 
   double start, end;
 
@@ -79,11 +81,11 @@ int main(int argc, char **argv)
   {
     if (channels == 3)
     {
-      cout << "=========RGB Kmeans=========" << endl;
+      cout << "========= RGB Kmeans | MODE : "<<modeDispl<< " | NB Clusters : "<< nb_centroids << "  =========" << endl;
     }
     else
     {
-      cout << "=========GrayScale Kmeans=========" << endl;
+      cout << "========= GrayScale Kmeans | MODE : "<<modeDispl<< " | NB Clusters : "<< nb_centroids << "  =========" << endl;
     }
     PPTP::KMeanAlgo algo(channels, nb_centroids);
 
@@ -95,7 +97,6 @@ int main(int argc, char **argv)
     std::cout << "Average Time per cycle : " << (end - start)/nb_iterations << std::endl;
   }
 
-  cout << "Writing image" << endl;
   img_file.resize(img_file.size() - 4);
   string fileName = img_file +"_" + mode +"_Segmented.jpg";
   imwrite(fileName, image);
