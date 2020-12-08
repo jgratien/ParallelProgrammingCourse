@@ -85,23 +85,12 @@ int main( int argc, char** argv )
 
 		const int k = kmeans[iter];
 
-		/*cout<<"NB CHANNELS : "<<image.channels()<<std::endl ;
-		  cout<<"NROWS       : "<<image.rows<<std::endl ;
-		  cout<<"NCOLS       : "<<image.cols<<std::endl ;*/
 		const int ch = image.channels();
 		std::vector<uchar> pixels (ncols*nrows*ch);
 		if(image.isContinuous())
 			pixels.assign(image.datastart, image.dataend);
-
-
-		//cout<<"Start of the kmeans process with selected image"<<std::endl;
-		//int k = vm["kmean"].as<int>();
-		//cout<<"Value of K is "<<k<<std::endl;
-
 		PPTP::KMeanAlgo algo(ch,k) ;
-
 		std::vector <double> centroids(ch*k, 0.0) ;
-		//cout <<"\nInitialising random centroids by choosing pixels from the image "<<std::endl;	 
 		for(int j=0; j<k; j++)
 		{	  
 			int co = rand()%ncols;
@@ -111,11 +100,7 @@ int main( int argc, char** argv )
 
 				centroids[j*ch] = rand[0];
 				centroids[j*ch+1] = rand[1];
-				centroids[j*ch+2] = rand[2];
-
-				/*cout<<"\nRed value for randomly initialised centroid number "<< j+1<<" is ="<<centroids[j*ch]<<std::endl; 
-				  cout<<"Green value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j*ch+1]<<std::endl; 
-				  cout<<"Blue value for randomly initialised centroid number "<<j+1<<" is ="<<centroids[j*ch+2]<<std::endl;*/}
+				centroids[j*ch+2] = rand[2];}
 
 
 			else {
@@ -198,21 +183,13 @@ int main( int argc, char** argv )
 				if(ch==3){	new_centroids[ch*i] = base_all[l*i] /base_all[l*i+3] ;
 					new_centroids[ch*i+1] = base_all[l*i+1]/base_all[l*i+3] ;
 					new_centroids[ch*i+2] = base_all[l*i+2]/base_all[l*i+3] ; 
-					size2[i] = base_all[l*i+3];
-					/*cout<<"\nRed value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i]<<std::endl; 
-					  cout<<"Green value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+1]<<std::endl; 
-					  cout<<"Blue value for centroid number "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[ch*i+2]<<std::endl;*/}
+					size2[i] = base_all[l*i+3];}
+
 
 				else{
 					new_centroids[i] = base_all[l*i]/base_all[l*i+1] ; 
 					size2[i] = base_all[l*i+1];
-
-
-					cout<<"\n\nGrayscale value of centroid "<<i+1<<" of cycle "<<count+1<<" is = "<<new_centroids[i];
 				}
-
-
-
 			}
 
 			disp = algo.compute_displacement(new_centroids,centroids);

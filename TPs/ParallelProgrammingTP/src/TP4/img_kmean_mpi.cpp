@@ -59,9 +59,6 @@ int main( int argc, char** argv )
 	int nb_proc = 1 ;
 	MPI_Comm_size(MPI_COMM_WORLD,&nb_proc) ;
 	MPI_Comm_rank(MPI_COMM_WORLD,&my_rank) ;
-
-
-
 	std::string img_file = vm["file"].as<std::string>() ;
 
 	//const int k = vm["kmean"].as<int>();i,
@@ -119,27 +116,7 @@ int main( int argc, char** argv )
 			//cout<<"Processor "<<i<<" is working with "<<nrows_local*ncols<<" number of pixels"<<std::endl;
 		}
 
-		// Initialisation of first centroids, these centroids are chosen as random pixels of our image 	
-		std::vector <double> centroids (ch*k,0.0);	
-		for(int j=0; j<k; j++)
-
-		{
-			int co  = rand()%ncols;
-			int ro  = rand()%nrows;
-			if(ch==3)	
-
-			{    Vec3b& rand = image.at<Vec3b>(ro,co);
-				centroids[ch*j] = rand[0];
-				centroids[ch*j+1] = rand[1];
-				centroids[ch*j+2] = rand[2];
-				/*cout<<"\nRed value of randomly intialised centroid number "<<j<<" is = "<<centroids[3*j];
-				  cout<<"\nGreen value of randomly intialised centroid number "<<j<<" is = "<<centroids[3*j+1];
-				  cout<<"\nBlue value of randomly intialised centroid number "<<j<<" is = "<<centroids[3*j+2];*/}
-
-			else{ uchar rand = image.at<uchar>(ro, co);
-				centroids[j]= (double)rand;  }
-		}
-
+		std::vector <double> centroids = kmean_algo.init_centroids(pixels, ncols, nrows, 0);	
 		int count=0;
 		double disp = 200;
 		double epsilon = vm["epsilon"].as<double>();

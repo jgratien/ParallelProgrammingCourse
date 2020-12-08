@@ -35,20 +35,51 @@ namespace PPTP
 		private:
 			int ch = 3;
 			int k = 1;
-			//std::vector<uchar> centroids;
+			//std::vector<double> centroids;
 
 		public:
 			KMeanAlgo(int nb_channels, int nb_centroids)
 				: ch(nb_channels)
 				  , k(nb_centroids)
 		{
-			//centroids.reserve(nb_channels*nb_centroids);
+			//this->centroids.resize((this->ch)*(this->k));
 		}
 
+			virtual ~KMeanAlgo() {
+				//std::vector<double>().swap(this->centroids);
+			}
 
-			virtual ~KMeanAlgo() {}
+			std::vector<double> init_centroids(const std::vector<uchar>& pix, int ncols, int nrows, int openmp)
+			{
 
-			int nearest_centroid(std::vector<uchar>& pix, std::vector<double>& cent, int index)
+				std::vector<double> centroids((this->k*this->ch),0.0);
+#pragma omp parallel for if(openmp==1)
+
+				for(int j=0; j<this->k; j++)
+				{
+
+					int co = rand()%ncols;
+					int ro = rand()%nrows;
+					int index = ro*(this->ch)*ncols + co*(this->ch);
+					if(ch==3)
+					{	
+
+						centroids.at(j*(this->ch)) = (double)pix.at(index) ;
+						centroids.at(j*(this->ch)+1) = (double)pix.at(index+1);
+						centroids.at(j*(this->ch)+2) = (double)pix.at(index+2);}
+
+					else {
+						centroids.at(j)= (double)pix.at(index);  
+					}			
+				} 
+
+				return centroids;
+			}
+
+
+
+
+			int nearest_centroid(const std::vector<uchar>& pix, const std::vector<double>& cent, int index)
 			{
 				using namespace cv ;
 
