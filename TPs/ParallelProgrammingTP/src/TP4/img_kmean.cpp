@@ -16,6 +16,7 @@
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
+#include <boost/filesystem.hpp>
 #include <IMGProcessing/KMeanAlgo.h>
 #include <Utils/TimerNow.h>
 #include <boost/algorithm/string.hpp>
@@ -44,6 +45,10 @@ int main(int argc, char **argv)
   //BENCHMARKING CASE
   if (vm["benchmark"].as<int>() == 1)
   {
+
+    std::cout<<"================================================="<<std::endl;
+    std::cout<<"-------------------BENCHMARKING------------------"<<std::endl;
+    std::cout<<"================================================="<<std::endl;
     std::string samplesDir = "../test/TP4/samples/";
     std::string imageFileBase = samplesDir + "abstract";
 
@@ -55,7 +60,6 @@ int main(int argc, char **argv)
     std::ofstream myFile;
     std::string logFile = "./myLogs/logKMeans_RGB_K" + std::to_string(nb_centroids) + "_"+mode+".csv";
     myFile.open(logFile);
-
     myFile << "mode,nRows,nCols,nChannels,nCentroids,nIterations,time,timePerCycle,\n";
 
     for (int i = 1; i <= 5; i++)
@@ -81,11 +85,12 @@ int main(int argc, char **argv)
       start = now();
       int nb_iterations = algo.process(imageBench, 100, 1, mode);
       end = now();
-      std::cout << "iterations : " << nb_iterations << " time : " << end - start << " mode : " << mode << std::endl;
+      std::cout << "Overall Time : " << end - start << " -  mode : " << mode << std::endl;
 
       myFile << mode << "," << imageBench.rows << "," << imageBench.cols << "," << channels << "," << nb_centroids << "," << nb_iterations << "," << end - start << "," << (end - start) / nb_iterations << ",\n";
     }
     myFile.close();
+    std::cout<<"\nLog benchmark written at -----------> " <<logFile <<std::endl;
     return 0;
   } 
 
