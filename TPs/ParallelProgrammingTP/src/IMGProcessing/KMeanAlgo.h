@@ -174,7 +174,7 @@ namespace PPTP
 				{
 #pragma omp parallel for schedule(static, 8) reduction(+                                                \
 													   : m_cluster_sizes [0:m_nb_centroid]) reduction(+ \
-																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(8) if (omp)
+																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) if (omp)
 					for (auto row = 0; row < image.rows; row++)
 
 					{
@@ -201,7 +201,7 @@ namespace PPTP
 				{
 #pragma omp parallel for schedule(static, 8) reduction(+                                                \
 													   : m_cluster_sizes [0:m_nb_centroid]) reduction(+ \
-																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) num_threads(8) if (omp)
+																									  : m_new_centroids [0:length]) firstprivate(distance, c) shared(image, m_mapping) if (omp)
 					for (auto row = 0; row < image.rows; row++)
 
 					{
@@ -488,6 +488,7 @@ namespace PPTP
 			nb_iterations = compute_centroids(image, max_iterations, epsilon, mode);
 			compute_segmentation(image, mode);
 			std::cout << "Output generated : Done" << std::endl;
+			return(nb_iterations);
 		}
 	};
 } // namespace PPTP
