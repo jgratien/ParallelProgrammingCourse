@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 
   using namespace boost::program_options;
   options_description desc;
-  desc.add_options()("help", "produce help")("file", value<std::string>(), "image file")("show", value<int>()->default_value(0), "show image")("seg", value<int>()->default_value(0), "kmean segmentation")("kmean-value", value<int>()->default_value(0), "KMean k value")("rgb", value<int>()->default_value(1), "RGB or GrayScale")("parallel", value<int>()->default_value(0), "Parallel OMP");
+  desc.add_options()("help", "produce help")("file", value<std::string>(), "image file")("show", value<int>()->default_value(0), "show image")("seg", value<int>()->default_value(0), "kmean segmentation")("kmean-value", value<int>()->default_value(0), "KMean k value")("rgb", value<int>()->default_value(1), "RGB or GrayScale")("mode", value<std::string>(), "seq | omp | tbb");
   variables_map vm;
   store(parse_command_line(argc, argv, desc), vm);
   notify(vm);
@@ -69,6 +69,7 @@ int main(int argc, char **argv)
   cout << "NROWS       : " << image.rows << std::endl;
   cout << "NCOLS       : " << image.cols << std::endl;
   const int channels = image.channels();
+  std::string mode = vm["mode"].as<std::string>();
 
   double start, end;
 
@@ -87,7 +88,7 @@ int main(int argc, char **argv)
     PPTP::KMeanAlgo algo(channels, nb_centroids);
 
     start = now();
-    algo.process(image, 100, 1, true, (vm["parallel"].as<int>() == 1)); //3rd arg : true for random centroids in each run
+    algo.process(image, 100, 1, mode);
     end = now();
 
     std::cout << "Time : " << end - start << std::endl;
@@ -95,7 +96,7 @@ int main(int argc, char **argv)
 
   cout << "Writing image" << endl;
   img_file.resize(img_file.size() - 4);
-  string fileName = img_file + "_Segmented.jpg";
+  string fileName = img_file +"_" + mode +"_Segmented.jpg";
   imwrite(fileName, image);
   cout << "Image written at : " << fileName << endl;
 
