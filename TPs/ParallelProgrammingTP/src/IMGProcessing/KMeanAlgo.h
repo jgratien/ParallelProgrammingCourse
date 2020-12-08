@@ -69,7 +69,7 @@ namespace PPTP
 
 		//Main kmeans method : iterative computing & update of centroids positions & associated
 		//pixels of the image
-		void compute_centroids(cv::Mat const &image, int max_iterations, double epsilon, std::string mode)
+		int compute_centroids(cv::Mat const &image, int max_iterations, double epsilon, std::string mode)
 		{
 			using namespace cv;
 
@@ -109,10 +109,11 @@ namespace PPTP
 			{
 				std::cout << "Optimal centroids computed after reaching minimum displacement, and " << n << " iterations." << std::endl;
 			}
+			return (n+1);
 		}
 
 		//Random centroids initialization based on image dimensions
-		void init_centroids(cv::Mat const &image, bool random = true)
+		void init_centroids(cv::Mat const &image)
 		{
 			using namespace cv;
 
@@ -121,11 +122,9 @@ namespace PPTP
 			std::cout << "Initialization started for " << m_nb_channels << " channels" << std::endl;
 
 			//Random seed for centroids random generation
-			if (random)
-			{
-				time_t t;
-				srand((unsigned)time(&t));
-			}
+
+			time_t t;
+			srand((unsigned)time(&t));
 
 			int i, j;
 			uchar pixel;
@@ -479,13 +478,14 @@ namespace PPTP
 		} //end seg function
 
 		//Kmeans + Image segmentation
-		void
+		int
 		process(cv::Mat &image, int max_iterations = 1000, double epsilon = 1, std::string mode = "seq")
 		{
+			int nb_iterations = 1;
 			std::string myMode = (mode == "seq" ? "Sequential" : (mode == "tbb" ? "TBB" : "OPENMP"));
 			std::cout << "Started segmentation, mode : " << myMode << std::endl;
-			init_centroids(image, true);
-			compute_centroids(image, max_iterations, epsilon, mode);
+			init_centroids(image);
+			nb_iterations = compute_centroids(image, max_iterations, epsilon, mode);
 			compute_segmentation(image, mode);
 			std::cout << "Output generated : Done" << std::endl;
 		}
@@ -493,4 +493,3 @@ namespace PPTP
 } // namespace PPTP
 
 #endif /* SRC_IMGPROCESSING_KMEANALGO_H_ */
-

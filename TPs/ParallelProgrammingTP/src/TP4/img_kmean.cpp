@@ -88,10 +88,11 @@ int main(int argc, char **argv)
     PPTP::KMeanAlgo algo(channels, nb_centroids);
 
     start = now();
-    algo.process(image, 100, 1, mode);
+    int nb_iterations = algo.process(image, 100, 1, mode);
     end = now();
 
     std::cout << "Time : " << end - start << std::endl;
+    std::cout << "Average Time per cycle : " << (end - start)/nb_iterations << std::endl;
   }
 
   cout << "Writing image" << endl;

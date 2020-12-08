@@ -107,8 +107,7 @@ int main(int argc, char **argv)
     nb_channels = image.channels();
 
     double start, end;
-    start = now();
-    
+
     //Kmeans Info
     int nb_centroids = vm["kmean-value"].as<int>();
 
@@ -127,6 +126,8 @@ int main(int argc, char **argv)
     int max_iterations = 100;
     int n_iter = 0;
     double epsilon = 1;
+
+    start = now();
 
     cluster_sizes.resize(nb_centroids);
     cluster_sizes_global.resize(nb_centroids);
@@ -186,7 +187,7 @@ int main(int argc, char **argv)
       //Compute local kmeans
       std::fill(newCentroids.begin(), newCentroids.end(), 0.0);
       std::fill(cluster_sizes.begin(), cluster_sizes.end(), 0);
-      cout << "\n------------ITERATION : " << n_iter << "-------------" << endl;
+      cout << "\n------------ITERATION : " << n_iter + 1 << "-------------" << endl;
 
       update_centroid(flatImage, total_length, nb_centroids, nb_channels, centroids, cluster_sizes, newCentroids, mapping);
 
@@ -241,9 +242,6 @@ int main(int argc, char **argv)
       }
     } while (!stop);
 
-    end = now();
-
-    std::cout << "Root time : " << end - start << std::endl;
     gen_segmentation(flatImage, nb_channels, total_length, centroids, mapping);
 
     for (int proc = 1; proc < nbProc; proc++)
@@ -257,6 +255,11 @@ int main(int argc, char **argv)
     }
 
     Mat *outPutImage = new Mat(rows, cols, (nb_channels == 1) ? CV_8UC1 : CV_8UC3, flatImage.data());
+
+    end = now();
+
+    std::cout << "Time : " << end - start << std::endl;
+    std::cout << "Average Time per cycle : " << (end - start) / n_iter << std::endl;
 
     img_file.resize(img_file.size() - 4);
     string fileName = img_file + "_MPI_Segmented.jpg";
