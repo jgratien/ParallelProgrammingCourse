@@ -100,7 +100,7 @@ int main( int argc, char** argv )
 
 		std::vector <double> centroids(ch*k, 0.0) ;
 		//cout <<"\nInitialising random centroids by choosing pixels from the image "<<std::endl;	 
-#pragma omp parallel for
+#pragma omp parallel for if(openmp==1)
 		for(int j=0; j<k; j++)
 		{
 
@@ -170,7 +170,7 @@ int main( int argc, char** argv )
 			}
 			cout<<"Done with centroid sums of cycle "<<count+1<<std::endl;
 			std::vector <double> new_centroids(ch*k,0.0) ;
-			//#pragma omp parallel for if(openmp==1)
+			#pragma omp parallel for if(openmp==1)
 			for(int i=0; i<k; i++)
 
 			{
@@ -205,7 +205,7 @@ int main( int argc, char** argv )
 					b = new_centroids[t*ch+2] - centroids[t*ch+2];
 
 					double dispc = (r*r + g*g + b*b) ;
-#pragma omp critical 
+#pragma omp critical  
 
 					if(dispc>disp) 
 
@@ -228,7 +228,7 @@ int main( int argc, char** argv )
 
 					double dispc = r*r ;
 
-#pragma omp critical 
+#pragma omp critical  
 					if(dispc>disp) 
 
 					{ 
