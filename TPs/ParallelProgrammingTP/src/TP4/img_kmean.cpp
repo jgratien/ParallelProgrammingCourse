@@ -60,10 +60,10 @@ int main(int argc, char **argv)
     //Reading and preparing image & logFile
     Mat imageBench, imageCopy;
     std::ofstream myFile;
-    std::string logFile = "./myLogs/logKMeans_" + mode + ".csv";
+    std::string logFile = "./myLogs/logKMeans.csv";
     ifstream iFile;
     iFile.open(logFile);
-    myFile.open(logFile);
+    myFile.open(logFile,std::ios_base::app);
 
     if (!iFile)
     {
