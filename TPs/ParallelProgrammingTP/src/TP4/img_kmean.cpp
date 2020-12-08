@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 
   using namespace boost::program_options;
   options_description desc;
-    desc.add_options()("help", "produce help")("file", value<std::string>(), "image file")("show", value<int>()->default_value(0), "show image")("seg", value<int>()->default_value(0), "kmean segmentation")("kmean-value", value<int>()->default_value(3), "KMean k value")("rgb", value<int>()->default_value(1), "RGB or GrayScale")("mode", value<std::string>(), "seq | omp | tbb")("benchmark", value<int>()->default_value(0), "Generate benchmark");
+  desc.add_options()("help", "produce help")("file", value<std::string>(), "image file")("show", value<int>()->default_value(0), "show image")("seg", value<int>()->default_value(0), "kmean segmentation")("kmean-value", value<int>()->default_value(3), "KMean k value")("rgb", value<int>()->default_value(1), "RGB or GrayScale")("mode", value<std::string>(), "seq | omp | tbb")("benchmark", value<int>()->default_value(0), "Generate benchmark");
 
   variables_map vm;
   store(parse_command_line(argc, argv, desc), vm);
@@ -46,23 +46,32 @@ int main(int argc, char **argv)
   if (vm["benchmark"].as<int>() == 1)
   {
 
-    std::cout<<"================================================="<<std::endl;
-    std::cout<<"-------------------BENCHMARKING------------------"<<std::endl;
-    std::cout<<"================================================="<<std::endl;
+    std::cout << "================================================" << std::endl;
+    std::cout << "------------------BENCHMARKING------------------" << std::endl;
+    std::cout << "================================================" << std::endl;
     std::string samplesDir = "../test/TP4/samples/";
     std::string imageFileBase = samplesDir + "abstract";
 
     std::string mode = vm["mode"].as<std::string>();
-    int nb_centroids = vm["kmean-value"].as<int>();
 
-    Mat imageBench;
+    //Hardcoded nb centroids scenarios
+    int nbs_centroids[4] = {3, 7, 13, 23};
 
+    //Reading and preparing image & logFile
+    Mat imageBench, imageCopy;
     std::ofstream myFile;
-    std::string logFile = "./myLogs/logKMeans_RGB_K" + std::to_string(nb_centroids) + "_"+mode+".csv";
+    std::string logFile = "./myLogs/logKMeans_" + mode + ".csv";
+    ifstream iFile;
+    iFile.open(logFile);
     myFile.open(logFile);
-    myFile << "mode,nRows,nCols,nChannels,nCentroids,nIterations,time,timePerCycle,\n";
 
-    for (int i = 1; i <= 5; i++)
+    if (!iFile)
+    {
+      myFile << "mode,nRows,nCols,nChannels,nCentroids,nIterations,time,timePerCycle,\n";
+    }
+
+    //Looping over image samples (6 for our benchmark in ASCENDING Size)
+    for (int i = 0; i <= 5; i++)
     {
       double start = 0;
       double end = 0;
@@ -79,20 +88,25 @@ int main(int argc, char **argv)
         return -1;
       }
 
-      //Kmeans
-      PPTP::KMeanAlgo algo(channels, nb_centroids);
-
-      start = now();
-      int nb_iterations = algo.process(imageBench, 100, 1, mode);
-      end = now();
-      std::cout << "Overall Time : " << end - start << " -  mode : " << mode << std::endl;
-
-      myFile << mode << "," << imageBench.rows << "," << imageBench.cols << "," << channels << "," << nb_centroids << "," << nb_iterations << "," << end - start << "," << (end - start) / nb_iterations << ",\n";
+      //Looping over different nb centroids examples : {3, 7, 13, 23}
+      for (int k = 0; k < 4; k++)
+      {
+        imageCopy = imageBench.clone();
+        int nb_centroids = nbs_centroids[k];
+        //Kmeans
+        PPTP::KMeanAlgo algo(channels, nb_centroids);
+        start = now();
+        int nb_iterations = algo.process(imageCopy, 100, 1, mode);
+        end = now();
+        //Log
+        std::cout << "Overall Time : " << end - start << " | nb centroids :" << nb_centroids << " |  mode : " << mode << std::endl;
+        myFile << mode << "," << imageCopy.rows << "," << imageCopy.cols << "," << channels << "," << nb_centroids << "," << nb_iterations << "," << end - start << "," << (end - start) / nb_iterations << ",\n";
+      }
     }
     myFile.close();
-    std::cout<<"\nLog benchmark written at -----------> " <<logFile <<std::endl;
+    std::cout << "\nLog benchmark written at -----------> " << logFile << std::endl;
     return 0;
-  } 
+  }
 
   std::string img_file = vm["file"].as<std::string>();
   Mat image;
@@ -136,11 +150,11 @@ int main(int argc, char **argv)
   {
     if (channels == 3)
     {
-      cout << "========= RGB Kmeans | MODE : "<<modeDispl<< " | NB Clusters : "<< nb_centroids << "  =========" << endl;
+      cout << "========= RGB Kmeans | MODE : " << modeDispl << " | NB Clusters : " << nb_centroids << "  =========" << endl;
     }
     else
     {
-      cout << "========= GrayScale Kmeans | MODE : "<<modeDispl<< " | NB Clusters : "<< nb_centroids << "  =========" << endl;
+      cout << "========= GrayScale Kmeans | MODE : " << modeDispl << " | NB Clusters : " << nb_centroids << "  =========" << endl;
     }
     PPTP::KMeanAlgo algo(channels, nb_centroids);
 
@@ -149,14 +163,13 @@ int main(int argc, char **argv)
     end = now();
 
     std::cout << "Time : " << end - start << std::endl;
-    std::cout << "Average Time per cycle : " << (end - start)/nb_iterations << std::endl;
+    std::cout << "Average Time per cycle : " << (end - start) / nb_iterations << std::endl;
   }
 
   img_file.resize(img_file.size() - 4);
-  string fileName = img_file +"_" + mode +"_Segmented.jpg";
+  string fileName = img_file + "_" + mode + "_Segmented.jpg";
   imwrite(fileName, image);
   cout << "Image written at : " << fileName << endl;
 
   return 0;
 }
-
