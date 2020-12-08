@@ -88,8 +88,8 @@ int main(int argc, char** argv)
 	std::ofstream benchmark;
 	benchmark.open (s+"_nbproc_report_DENSEMV_MPI_.csv");
 	benchmark << "NX(rows),Distribution_Time(ms),Calculation_Time(ms),Total_Time(ms),Nb_Proc\n";
-	int nxc[12] = {10,20,40,60,80,100,120,140,160,180,200,220};
-	for(int iter =0; iter<17; iter++)
+	int nxc[11] = {10,20,40,60,80,100,120,140,160,180,200};
+	for(int iter =0; iter<11; iter++)
 	{ 
 
 		if(my_rank==0)
