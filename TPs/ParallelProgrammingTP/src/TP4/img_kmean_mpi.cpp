@@ -18,6 +18,8 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include "opencv2/opencv.hpp"
+#include <boost/algorithm/string.hpp>
+#include <fstream>
 
 #include <time.h>
 #include <string>
@@ -115,11 +117,11 @@ int main(int argc, char **argv)
     {
       if (nb_channels == 3)
       {
-        cout << "========= RGB Kmeans | MODE : MPI | NB Clusters : "<< nb_centroids << "  =========" << endl;
+        cout << "========= RGB Kmeans | MODE : MPI | NB Clusters : " << nb_centroids << "  =========" << endl;
       }
       else
       {
-        cout << "========= GrayScale Kmeans | MODE : MPI | NB Clusters : "<< nb_centroids << "  =========" << endl;
+        cout << "========= GrayScale Kmeans | MODE : MPI | NB Clusters : " << nb_centroids << "  =========" << endl;
       }
     }
 
@@ -257,17 +259,34 @@ int main(int argc, char **argv)
 
     end = now();
 
-    std::cout << "Optimal centroids computed after reaching minimum displacement, and " << n_iter << " iterations." << std::endl;
+    std::cout << "NB Iterations : " << n_iter << std::endl;
 
-    std::cout << "Time : " << end - start << std::endl;
-    std::cout << "Average Time per cycle : " << (end - start) / n_iter << std::endl;
+    std::cout << "Overall Time : " << end - start << " | nb centroids :" << nb_centroids << " |  mode : MPI " << std::endl;
+
+    std::ofstream myFile;
+    std::string logFile = "./myLogs/logKMeansMPI.csv";
+    ifstream iFile;
+    iFile.open(logFile);
+    myFile.open(logFile, std::ios_base::app);
+
+    if (!iFile)
+    {
+      myFile << "mode,nRows,nCols,nChannels,nCentroids,nIterations,time,timePerCycle,nbCores,\n";
+    }
+
+    myFile << "mpi"
+           << "," << image.rows << "," << image.cols << "," << nb_channels << "," << nb_centroids << "," << n_iter << "," << end - start << "," << (end - start) / n_iter << "," << nbProc << ",\n";
+    myFile.close();
+    std::cout << "\nLog benchmark written at -----------> " << logFile << std::endl;
+
+    //LOGGING FOR BENCHMARK PURPOSES
 
     img_file.resize(img_file.size() - 4);
     string fileName = img_file + "_MPI_Segmented.jpg";
 
     imwrite(fileName, *outPutImage);
 
-    std::cout<<"Image written at : " <<fileName << std::endl;
+    std::cout << "Image written at : " << fileName << std::endl;
 
     delete outPutImage;
   }
@@ -342,3 +361,4 @@ int main(int argc, char **argv)
   MPI_Finalize();
   return 0;
 }
+

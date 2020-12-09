@@ -1,8 +1,0 @@
-NB CHANNELS : 3
-NROWS       : 2250
-NCOLS       : 4256
-========= RGB Kmeans | MODE : OMP | NB Clusters : 7  =========
-NB Iterations : 11
-Time : 0.466023
-Average Time per cycle : 0.0423657
-Image written at : ../test/TP4/samples/abstractLarge2_omp_Segmented.jpg
