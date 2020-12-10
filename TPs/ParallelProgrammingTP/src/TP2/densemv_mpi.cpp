@@ -25,6 +25,9 @@
 #include "MatrixVector/LinearAlgebra.h"
 #include "MatrixVector/MatrixGenerator.h"
 
+#include <boost/algorithm/string.hpp>
+#include <fstream>
+
 #include "Utils/TimerNow.h"
 
 int main(int argc, char **argv)
@@ -45,10 +48,10 @@ int main(int argc, char **argv)
 
     double norm = 0;
     double local_norm = 0;
-    double start, end;
+    double start, end, startCompute, endCompute, startCom, endCom;
 
     MPI_Status status;
-    MPI_Request req,req2;
+    MPI_Request req, req2;
 
     if (my_rank == 0)
     {
@@ -149,6 +152,8 @@ int main(int argc, char **argv)
 
         std::vector<double> const &dataVector = matrix.getValues();
 
+        startCom = now();
+        if (nb_proc - 1)
         {
             // SEND GLOBAL & LOCAL SIZES
             MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
@@ -160,29 +165,67 @@ int main(int argc, char **argv)
             // SEND LOCAL MATRICES
             for (int i = 1; i < nb_proc; ++i)
             {
-		double const *localDataPtr = dataVector.data() + local_nrows * nx + slaveLocalSize * nx * (i-1);
-                
+                double const *localDataPtr = dataVector.data() + local_nrows * nx + slaveLocalSize * nx * (i - 1);
+
                 MPI_Isend(localDataPtr, slaveLocalSize * nrows, MPI_DOUBLE, i, i * 3 + 1, MPI_COMM_WORLD, &req2);
             }
         }
+        startCompute = now();
 
         // COMPUTE LOCAL MATRICE LOCAL VECTOR ON PROC 0
         // DenseMatrix local_matrix;
         std::vector<double> local_y(local_nrows);
-            // compute parallel SPMV
-            double tempSum = 0;
-            for (int row = 0; row < local_nrows; row++)
+        // compute parallel SPMV
+        double tempSum = 0;
+        for (int row = 0; row < local_nrows; row++)
+        {
+            tempSum = 0;
+            for (int col = 0; col < nrows; col++)
             {
-                tempSum = 0;
-                for (int col = 0; col < nrows; col++)
-                {
-                    tempSum += dataVector.at(row * nrows + col) * x.at(col);
-                }
-                local_y[row] = tempSum;
-                local_norm += tempSum * tempSum;
+                tempSum += dataVector.at(row * nrows + col) * x.at(col);
             }
-        MPI_Wait(&req, MPI_STATUS_IGNORE);
-        MPI_Wait(&req2, MPI_STATUS_IGNORE);
+            local_y[row] = tempSum;
+            local_norm += tempSum * tempSum;
+        }
+        endCompute = now();
+        
+	if (nb_proc - 1)
+        {
+       		 MPI_Wait(&req, MPI_STATUS_IGNORE);
+       		 MPI_Wait(&req2, MPI_STATUS_IGNORE);
+        }
+        endCom = now();
+
+        double startReduction = now();
+        MPI_Reduce(&local_norm, &norm, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        MPI_Barrier(MPI_COMM_WORLD);
+        double endReduction = now();
+
+        //Timing and Output logging
+        end = now();
+        std::cout << "Computation Time : " << endCompute - startCompute << std::endl;
+        std::cout << "Communication Time : " << (endCom - startCom) - (endCompute - startCompute) << std::endl;
+        std::cout << "Reduction Time : " << endReduction - startReduction << std::endl;
+
+        std::cout << "Overall Time : " << end - start << " | nrows : " << nrows << std::endl;
+
+        std::cout << "Parallel ||y||=" << sqrt(norm) << std::endl;
+
+        std::ofstream myFile;
+        std::string logFile = "./myLogs/logDenseMVMPI.csv";
+	std::ifstream iFile;
+        iFile.open(logFile);
+        myFile.open(logFile, std::ios_base::app);
+
+        if (!iFile)
+        {
+            myFile << "nRows, nbCores,time, computeTime,communicationTime,reductionTime,\n";
+        }
+
+        myFile << nrows
+               << "," << nb_proc << "," << endCompute - startCompute << "," << (endCom - startCom) - (endCompute - startCompute) << "," << endReduction - startReduction << "," << end - start << ",\n";
+        myFile.close();
+        std::cout << "\nLog benchmark written at -----------> " << logFile << std::endl;
     }
 
     else
@@ -231,18 +274,17 @@ int main(int argc, char **argv)
 
             //MPI_Send(local_y.data(), local_nrows, MPI_DOUBLE, 0, my_rank * 4 + 1, MPI_COMM_WORLD);
         }
+        MPI_Reduce(&local_norm, &norm, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+        MPI_Barrier(MPI_COMM_WORLD);
     }
 
-    MPI_Reduce(&local_norm, &norm, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    MPI_Barrier(MPI_COMM_WORLD);
+    // if (my_rank == 0)
+    // {
 
-    if (my_rank == 0)
-    {
-        end = now();
-        std::cout << "Time =" << end - start << std::endl;
-        std::cout << "Parallel ||y||=" << sqrt(norm) << std::endl;
-    }
+    // }
 
     MPI_Finalize();
     return 0;
 }
+
+
