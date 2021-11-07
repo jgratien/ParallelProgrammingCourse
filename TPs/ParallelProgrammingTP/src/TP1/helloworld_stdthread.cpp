@@ -52,10 +52,11 @@ int main(int argc, char** argv)
       print_hello(nb_threads,i) ;
       //create thread to call print_hello
     }
+  
+    //for(auto& th : thread_pool)
+    //  th.join() ;
   }
 
-  //for(auto& th : thread_pool)
-  //  th.join() ;
 
   timer.printInfo() ;
   return 0 ;
