@@ -18,13 +18,19 @@ namespace PPTP
       typedef std::tuple<int,int,double>  MatrixEntryType ;
       DenseMatrix(std::size_t nrows=0)
       : m_nrows(nrows)
+      , m_ncols(nrows)
       {
         init(nrows) ;
       }
 
       virtual ~DenseMatrix() {}
+
       std::size_t nrows() const {
         return m_nrows ;
+      }
+
+      std::size_t ncols() const {
+        return m_ncols ;
       }
 
       void setChunkSize(int chunk_size)
@@ -41,6 +47,18 @@ namespace PPTP
           m_values.assign(m_nrows*m_nrows,0.) ;
         }
       }
+
+      void init(std::size_t nrows, std::size_t ncols)
+      {
+        m_nrows = nrows ;
+        m_ncols = ncols ;
+        if(m_nrows>0)
+        {
+          m_values.resize(m_nrows*m_ncols) ;
+          m_values.assign(m_nrows*m_ncols,0.) ;
+        }
+      }
+
 
       void copy(DenseMatrix const& rhs)
       {
@@ -76,6 +94,10 @@ namespace PPTP
         assert(i<m_nrows) ;
         assert(j<m_nrows) ;
         return m_values[i*m_nrows+j] ;
+      }
+
+      double* data() {
+        return m_values.data() ;
       }
 
       void mult(VectorType const& x, VectorType& y) const
@@ -162,6 +184,7 @@ namespace PPTP
     private:
       // number of lines
       std::size_t         m_nrows = 0;
+      std::size_t         m_ncols  = 0 ;
 
       // matrix values
       std::vector<double> m_values ;

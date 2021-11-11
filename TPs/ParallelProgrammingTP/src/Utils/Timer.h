@@ -4,11 +4,10 @@
  *  Created on: Sep 24, 2018
  *      Author: gratienj
  */
-
-#ifndef SRC_UTILS_TIMER_H_
-#define SRC_UTILS_TIMER_H_
-
-#include "omp.h"
+#pragma once
+#include <string>
+#include <map>
+#include <chrono>
 
 namespace PPTP
 {
@@ -23,18 +22,20 @@ class Timer
       : m_parent(parent)
       , m_phase(phase)
       {
-        m_start = omp_get_wtime();
+        m_start = std::chrono::steady_clock::now();
       }
 
       virtual ~Sentry()
       {
-        double end = omp_get_wtime() ;
-        m_parent.add(m_phase,end-m_start) ;
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - m_start);
+
+        m_parent.add(m_phase,time_span.count()) ;
       }
     private:
       Timer&      m_parent ;
       std::string m_phase ;
-      double      m_start = 0. ;
+      std::chrono::steady_clock::time_point m_start ;
     };
 
     Timer(){}
@@ -65,4 +66,3 @@ class Timer
 
 } /* namespace PPTP */
 
-#endif /* SRC_UTILS_TIMER_H_ */
