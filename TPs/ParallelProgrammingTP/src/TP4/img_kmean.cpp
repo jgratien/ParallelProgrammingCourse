@@ -32,7 +32,7 @@ int main( int argc, char** argv )
         ("file",value<std::string>(), "image file")
         ("show",value<int>()->default_value(0), "show image")
         ("seg",value<int>()->default_value(0), "kmean segmentation")
-        ("kmean-value",value<int>()->default_value(0), "KMean k value") ;
+        ("nb-centroids",value<int>()->default_value(0), "KMean k value") ;
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
@@ -73,13 +73,13 @@ int main( int argc, char** argv )
       {
         case 1:
           {
-		  PPTP::KMeanAlgo algo(1,nb_centroids) ;
+		      PPTP::KMeanAlgo algo(1,nb_centroids) ;
         	  algo.process(image) ;
           }
           break ;
         case 3:
           {
-		  PPTP::KMeanAlgo algo(3,nb_centroids) ;
+		      PPTP::KMeanAlgo algo(3,nb_centroids) ;
         	  algo.process(image) ;
           }
           break ;

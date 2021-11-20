@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../src/Utils/Timer.h
+omp.h
+../src/Utils/omp.h
+
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP3/wave.cpp
+iostream
+-
+boost/lexical_cast.hpp
+-
+boost/program_options/options_description.hpp
+-
+boost/program_options/parsers.hpp
+-
+boost/program_options/cmdline.hpp
+-
+boost/program_options/variables_map.hpp
+-
+omp.h
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP3/omp.h
+tbb/tbb.h
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP3/tbb/tbb.h
+string
+-
+vector
+-
+fstream
+-
+Utils/Timer.h
+/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP3/Utils/Timer.h
+

@@ -1,0 +1,23 @@
+-- PROJECT ARCH :
+-- BUILD ROOT :
+-- PROJECT ROOT :/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP
+-- MPI TYPE : OpenMPI
+-- PACKAGE: Fortran      : not found
+-- PACKAGE: Mpi          : not found
+-- PACKAGE: Boost        : /work/irlin355_1/gratienj/local/eb_new/centos_7/software/MPI/GCC/7.3.0-2.30/impi/2018.3.222/Boost/1.67.0/include
+-- PACKAGE: Blas         : not found
+-- PACKAGE: Lapack       : not found
+-- PACKAGE: MKL          : not found
+-- PACKAGE: EIGEN3       : not found
+-- PACKAGE: Numa         : not found
+-- PACKAGE: HWLOC        : not found
+-- PACKAGE: TBB        : /work/irlin355_1/gratienj/local/eb_new/centos_7/software/Compiler/GCCcore/7.3.0/tbb/2018_U6/include
+-- PACKAGE: TBB        : optimized;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/Compiler/GCCcore/7.3.0/tbb/2018_U6/lib/libtbb.so;debug;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/Compiler/GCCcore/7.3.0/tbb/2018_U6/lib/libtbb_debug.so
+-- PACKAGE: PAPI         : not found
+-- PACKAGE: GoogleProf   : not found
+-- PACKAGE: XML2         : not found
+-- PACKAGE: OpenCV       : not found
+-- APPLI_LIBS : 
+-- --> APPLI_LIBS : pthread;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/MPI/GCC/7.3.0-2.30/impi/2018.3.222/Boost/1.67.0/lib/libboost_mpi.a;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/MPI/GCC/7.3.0-2.30/impi/2018.3.222/Boost/1.67.0/lib/libboost_thread.a;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/MPI/GCC/7.3.0-2.30/impi/2018.3.222/Boost/1.67.0/lib/libboost_serialization.a;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/MPI/GCC/7.3.0-2.30/impi/2018.3.222/Boost/1.67.0/lib/libboost_chrono.a;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/MPI/GCC/7.3.0-2.30/impi/2018.3.222/Boost/1.67.0/lib/libboost_system.a;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/MPI/GCC/7.3.0-2.30/impi/2018.3.222/Boost/1.67.0/lib/libboost_program_options.a;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/MPI/GCC/7.3.0-2.30/impi/2018.3.222/Boost/1.67.0/lib/libboost_regex.a;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/MPI/GCC/7.3.0-2.30/impi/2018.3.222/Boost/1.67.0/lib/libboost_filesystem.a;optimized;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/Compiler/GCCcore/7.3.0/tbb/2018_U6/lib/libtbb.so;debug;/work/irlin355_1/gratienj/local/eb_new/centos_7/software/Compiler/GCCcore/7.3.0/tbb/2018_U6/lib/libtbb_debug.so;rt
+-- Configuring incomplete, errors occurred!
+See also "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/CMakeFiles/CMakeOutput.log".
