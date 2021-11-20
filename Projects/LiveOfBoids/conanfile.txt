@@ -1,0 +1,9 @@
+[requires]
+gtest/1.10.0
+glfw/3.3.3
+glad/0.1.34
+opencv/4.5.1
+
+[generators]
+cmake_paths
+cmake_find_package
