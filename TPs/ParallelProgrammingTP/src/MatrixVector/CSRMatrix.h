@@ -35,6 +35,18 @@ class CSRMatrix
       return m_nnz ;
     }
 
+    int* m_kcol_ptr() {
+      return m_kcol.data();
+    }
+
+    int* m_cols_ptr() {
+      return m_cols.data();
+    }
+
+    double* m_values_ptr() {
+      return m_values.data();
+    }
+
     void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries)
     {
       std::vector< std::map<int,double> > rows(nrows) ;
@@ -46,8 +58,9 @@ class CSRMatrix
         rows[irow].insert(std::make_pair(jcol,val)) ;
       }
       int nnz = 0 ;
-      for( auto const& row : rows)
+      for( auto const& row : rows) {
         nnz += row.size() ;
+      }
       m_nrows = nrows ;
       m_nnz   = nnz ;
       m_kcol.resize(m_nrows+1) ;
@@ -92,6 +105,14 @@ class CSRMatrix
          // todo OPENMP
       }
     }
+    /*
+    int* cut(int start, int end) {
+      int val = m_kcol[end];
+      int
+      int i = 0;
+      while m_kcol[i]
+    }*/
+
   private:
     // number of lines
     std::size_t         m_nrows = 0;
