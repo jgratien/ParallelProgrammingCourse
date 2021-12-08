@@ -145,30 +145,17 @@ class CSRMatrix
 
     void mult(VectorType const& x, VectorType& y) const
     {
-      /*if (node != 0) {
-        std::cout << "-------------- Entering mult  (node " << node << ") " << std::flush;
-        std::string s2("Working with y of size " + std::to_string(y.size()) + "\n");
-        std::string s3("And with m_rowoff of size " + std::to_string(m_kcol.size()) + " : " + string_m_kcol()+ "\n");
-        std::string s4("And with m_cols of size " + std::to_string(m_cols.size()) + " : " + string_m_cols()+ "\n");
-        std::string s5("And with m_values of size " + std::to_string(m_values.size()) + " : " + string_m_values());
-        std::cout << s2 << s3 << s4 << s5 << std::endl;
-      }*/
       assert(x.size()>=m_nrows) ;
       assert(y.size()>=m_nrows) ;
       for(std::size_t irow =0; irow<m_nrows;++irow)
       {
-        //std::cout << "irow = " << irow << std::endl;
         double value = 0 ;
-        //std::cout << "y = " ;
         for( int k = m_kcol[irow]; k < m_kcol[irow+1];++k)
         {
-          //std::cout << m_values[k] << "*" << x[m_cols[k]] << "+" ;
           value += m_values[k]*x[m_cols[k]] ;
         }
-        //std::cout << " = " << value << std::endl;
         y[irow] = value ;
       }
-      //std::cout << " exiting mult -------------- " << std::endl;
     }
 
 
@@ -176,17 +163,20 @@ class CSRMatrix
     {
       assert(x.size()>=m_nrows) ;
       assert(y.size()>=m_nrows) ;
+    #pragma omp parallel shared(x,y)
       {
-         // todo OPENMP
+        #pragma omp for schedule(dynamic,m_chunk_size) nowait  //static,dynamic,guided
+        for(std::size_t irow =0; irow<m_nrows;++irow)
+        {
+          double value = 0 ;
+          for( int k = m_kcol[irow]; k < m_kcol[irow+1];++k)
+          {
+            value += m_values[k]*x[m_cols[k]] ;
+          }
+          y[irow] = value ;
+        }
       }
     }
-    /*
-    int* cut(int start, int end) {
-      int val = m_kcol[end];
-      int
-      int i = 0;
-      while m_kcol[i]
-    }*/
 
   private:
     // number of lines
