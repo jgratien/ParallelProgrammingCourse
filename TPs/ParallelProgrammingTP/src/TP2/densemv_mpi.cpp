@@ -28,21 +28,6 @@
 
 #include "Utils/Timer.h"
 
-template <typename T>
-std::string tostring(std::vector<T> &x)
-{
-  std::string s;
-  s += "y(";
-  for (unsigned int i=0; i < x.size(); ++i) {
-    s += std::to_string(x[i]);
-    s.erase(s.find_last_not_of('0') + 1, std::string::npos);
-    if (i < x.size() - 1) {
-      s += "|";
-    }
-  }
-  s += ")";
-  return s;
-}
 
 // Utiliser make install &> make.log
 
@@ -229,7 +214,7 @@ int main(int argc, char** argv)
       // TIMER HERE
     }
 
-    std::vector<double> y(nrows);
+    std::vector<double> final_y(nrows);
     {
       // RECONSTRUCT Y
       std::vector<int> displacements(nb_proc);
@@ -241,7 +226,7 @@ int main(int argc, char** argv)
         int_tab_local_sizes[i] = (int) tab_local_sizes[i];
       }
       MPI_Gatherv(local_y.data(), tab_local_sizes[0], MPI_DOUBLE,
-                y.data(), int_tab_local_sizes.data(), displacements.data(),
+                final_y.data(), int_tab_local_sizes.data(), displacements.data(),
                 MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
       //std::string s("Master gathered y = " + tostring(y));
@@ -252,7 +237,7 @@ int main(int argc, char** argv)
     //std::cout << s1 << std::endl;
 
     {
-      double normy = PPTP::norm2(y) ;
+      double normy = PPTP::norm2(final_y) ;
       std::cout<<"Result is : ||y||="<<normy<<std::endl ;
     }
 
