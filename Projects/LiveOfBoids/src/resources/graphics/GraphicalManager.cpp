@@ -17,6 +17,7 @@
 #include <string>
 #include <iomanip>
 #include <chrono>
+#include <omp.h>
 #include <sstream>
 #ifndef __GNUC__
 #pragma endregion
@@ -176,6 +177,9 @@ bool GraphicalManager::mainLoop() {
 				(*MAIN_pFLOCK).updateAgents();
 			}
 
+			int nb_threads = 2;
+			omp_set_num_threads(nb_threads);
+			#pragma omp parallel for shared(MAIN_pFLOCK)
 			for (int i = 0; i < (*MAIN_pFLOCK).getPopSize(); ++i){
 				Agent *bird = (*MAIN_pFLOCK)[i];
 				std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors;
@@ -202,17 +206,24 @@ bool GraphicalManager::mainLoop() {
 				}
 
 				if (prettyAgents) {
-					// Fill vertex array of groups of 6 points each for double triangles
-					mat2x6 result = triangleDisplay.drawAgent(bird);
-					for (int j = 0; j < (int)result.size(); ++j) {
-						vertex_data_triangle.push_back(triangle::Vertex{ {result[j].x, result[j].y }, (*bird).getGLColor() });
-					}
-				}
-				else {
-					// Fill vertex array of points for each agents
-					Vec2 res = (dotDisplayer.drawAgent(bird))[0];
-					vertex_data_dots.push_back(points::Vertex{ {res.x, res.y}, (*bird).getGLColor() });
-				}				
+                    // Fill vertex array of groups of 6 points each for double triangles
+                    mat2x6 result = triangleDisplay.drawAgent(bird);
+                    #pragma omp critical
+                    {
+                        for (int j = 0; j < result.size(); ++j) {
+                            vertex_data_triangle.push_back(triangle::Vertex{ {result[j].x, result[j].y }, (*bird).getGLColor() });
+                        }
+                    }
+                }
+                else {
+                    // Fill vertex array of points for each agents
+                    Vec2 res = (dotDisplayer.drawAgent(bird))[0];
+                    #pragma omp critical
+                    {
+                        vertex_data_dots.push_back(points::Vertex{ {res.x, res.y}, (*bird).getGLColor() });
+                    }
+                }
+
 			}
 
 			(*MAIN_pFLOCK).destroyAgents();
