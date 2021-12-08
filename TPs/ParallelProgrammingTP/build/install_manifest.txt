@@ -1,8 +1,0 @@
-/gext/benjamin.bourbon/github/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_stdthread.exe
-/gext/benjamin.bourbon/github/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_openmp.exe
-/gext/benjamin.bourbon/github/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_task.exe
-/gext/benjamin.bourbon/github/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_tbb.exe
-/gext/benjamin.bourbon/github/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_mpi.exe
-/gext/benjamin.bourbon/github/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe
-/gext/benjamin.bourbon/github/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe
-/gext/benjamin.bourbon/github/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
