@@ -51,13 +51,13 @@ class Timer
     }
 
     void printInfo() const {
-      std::cout<<"================================"<<std::endl ;
-      std::cout<<"PERF INFO : "<<std::endl ;
+      // std::cout<<"================================"<<std::endl ;
+      // std::cout<<"PERF INFO : "<<std::endl ;
       for(auto const& iter : m_counters)
       {
         std::cout<<iter.first<<":"<<iter.second<<std::endl ;
       }
-      std::cout<<"================================"<<std::endl ;
+      // std::cout<<"================================"<<std::endl ;
     }
 
   private :
@@ -65,4 +65,3 @@ class Timer
 };
 
 } /* namespace PPTP */
-
