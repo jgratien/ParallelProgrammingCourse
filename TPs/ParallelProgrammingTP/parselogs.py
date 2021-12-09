@@ -24,14 +24,15 @@ if __name__ == "__main__":
         exit(-1)
     else:
         if sys.argv[1] == 'spmv':
-            logfiles = getlogfiles("/gext/arthur.viens/ParallelProgrammingCourse/TPs/ParallelProgrammingTP")
+            directory = "logs/sparse/"
+            logfiles = getlogfiles("/gext/arthur.viens/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/logs/sparse")
             columns = ["logfile", "nx", "npi", "SpMV", "SpVM MPI"]
             logs = pd.DataFrame(columns = columns)
             names = ["OMPSpMV", "SpMV", "SpMV MPI"]
             for file in logfiles:
                 nx, npi = parseFileName(file)
                 #print(f"File {file} : nx = {nx}, npi = {npi}")
-                with open(file) as f:
+                with open(directory + file) as f:
                     lines = pd.Series(f.readlines())
                     lines = lines[lines.str.startswith(("SpMV", "SpMV MPI"))].str[:-1]
                     assert len(lines) != 0, "Could not extract lines with SpMV or SpMV MPI result from {}. Are the log files right ?".format(file)
@@ -42,20 +43,21 @@ if __name__ == "__main__":
             logs.to_csv("SpMV_benchmark.csv", index=False, sep=";")
             print("Results from log file written to SpMV_benchmark.csv.")
         else:
-            logfiles = getlogfiles("/gext/arthur.viens/ParallelProgrammingCourse/TPs/ParallelProgrammingTP")
+            directory = "logs/dense/"
+            logfiles = getlogfiles("/gext/arthur.viens/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/logs/dense")
             columns = ["logfile", "nx", "npi", "DenseMV", "DenseMV MPI"]
             logs = pd.DataFrame(columns = columns)
             names = ["DenseMV", "DenseMV MPI"]
             for file in logfiles:
                 nx, npi = parseFileName(file)
                 #print(f"File {file} : nx = {nx}, npi = {npi}")
-                with open(file) as f:
+                with open(directory + file) as f:
                     lines = pd.Series(f.readlines())
                     lines = lines[lines.str.startswith(("DenseMV", "DenseMV MPI"))].str[:-1]
                     assert len(lines) != 0, "Could not extract lines with DenseMV or DenseMV MPI result from {}. Are the log files right ?".format(file)
-                timeSpMV = float(lines[lines.str.startswith("DenseMV")].values[0].split(":")[1])
-                timeSpMVMPI = float(lines[lines.str.startswith("DenseMV MPI")].values[0].split(":")[1])
-                row = pd.Series([file, nx, npi, timeOMPSpMV, timeSpMV, timeSpMVMPI], index=columns)
+                timeDSMV = float(lines[lines.str.startswith("DenseMV")].values[0].split(":")[1])
+                timeDSMVMPI = float(lines[lines.str.startswith("DenseMV MPI")].values[0].split(":")[1])
+                row = pd.Series([file, nx, npi, timeDSMV, timeDSMVMPI], index=columns)
                 logs = logs.append(row, ignore_index=True)
             logs.to_csv("DenseMV_benchmark.csv", index=False, sep=";")
             print("Results from log file written to DenseMV_benchmark.csv.")

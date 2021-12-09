@@ -170,19 +170,27 @@ int main(int argc, char** argv)
       /*{
         Timer::Sentry sentry(timer,"OMPSpMV") ;
         matrix.ompmult(x, y2) ;
-      }*/
+      }
       double normy2 = PPTP::norm2(y2) ;
       std::cout<<"y with OMP ||y||="<<normy2<<std::endl ;
-
+      */
       std::vector<size_t> tab_local_sizes(nb_proc);
 
       std::vector<double> final_y(nrows);
       /***************************************************************************
       SPARSE MATRIX VECTOR MPI */
       {
+        MPI_Status st;
         Timer::Sentry sentry(timer,"SpMV MPI") ;
         // SEND GLOBAL SIZE
-        MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
+        MPI_Request req_nrowsbcast;
+        MPI_Ibcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD, &req_nrowsbcast) ;
+
+        MPI_Request req_xbcast;
+
+        MPI_Wait(&req_nrowsbcast, &st);
+        MPI_Ibcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD, &req_xbcast) ;
+
 
         int size = (int) nrows / nb_proc;
         int reste =  nrows % nb_proc;
@@ -201,6 +209,7 @@ int main(int argc, char** argv)
 
         // SEND LOCAL SIZE
         //MPI_Bcast(tab_local_sizes.data(), nb_proc, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
+
 
         int * row_off = matrix.m_kcol_ptr();
 
@@ -244,24 +253,32 @@ int main(int argc, char** argv)
         }
 
 
-
-
-        MPI_Status st;
         for(auto r : requests_nbvals) { // Wait for all sizes to be received
             MPI_Wait(&r, &st);
         }
-
         std::vector<MPI_Request> requests_colidx(nb_proc-1);
         std::vector<MPI_Request> requests_vptr(nb_proc-1);
 
         int * col_idx = matrix.m_cols_ptr() + tab_nb_vals[0];
         double * V_ptr = matrix.m_values_ptr() + tab_nb_vals[0];
+
         for (int i = 1; i < nb_proc; ++i) {
           MPI_Isend(col_idx, tab_nb_vals[i], MPI_INT, i /* TO NODE i */, 1000 + i /* TAG OF COMM */, MPI_COMM_WORLD, &requests_colidx[i-1]);
           MPI_Isend(V_ptr, tab_nb_vals[i], MPI_DOUBLE, i /* TO NODE i */, 666 + i /* TAG OF COMM */, MPI_COMM_WORLD, &requests_vptr[i-1]);
           col_idx += tab_nb_vals[i]; // Shift for next node
           V_ptr += tab_nb_vals[i]; // Shift for next node
         }
+
+
+        matrix.keepFirstNRows(tab_local_sizes[0]);
+        std::vector<double> local_y(tab_local_sizes[0]);
+        {
+          Timer::Sentry sentry(timer,"Master mult") ;
+          matrix.mult(x, local_y);
+          // compute parallel SPMV
+          // TIMER HERE
+        }
+
 
         for(auto r : requests_rowoff) { // Wait row_idx to be received
             MPI_Wait(&r, &st);
@@ -273,20 +290,8 @@ int main(int argc, char** argv)
             MPI_Wait(&r, &st);
         }
 
-        {
-          // BROAD CAST VECTOR X
-          MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD) ;
-        }
 
-        matrix.keepFirstNRows(tab_local_sizes[0]);
-        std::vector<double> local_y(nrows);
-        {
-          matrix.mult(x, local_y);
-          // compute parallel SPMV
-          // TIMER HERE
-        }
-
-
+        MPI_Wait(&req_xbcast, &st);
         {
           // RECONSTRUCT Y
           std::vector<int> displacements(nb_proc);
@@ -319,7 +324,19 @@ int main(int argc, char** argv)
     else { // ALL NON-MASTER NODES //
       MPI_Status status;
       std::size_t nrows;
-      MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
+
+      MPI_Request req_nrowsbcast;
+      MPI_Ibcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD, &req_nrowsbcast) ;
+
+
+      MPI_Request req_xbcast;
+      std::vector<double> x;
+
+      MPI_Wait(&req_nrowsbcast, &status);
+      x.resize(nrows) ;
+      // BROAD CAST VECTOR X
+      double* ptr_matrix_x = x.data();
+      MPI_Ibcast(ptr_matrix_x, nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD, &req_xbcast) ;
 
       // RECV LOCAL SIZE
       //std::vector<size_t> tab_local_sizes(nb_proc);
@@ -349,15 +366,10 @@ int main(int argc, char** argv)
       std::vector<double> vec_m_values(nb_vals);
       MPI_Recv(vec_m_values.data(), nb_vals, MPI_DOUBLE, 0, 666 + my_rank, MPI_COMM_WORLD, &status);
 
-      std::vector<double> x;
-      x.resize(nrows) ;
-      {
-        // BROAD CAST VECTOR X
-        double* ptr_matrix_x = x.data();
-        MPI_Bcast(ptr_matrix_x, nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD) ;
-      }
 
       CSRMatrix local_matrix(diffVect, vec_m_cols, vec_m_values);
+
+      MPI_Wait(&req_xbcast, &status);
 
       std::vector<double> local_y(local_size);
       {

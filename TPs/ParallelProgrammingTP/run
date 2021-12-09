@@ -15,7 +15,7 @@
 ### usage : oarsub -l core=32 -S ./job_exemple.sh
 
 ### indiquer votre executable
-MONPROG=/gext/arthur.viens/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe
+MONPROG=/gext/arthur.viens/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
 ### indiquer votre fichier de donnees
 
 
@@ -38,11 +38,11 @@ set -x
 export OMP_NUM_THREADS=1
 
 if [ -f $MONPROG ] ; then
-  for np in 1 2 #4 8 12 16 24
+  for np in 1 2 4 8 12 16 24
   do
-    for nx in 50 100 #150 200
+    for nx in 50 100 150 200
     do
-    $MPIRUN -np ${np}  $MONPROG --nx $nx > log-NX${nx}-NPI${np}
+    $MPIRUN -np ${np}  $MONPROG --nx $nx > logs/dense/log-NX${nx}-NPI${np}
     done
   done
 else
