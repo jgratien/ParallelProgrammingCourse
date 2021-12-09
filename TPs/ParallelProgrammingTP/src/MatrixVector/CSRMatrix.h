@@ -24,6 +24,10 @@ class CSRMatrix {
 
     std::size_t nnz() const { return m_nnz; }
 
+    std::vector<int> rows() const { return m_kcol; }
+    std::vector<int> cols() const { return m_cols; }
+    std::vector<double> values() const { return m_values; }
+
     void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries) {
         std::vector<std::map<int, double> > rows(nrows);
         for (const auto& entry : entries) {
@@ -70,7 +74,7 @@ class CSRMatrix {
         // todo OPENMP
     }
 
-   private:
+  private:
     std::size_t m_nrows = 0; // number of lines
     std::size_t m_nnz = 0; // number of non zero entries
     std::vector<int> m_kcol; // rows offset

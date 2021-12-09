@@ -20,95 +20,210 @@
 #include "omp.h"
 #include "tbb/tbb.h"
 
+using vi = std::vector<int>;
+using vd = std::vector<double>;
+
+int count(int* vector_ptr, int n){
+  int nb_elems = 0;
+  for(int i = 0; i < n; i++){
+    nb_elems += *(vector_ptr + i);
+  }
+  return nb_elems;
+}
+
+vd mult(const vd& x, const vi& rows, const vi& cols, const vd& values){
+  int nb_elems = 0;
+  vd y;
+  // y.resize(cols.size());
+  for(int row : rows){
+    double value = 0;
+    for(int i = 0; i < row; i++){
+      value += x[cols[nb_elems + i]] * values[nb_elems + i];
+    }
+    y.push_back(value);
+    nb_elems += row;
+  }
+  return y;
+}
+
 int main(int argc, char** argv) {
-    using namespace boost::program_options;
-    options_description desc;
-    desc.add_options()("help", "produce help")(
-        // "nb-threads", value<int>()->default_value(0), "nb threads")(
-        "nrows", value<int>()->default_value(0), "matrix size")(
-        "nx", value<int>()->default_value(0), "nx grid size")(
-        "file", value<std::string>(), "file input")(
-        "eigen", value<int>()->default_value(0), "use eigen package");
-    variables_map vm;
-    store(parse_command_line(argc, argv, desc), vm);
-    notify(vm);
+  using namespace boost::program_options;
+  options_description desc;
+  desc.add_options()("help", "produce help");
+  desc.add_options()("nrows", value<int>()->default_value(0), "matrix size");
+  desc.add_options()("nx", value<int>()->default_value(0), "nx grid size");
+  variables_map vm;
+  store(parse_command_line(argc, argv, desc), vm);
+  notify(vm);
 
-    if (vm.count("help")) {
-        std::cout << desc << "\n";
-        return 1;
+  if (vm.count("help")) {
+    std::cout << desc << "\n";
+    return 1;
+  }
+  MPI_Init(&argc, &argv);
+
+  int my_rank = 0;
+  int nb_proc = 1;
+  MPI_Comm_size(MPI_COMM_WORLD, &nb_proc);
+  MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+  using namespace PPTP;
+
+  Timer timer;
+  MatrixGenerator generator;
+
+  double data[nb_proc - 1];
+  double result;
+  double result_;
+
+  if(my_rank==0){
+    CSRMatrix matrix;
+    int nx = vm["nx"].as<int>();
+    generator.genLaplacian(nx, matrix);
+    // std::cout << "m_kcol : " << matrix.rows().size() << '\n';
+    // for(auto e : matrix.rows()){
+    //   std::cout << "e : " << e << '\n';
+    // }
+    // std::cout << "m_cols : " << matrix.cols().size() << '\n';
+    // std::cout << "m_values : " << matrix.values().size() << '\n';
+    // std::cout << "m_nrows : " << matrix.nrows() << '\n';
+    // ====================================================
+
+
+    int nrows = matrix.nrows();
+    std::vector<double> x;
+    std::vector<double> y;
+    x.resize(nrows);
+    y.resize(nrows);
+    for(int i = 0; i < nrows; ++i) x[i] = i + 1;
+
+    {
+      // Timer::Sentry sentry(timer,"SpMV") ;
+      matrix.mult(x,y) ;
+    }
+    double normy = PPTP::norm2(y) ;
+    std::cout << "SpMV||y||=" << normy << std::endl;
+
+    MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    std::vector<int> rows = matrix.rows();
+    std::vector<int> cols = matrix.cols();
+    std::vector<double> values = matrix.values();
+    for (int i = rows.size() - 1; i > 0; i--) rows[i] -= rows[i - 1];
+
+    int q = nrows / nb_proc;
+    int r = nrows % nb_proc;
+
+    // std::cout << "q : " << q << '\n';
+    // std::cout << "r : " << r << '\n';
+
+    int* prows = rows.data() + 1; // the first element is not interesting
+    int* pcols = cols.data();
+    double* pvalues = values.data();
+
+    // vi trows;
+    // trows.insert(trows.end(), rows.begin() + 1, rows.end());
+    // vd temp = mult(x, trows, cols, values);
+    // std::cout << "temp size : " << temp.size() << '\n';
+    // std::cout << "nrows : " << nrows << '\n';
+    // double rrr = 0;
+    // for (auto e : temp) rrr += e * e;
+    // std::cout << "rrr||y||=" << std::sqrt(rrr) << '\n';
+
+    int epsilon = 0;
+    if (r > 0) epsilon = 1;
+    int local_size = (q + epsilon);
+    int local_nb_elems = count(prows, local_size);
+    // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
+    int* local_cptr = pcols + local_nb_elems;
+    double* local_vptr = pvalues + local_nb_elems;
+    // std::cout << "my_rank : " << my_rank << ", nb_elems : " << local_nb_elems << '\n';
+    int* local_rptr = prows + local_size;
+
+    for (int i = 1; i < nb_proc; i++){
+      int proc_local_size = q;
+      if (i < r) proc_local_size++;
+      MPI_Send(&proc_local_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+      MPI_Send(local_rptr, proc_local_size, MPI_INT, i, 1, MPI_COMM_WORLD);
+
+      int nb_elems = count(local_rptr, proc_local_size);
+      MPI_Send(&nb_elems, 1, MPI_INT, i, 2, MPI_COMM_WORLD);
+      MPI_Send(local_cptr, nb_elems, MPI_INT, i, 3, MPI_COMM_WORLD);
+      MPI_Send(local_vptr, nb_elems, MPI_DOUBLE, i, 4, MPI_COMM_WORLD);
+      local_cptr += nb_elems;
+      local_vptr += nb_elems;
+      local_rptr += proc_local_size;
     }
 
-    // int nb_threads = vm["nb-threads"].as<int>();
-    // if (nb_threads > 0) omp_set_num_threads(nb_threads);
+    std::vector<int> local_rows;
+    std::vector<int> local_cols;
+    std::vector<double> local_values;
+    local_rows.insert(local_rows.end(), prows, prows + local_size);
+    local_cols.insert(local_cols.end(), pcols, pcols + local_nb_elems);
+    local_values.insert(local_values.end(), pvalues, pvalues + local_nb_elems);
+    y = mult(x, local_rows, local_cols, local_values);
 
-    // int nb_procs = omp_get_num_procs();
-    // std::cout << "NB PROCS     :" << nb_procs << std::endl;
-    // int nb_available_threads = omp_get_max_threads();
-    // std::cout << "NB AVAILABLE_THREADS :" << nb_available_threads << std::endl;
+    result = 0;
+    for (auto const& e : y) result += e * e;
 
-    using namespace PPTP;
+  } else {
+    int nrows;
+    int local_size;
+    int nb_elems;
+    std::vector<double> x;
+    std::vector<int> local_rows;
+    std::vector<int> local_cols;
+    std::vector<double> local_values;
 
-    Timer timer;
-    MatrixGenerator generator;
-    if (vm["eigen"].as<int>() == 1) {
-        typedef Eigen::SparseMatrix<double> MatrixType;
-        typedef Eigen::VectorXd VectorType;
-        MatrixType matrix;
-        if (vm.count("file")) {
-            std::string file = vm["file"].as<std::string>();
-            generator.readFromFile(file, matrix);
-        } else {
-            int nx = vm["nx"].as<int>();
-            generator.genLaplacian(nx, matrix);
-        }
+    MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-        std::size_t nrows = matrix.rows();
-        VectorType x(nrows);
+    x.resize(nrows);
+    MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-        for (std::size_t i = 0; i < nrows; ++i) x(i) = i + 1;
+    MPI_Recv(&local_size, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
 
-        VectorType y;
-        {
-            Timer::Sentry sentry(timer, "EigenSpMV");
-            y = matrix * x;
-        }
+    local_rows.resize(local_size);
+    int* prows = local_rows.data();
+    MPI_Recv(prows, local_size, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    // for(auto e : local_rows){
+    //   std::cout << "my_rank : " << my_rank << ", e : " << e << '\n';
+    // }
 
-        double normy = PPTP::norm2(y);
-        std::cout << "||y||=" << normy << std::endl;
-    } else {
-        CSRMatrix matrix;
-        if (vm.count("file")) {
-            std::string file = vm["file"].as<std::string>();
-            generator.readFromFile(file, matrix);
-        } else {
-            int nx = vm["nx"].as<int>();
-            generator.genLaplacian(nx, matrix);
-        }
+    MPI_Recv(&nb_elems, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    // std::cout << "my_rank : " << my_rank << ", nb_elems : " << nb_elems << '\n';
 
-        // ====================================================
+    local_cols.resize(nb_elems);
+    int* pcols = local_cols.data();
+    MPI_Recv(pcols, nb_elems, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    // for(auto e1 : local_cols){
+    //   std::cout << "my_rank : " << my_rank << ", e1 : " << e1 << '\n';
+    // }
 
-        std::size_t nrows = matrix.nrows();
-        std::vector<double> x, y, y2;
-        x.resize(nrows);
-        y.resize(nrows);
-        y2.resize(nrows);
+    local_values.resize(nb_elems);
+    double* pvalues = local_values.data();
+    MPI_Recv(pvalues, nb_elems, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    // for(auto e2 : local_values){
+    //   std::cout << "my_rank : " << my_rank << ", e2 : " << e2 << '\n';
+    // }
+    std::vector<double> y = mult(x, local_rows, local_cols, local_values);
+    result_ = 0;
+    for (auto const& e : y) result_ += e * e;
+  }
+  MPI_Gather(&result_, 1, MPI_DOUBLE, data, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-        // for (std::size_t i = 0; i < nrows; ++i) x[i] = i + 1;
-        //
-        // {
-        //     Timer::Sentry sentry(timer, "SpMV");
-        //     matrix.mult(x, y);
-        // }
-        // double normy = PPTP::norm2(y);
-        // std::cout << "||y||=" << normy << std::endl;
-        //
-        // {
-        //     Timer::Sentry sentry(timer, "OMPSpMV");
-        //     matrix.mult(x, y2);
-        // }
-        // double normy2 = PPTP::norm2(y2);
-        // std::cout << "||y2||=" << normy2 << std::endl;
-    }
-    timer.printInfo();
-    return 0;
+  if (my_rank == 0) {
+      // Timer::Sentry sentry(timer,"SparseMPI") ;
+      int i;
+      for (i = 1; i < nb_proc; i++) {
+          result += data[i];
+      }
+      result = std::sqrt(result);
+      std::cout << "||y||=" << result << '\n';
+  }
+
+  timer.printInfo();
+  MPI_Finalize();
+  return 0;
 }

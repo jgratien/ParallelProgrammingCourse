@@ -55,7 +55,7 @@ class Timer
       // std::cout<<"PERF INFO : "<<std::endl ;
       for(auto const& iter : m_counters)
       {
-        std::cout<<iter.first<<":"<<iter.second<<std::endl ;
+        std::cout<<iter.first<<" : "<<iter.second<<std::endl ;
       }
       // std::cout<<"================================"<<std::endl ;
     }

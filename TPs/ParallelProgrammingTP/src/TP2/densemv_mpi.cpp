@@ -22,11 +22,9 @@
 int main(int argc, char** argv) {
     using namespace boost::program_options;
     options_description desc;
-    desc.add_options()("help", "produce help")(
-        "nrows", value<int>()->default_value(0), "matrix size")(
-        "nx", value<int>()->default_value(0), "nx grid size")(
-        "file", value<std::string>(), "file input")(
-        "eigen", value<int>()->default_value(0), "use eigen package");
+    desc.add_options()("help", "produce help");
+    desc.add_options()("nrows", value<int>()->default_value(0), "matrix size");
+    desc.add_options()("nx", value<int>()->default_value(0), "nx grid size");
     variables_map vm;
     store(parse_command_line(argc, argv, desc), vm);
     notify(vm);
@@ -66,11 +64,12 @@ int main(int argc, char** argv) {
 
         {
             std::vector<double> y(nrows);
+            double normy = 0.;
             {
                 Timer::Sentry sentry(timer, "DenseMV");
                 matrix.mult(x, y);
+                normy = PPTP::norm2(y);
             }
-            double normy = PPTP::norm2(y);
             std::cout << "||y||=" << normy << std::endl;
         }
 
@@ -83,10 +82,10 @@ int main(int argc, char** argv) {
         //   }
         // }
 
-        Timer::Sentry sentry(timer,"Rank 0 Begin") ;
+        Timer::Sentry sentry(timer,"DenseMPI") ;
 
         {
-            MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+            MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
             unsigned long q = nrows / nb_proc;
             unsigned long r = nrows % nb_proc;
@@ -99,11 +98,11 @@ int main(int argc, char** argv) {
             // std::cout << "nrows : " << nrows << '\n';
             for (int i = 1; i < nb_proc; ++i) {
                 // std::cout<<" SEND MATRIX DATA to proc "<<i<<std::endl ;
-                int local_size_test = q;
-                if (i < r) local_size_test++;
-                MPI_Send(&local_size_test, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-                MPI_Send(local_ptr, local_size_test * nrows, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
-                local_ptr += local_size_test * nrows;
+                int proc_local_size = q;
+                if (i < r) proc_local_size++;
+                MPI_Send(&proc_local_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+                MPI_Send(local_ptr, proc_local_size * nrows, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
+                local_ptr += proc_local_size * nrows;
             }
         }
 
@@ -145,7 +144,7 @@ int main(int argc, char** argv) {
         int local_size;
 
         {
-            MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+            MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
             MPI_Recv(&local_size, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             // std::cout << "Received [rank: " << my_rank << ", local_size: " << local_size << "]" << '\n';
@@ -193,7 +192,7 @@ int main(int argc, char** argv) {
     MPI_Gather(&result_, 1, MPI_DOUBLE, data, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0) {
-        Timer::Sentry sentry(timer,"Rank 0 End") ;
+        Timer::Sentry sentry(timer,"DenseMPI") ;
         int i;
         for (i = 1; i < nb_proc; i++) {
             result += data[i];
