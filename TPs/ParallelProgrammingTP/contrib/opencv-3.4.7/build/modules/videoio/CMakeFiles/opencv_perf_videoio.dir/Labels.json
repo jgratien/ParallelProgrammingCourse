@@ -1,0 +1,51 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/videoio/perf/perf_input.cpp",
+			"labels" : 
+			[
+				"Main",
+				"opencv_videoio",
+				"PerfTest"
+			]
+		},
+		{
+			"file" : "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/videoio/perf/perf_main.cpp",
+			"labels" : 
+			[
+				"Main",
+				"opencv_videoio",
+				"PerfTest"
+			]
+		},
+		{
+			"file" : "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/videoio/perf/perf_output.cpp",
+			"labels" : 
+			[
+				"Main",
+				"opencv_videoio",
+				"PerfTest"
+			]
+		},
+		{
+			"file" : "/work/irlin355_1/gratienj/ParallelProgrammingCourse/ParallelProgrammingTP/contrib/opencv-3.4.7/modules/videoio/perf/perf_precomp.hpp",
+			"labels" : 
+			[
+				"Main",
+				"opencv_videoio",
+				"PerfTest"
+			]
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"Main",
+			"opencv_videoio",
+			"PerfTest"
+		],
+		"name" : "opencv_perf_videoio"
+	}
+}

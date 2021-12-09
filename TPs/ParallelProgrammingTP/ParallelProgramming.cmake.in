@@ -1,0 +1,7 @@
+
+
+SET(APPLI_MAIN_LIB ParallelProgramming)
+
+SET(APPLI_MAIN_LIST Utils)
+
+SET(APPLI_LIB ParallelProgramming)
