@@ -1,2 +1,0 @@
-# ParallelProgrammingCourse
-Parallel Programming Course
