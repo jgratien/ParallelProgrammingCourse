@@ -15,9 +15,8 @@
 ### usage : oarsub -l core=32 -S ./job_exemple.sh
 
 ### indiquer votre executable
-MONPROG=/gext/jean-marc.gratien/ParallelProgrammingTP/bin/densemv_mpi.exe
+MONPROG=/gext/arthur.viens/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe
 ### indiquer votre fichier de donnees
-MYDATA=
 
 
 ### en execution standand, rien a changer ci-apres
@@ -32,24 +31,20 @@ echo sur les nodes $(cat $OAR_NODE_FILE)
 #MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun \
 #  -n $NP \
 #  -machinefile $OAR_NODE_FILE "
- 
+
 MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun"
 
 set -x
 export OMP_NUM_THREADS=1
 
 if [ -f $MONPROG ] ; then
-  if [ -f $MYDATA ] ; then
-  for np in 1 2 4 8 12 16 24
+  for np in 1 2 #4 8 12 16 24
   do
-    for nx in 50 100 150 200
+    for nx in 50 100 #150 200
     do
     $MPIRUN -np ${np}  $MONPROG --nx $nx > log-NX${nx}-NPI${np}
     done
   done
-  else
-    echo "ERREUR : data $MYDATA inexistant !!"
-  fi
 else
    echo "ERREUR : programme $MONPROG inexistant !!"
 fi

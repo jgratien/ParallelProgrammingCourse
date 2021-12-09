@@ -62,7 +62,7 @@ int main(int argc, char** argv)
   Timer timer ;
   MatrixGenerator generator ;
   int nx = vm["nx"].as<int>() ;
-  /*if(vm["eigen"].as<int>()==1)
+  if(vm["eigen"].as<int>()==1)
   {
     typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> EigenMatrixType ;
     typedef Eigen::Matrix<double, Eigen::Dynamic, 1>              EigenVectorType;
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     double normy = PPTP::norm2(y) ;
     std::cout<<"||y||="<<normy<<std::endl ;
 
-  }*/
+  }
 
   std::vector<size_t> tab_local_sizes(nb_proc);
 
@@ -129,110 +129,114 @@ int main(int argc, char** argv)
         std::cout<<"Result should be : ||y|| = "<<normy<<std::endl ;
       }
 
-    {
-      // SEND GLOBAL SIZE
-      MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
-
-      int size = (int) nrows/nb_proc;
-      int reste =  nrows % nb_proc;
-      size_t local_size;
-      // SEND MATRIX
-
-      tab_local_sizes[0] = (size_t) size;
-      for (int i=1; i<nb_proc;++i)
-      {
-        local_size = size;
-        if (reste > 0) {
-          reste -= 1;
-          local_size += 1;
-        }
-        tab_local_sizes[i] = local_size;
-      }
-
-      MPI_Bcast(tab_local_sizes.data(), nb_proc, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
-      //std::string s("tab_local_sizes : " + tostring(tab_local_sizes));
-      //std::cout << "Local sizes are " << s << std::endl;
-      //std::cout << "Master has sent sizes " << std::endl;
-
-      size_t counter(0);
-      size_t j(0);
-      //for (size_t i=0; i < (matrix.size() / nrows); ++i) {
-      //  if (i == counter) {
-      //    std::cout << "Node " << j << std::endl;
-      //    counter += tab_local_sizes[j];
-      //    j += 1;
-      //  }
-      //  matrix.printline(i);
-      //}
-
-
-      double * local_ptr = matrix.data();
-      local_ptr += size * nrows;
-      int irow = size;
-      std::vector<MPI_Request> requests_data(nb_proc-1);
-      for (int i=1; i<nb_proc;++i)
-      {
-        MPI_Isend(local_ptr, nrows * tab_local_sizes[i], MPI_DOUBLE, i, 113, MPI_COMM_WORLD, &requests_data[i-1]) ;
-        local_ptr += (nrows * tab_local_sizes[i]);
-      }
-
-      MPI_Status st;
-      for(auto r : requests_data) {
-          MPI_Wait(&r, &st);
-      }
-      //std::cout << "Master has sent all data " << std::endl;
-
-    }
-
-    {
-      // BROAD CAST VECTOR X
-      //std::string s("Master broadcast x = " + tostring(x));
-      //std::cout << s << std::endl;
-      MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD) ;
-    }
-
-
-
-
-    // COMPUTE LOCAL MATRICE LOCAL VECTOR ON PROC 0
-    //DenseMatrix local_matrix ;
-    std::size_t local_size = tab_local_sizes[0] ;
-
-    {
-      // EXTRACT LOCAL DATA FROM MASTER PRO
-
-      // COMPUTE LOCAL SIZE
-
-      // EXTRACT LOCAL MATRIX DATA
-      matrix.resize(local_size, nrows);
-    }
-
-    std::vector<double> local_y(nrows);
-    {
-      matrix.mult(x, local_y);
-      // compute parallel SPMV
-      // TIMER HERE
-    }
 
     std::vector<double> final_y(nrows);
-    {
-      // RECONSTRUCT Y
-      std::vector<int> displacements(nb_proc);
-      std::vector<int> int_tab_local_sizes(nb_proc);
-      displacements[0] = 0;
-      int_tab_local_sizes[0] = (int) tab_local_sizes[0];
-      for (int i = 1; i < nb_proc; ++i) {
-        displacements[i] = (int) (displacements[i-1] + tab_local_sizes[i-1]);
-        int_tab_local_sizes[i] = (int) tab_local_sizes[i];
+    { // TIMER MPI
+      Timer::Sentry sentry(timer,"DenseMV MPI") ;
+
+      {
+        // SEND GLOBAL SIZE
+        MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
+
+        int size = (int) nrows/nb_proc;
+        int reste =  nrows % nb_proc;
+        size_t local_size;
+        // SEND MATRIX
+
+        tab_local_sizes[0] = (size_t) size;
+        for (int i=1; i<nb_proc;++i)
+        {
+          local_size = size;
+          if (reste > 0) {
+            reste -= 1;
+            local_size += 1;
+          }
+          tab_local_sizes[i] = local_size;
+        }
+
+        MPI_Bcast(tab_local_sizes.data(), nb_proc, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
+        //std::string s("tab_local_sizes : " + tostring(tab_local_sizes));
+        //std::cout << "Local sizes are " << s << std::endl;
+        //std::cout << "Master has sent sizes " << std::endl;
+
+        //size_t counter(0);
+        //size_t j(0);
+        //for (size_t i=0; i < (matrix.size() / nrows); ++i) {
+        //  if (i == counter) {
+        //    std::cout << "Node " << j << std::endl;
+        //    counter += tab_local_sizes[j];
+        //    j += 1;
+        //  }
+        //  matrix.printline(i);
+        //}
+
+
+        double * local_ptr = matrix.data();
+        local_ptr += size * nrows;
+        int irow = size;
+        std::vector<MPI_Request> requests_data(nb_proc-1);
+        for (int i=1; i<nb_proc;++i)
+        {
+          MPI_Isend(local_ptr, nrows * tab_local_sizes[i], MPI_DOUBLE, i, 113, MPI_COMM_WORLD, &requests_data[i-1]) ;
+          local_ptr += (nrows * tab_local_sizes[i]);
+        }
+
+        MPI_Status st;
+        for(auto r : requests_data) {
+            MPI_Wait(&r, &st);
+        }
+        //std::cout << "Master has sent all data " << std::endl;
+
       }
-      MPI_Gatherv(local_y.data(), tab_local_sizes[0], MPI_DOUBLE,
-                final_y.data(), int_tab_local_sizes.data(), displacements.data(),
-                MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-      //std::string s("Master gathered y = " + tostring(y));
-      //std::cout << s << std::endl;
-    }
+      {
+        // BROAD CAST VECTOR X
+        //std::string s("Master broadcast x = " + tostring(x));
+        //std::cout << s << std::endl;
+        MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD) ;
+      }
 
+
+
+
+      // COMPUTE LOCAL MATRICE LOCAL VECTOR ON PROC 0
+      //DenseMatrix local_matrix ;
+      std::size_t local_size = tab_local_sizes[0] ;
+
+      {
+        // EXTRACT LOCAL DATA FROM MASTER PRO
+
+        // COMPUTE LOCAL SIZE
+
+        // EXTRACT LOCAL MATRIX DATA
+        matrix.resize(local_size, nrows);
+      }
+
+      std::vector<double> local_y(nrows);
+      {
+        matrix.mult(x, local_y);
+        // compute parallel SPMV
+        // TIMER HERE
+      }
+
+      {
+        // RECONSTRUCT Y
+        std::vector<int> displacements(nb_proc);
+        std::vector<int> int_tab_local_sizes(nb_proc);
+        displacements[0] = 0;
+        int_tab_local_sizes[0] = (int) tab_local_sizes[0];
+        for (int i = 1; i < nb_proc; ++i) {
+          displacements[i] = (int) (displacements[i-1] + tab_local_sizes[i-1]);
+          int_tab_local_sizes[i] = (int) tab_local_sizes[i];
+        }
+        MPI_Gatherv(local_y.data(), tab_local_sizes[0], MPI_DOUBLE,
+                  final_y.data(), int_tab_local_sizes.data(), displacements.data(),
+                  MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+        //std::string s("Master gathered y = " + tostring(y));
+        //std::cout << s << std::endl;
+      }
+    } // END TIMER MPI
     //std::string s1("Le vecteur y qu'a récupéré master est : " + tostring(y));
     //std::cout << s1 << std::endl;
 
@@ -309,7 +313,10 @@ int main(int argc, char** argv)
     }
 
   }
-  timer.printInfo() ;
+  if (my_rank == 0) {
+    timer.printInfo() ;
+  }
+
   MPI_Finalize();
   return 0 ;
 }

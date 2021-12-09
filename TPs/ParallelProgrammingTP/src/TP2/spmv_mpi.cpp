@@ -167,12 +167,12 @@ int main(int argc, char** argv)
       double normy = PPTP::norm2(y) ;
       std::cout<<"baseline y ||y||="<<normy<<std::endl ;
 
-      {
+      /*{
         Timer::Sentry sentry(timer,"OMPSpMV") ;
         matrix.ompmult(x, y2) ;
-      }
+      }*/
       double normy2 = PPTP::norm2(y2) ;
-      std::cout<<"y with OMP ||y2||="<<normy2<<std::endl ;
+      std::cout<<"y with OMP ||y||="<<normy2<<std::endl ;
 
       std::vector<size_t> tab_local_sizes(nb_proc);
 
@@ -200,9 +200,32 @@ int main(int argc, char** argv)
         }
 
         // SEND LOCAL SIZE
-        MPI_Bcast(tab_local_sizes.data(), nb_proc, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
+        //MPI_Bcast(tab_local_sizes.data(), nb_proc, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
 
         int * row_off = matrix.m_kcol_ptr();
+
+        std::vector<int> tosend_sizes(2);
+        // SEND SIZES OF DATA
+        int from(row_off[0]); // From which index
+        int to(row_off[tab_local_sizes[0]] - 1); // To which index
+        std::vector<int> tab_nb_vals(nb_proc); // We have to store the nb_vals
+        tab_nb_vals[0] = (to - from + 1); // nb_vals of master
+        row_off += tab_local_sizes[0]; // Shift the pointer for node 1
+        std::vector<MPI_Request> requests_nbvals(nb_proc-1); // Requests for asynchronous send
+        for (int i=1; i<nb_proc;++i)
+        {
+          from = row_off[0];
+          to = row_off[tab_local_sizes[i]] - 1;
+          tab_nb_vals[i] = to - from + 1; // Number of values (V and colidx) to send
+          tosend_sizes[0] = (int) tab_local_sizes[i];
+          tosend_sizes[1] = to - from + 1;
+          MPI_Isend(tosend_sizes.data(), 2, MPI_INT, i /* TO NODE i */, i /* TAG OF COMM */, MPI_COMM_WORLD, &requests_nbvals[i-1]);
+          row_off += tab_local_sizes[i]; // Shift for next node
+        }
+
+
+
+        row_off = matrix.m_kcol_ptr();
 
         std::vector<int> local_rowoff(tab_local_sizes[0] + 1);
         for (int i = 0; i < local_rowoff.size(); ++i) {
@@ -220,23 +243,7 @@ int main(int argc, char** argv)
           row_off += tab_local_sizes[i];
         }
 
-        std::vector<double> tosend_sizes(2);
-        // SEND SIZES OF DATA
-        row_off = matrix.m_kcol_ptr();
-        int from(row_off[0]); // From which index
-        int to(row_off[tab_local_sizes[0]] - 1); // To which index
-        std::vector<int> tab_nb_vals(nb_proc); // We have to store the nb_vals
-        tab_nb_vals[0] = (to - from + 1); // nb_vals of master
-        row_off += tab_local_sizes[0]; // Shift the pointer for node 1
-        std::vector<MPI_Request> requests_nbvals(nb_proc-1); // Requests for asynchronous send
-        for (int i=1; i<nb_proc;++i)
-        {
-          from = row_off[0];
-          to = row_off[tab_local_sizes[i]] - 1;
-          tab_nb_vals[i] = to - from + 1; // Number of values (V and colidx) to send
-          MPI_Isend(tab_nb_vals.data() + i, 1, MPI_INT, i /* TO NODE i */, i /* TAG OF COMM */, MPI_COMM_WORLD, &requests_nbvals[i-1]);
-          row_off += tab_local_sizes[i]; // Shift for next node
-        }
+
 
 
         MPI_Status st;
@@ -310,26 +317,31 @@ int main(int argc, char** argv)
       FIN SPARSE MATRIX VECTOR MPI */
     }
     else { // ALL NON-MASTER NODES //
+      MPI_Status status;
       std::size_t nrows;
       MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
 
       // RECV LOCAL SIZE
-      std::vector<size_t> tab_local_sizes(nb_proc);
-      //std::vector<double> local_sizes(2);
-      MPI_Bcast(tab_local_sizes.data(), nb_proc, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
+      //std::vector<size_t> tab_local_sizes(nb_proc);
+      //MPI_Bcast(tab_local_sizes.data(), nb_proc, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
 
 
-      MPI_Status status;
+      std::vector<int> local_sizes(2);
+      int nb_vals{0};
+      size_t local_size;
+      MPI_Recv(local_sizes.data(), 2, MPI_INT, 0, my_rank, MPI_COMM_WORLD, &status);
+
+      local_size = local_sizes[0];
+      nb_vals = (int) local_sizes[1];
+
       // RECV ROW_OFF
-      std::vector<int> vec_m_kcol(tab_local_sizes[my_rank] + 1);
+      std::vector<int> vec_m_kcol(local_size + 1);
       int* row_off = vec_m_kcol.data();
-      MPI_Recv(row_off, tab_local_sizes[my_rank] + 1, MPI_INT, 0, 113, MPI_COMM_WORLD, &status);
+      MPI_Recv(row_off, local_size + 1, MPI_INT, 0, 113, MPI_COMM_WORLD, &status);
 
       std::vector<int> diffVect = FirstEltRowDiff(vec_m_kcol);
 
 
-      int nb_vals{0};
-      MPI_Recv(&nb_vals, 1, MPI_INT, 0, my_rank, MPI_COMM_WORLD, &status);
 
       std::vector<int> vec_m_cols(nb_vals);
       MPI_Recv(vec_m_cols.data(), nb_vals, MPI_INT, 0, 1000 + my_rank, MPI_COMM_WORLD, &status);
@@ -347,7 +359,7 @@ int main(int argc, char** argv)
 
       CSRMatrix local_matrix(diffVect, vec_m_cols, vec_m_values);
 
-      std::vector<double> local_y(tab_local_sizes[my_rank]);
+      std::vector<double> local_y(local_size);
       {
         // compute parallel SPMV
         local_matrix.mult(x, local_y);
@@ -355,7 +367,7 @@ int main(int argc, char** argv)
         //std::string s2("Vecteur envoyé par node " + std::to_string(my_rank) + " " + tostring(local_y));
         //std::cout << s2 << std::endl;
 
-        MPI_Gatherv(local_y.data(), tab_local_sizes[my_rank], MPI_DOUBLE,
+        MPI_Gatherv(local_y.data(), local_size, MPI_DOUBLE,
                   NULL, NULL, NULL,
                   MPI_DOUBLE, 0, MPI_COMM_WORLD);
       }
