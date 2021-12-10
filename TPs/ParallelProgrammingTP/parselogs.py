@@ -34,10 +34,11 @@ if __name__ == "__main__":
                 #print(f"File {file} : nx = {nx}, npi = {npi}")
                 with open(directory + file) as f:
                     lines = pd.Series(f.readlines())
-                    lines = lines[lines.str.startswith(("SpMV", "SpMV MPI"))].str[:-1]
+                    lines = lines[lines.str.startswith(("SpMV", "mult"))].str[:-1]
                     assert len(lines) != 0, "Could not extract lines with SpMV or SpMV MPI result from {}. Are the log files right ?".format(file)
                 timeSpMV = float(lines[lines.str.startswith("SpMV")].values[0].split(":")[1])
-                timeSpMVMPI = float(lines[lines.str.startswith("SpMV MPI")].values[0].split(":")[1])
+                timeSpMVMPI = lines[lines.str.startswith("mult")].str.split(":").str[1].astype(float).max()
+
                 row = pd.Series([file, nx, npi, timeSpMV, timeSpMVMPI], index=columns)
                 logs = logs.append(row, ignore_index=True)
             logs.to_csv("SpMV_benchmark.csv", index=False, sep=";")
@@ -56,7 +57,7 @@ if __name__ == "__main__":
                     lines = lines[lines.str.startswith(("DenseMV", "DenseMV MPI"))].str[:-1]
                     assert len(lines) != 0, "Could not extract lines with DenseMV or DenseMV MPI result from {}. Are the log files right ?".format(file)
                 timeDSMV = float(lines[lines.str.startswith("DenseMV")].values[0].split(":")[1])
-                timeDSMVMPI = float(lines[lines.str.startswith("DenseMV MPI")].values[0].split(":")[1])
+                timeDSMVMPI = lines[lines.str.startswith("mult")].str.split(":").str[1].astype(float).max()
                 row = pd.Series([file, nx, npi, timeDSMV, timeDSMVMPI], index=columns)
                 logs = logs.append(row, ignore_index=True)
             logs.to_csv("DenseMV_benchmark.csv", index=False, sep=";")

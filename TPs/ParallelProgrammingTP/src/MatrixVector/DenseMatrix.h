@@ -56,7 +56,7 @@ namespace PPTP
         if(m_nrows>0)
         {
           m_values.resize(m_nrows*m_ncols) ;
-          m_values.assign(m_nrows*m_ncols,0.) ;
+          //m_values.assign(m_nrows*m_ncols,0.) ;
         }
       }
 
@@ -78,7 +78,17 @@ namespace PPTP
       }
 
       void resize(std::size_t n_r, std::size_t n_c) {
+        m_ncols = n_c;
+        m_nrows = n_r;
         m_values.resize(n_r * n_c);
+      }
+
+      std::size_t getRows() {
+        return m_nrows;
+      }
+
+      std::size_t getCols() {
+        return m_ncols;
       }
 
       std::size_t size() {
@@ -140,12 +150,12 @@ namespace PPTP
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
         double const* matrix_ptr = m_values.data() ;
-        for(std::size_t irow =0; irow<m_nrows;++irow)
+        for(std::size_t irow = 0; irow < m_nrows; ++irow)
         {
           double value = 0 ;
-          for(std::size_t jcol =0; jcol<m_ncols;++jcol)
+          for(std::size_t jcol = 0; jcol<m_ncols; ++jcol)
           {
-            value += matrix_ptr[jcol]*x[jcol] ;
+            value += matrix_ptr[jcol] * x[jcol] ;
           }
           y[irow] = value ;
           matrix_ptr += m_ncols ;

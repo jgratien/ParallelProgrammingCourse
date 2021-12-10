@@ -4,7 +4,7 @@
 ### [ 04/2019 ]
 
 ### indiquer nombre de core et duree max de votre job hh:mm:ss
-#OAR -l core=24,walltime=00:50:00
+#OAR -l core=24,walltime=00:20:00
 ### indiquer le nom de votre job
 #OAR -n job_exemple
 #OAR -O %jobid%.out
