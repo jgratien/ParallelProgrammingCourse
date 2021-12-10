@@ -22,6 +22,15 @@ class CSRMatrix
     {}
     virtual ~CSRMatrix(){}
 
+    CSRMatrix(std::vector<int> kcol, std::vector<int> cols, std::vector<double> values)
+    {
+        m_kcol = kcol;
+        m_cols = cols;
+        m_values = values;
+        m_nnz   = m_values.size();
+        m_nrows = (size_t)m_kcol.size() - 1;
+    }
+
     void setChunkSize(int chunk_size)
     {
       m_chunk_size = chunk_size ;
@@ -33,6 +42,12 @@ class CSRMatrix
 
     std::size_t nnz() const {
       return m_nnz ;
+    }
+
+    double sparsity() const{
+        // std::cout << "rows : " << m_nrows << std::endl;
+        // std::cout << "nnz : " << m_nnz << std::endl;
+        return m_nnz/(m_nrows*m_nrows);
     }
 
     void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries)
@@ -70,28 +85,83 @@ class CSRMatrix
 
     void mult(VectorType const& x, VectorType& y) const
     {
-      assert(x.size()>=m_nrows) ;
-      assert(y.size()>=m_nrows) ;
-      for(std::size_t irow =0; irow<m_nrows;++irow)
-      {
-        double value = 0 ;
-        for( int k = m_kcol[irow]; k < m_kcol[irow+1];++k)
+        // std::cout << m_nrows << " = m_nrows \n";
+        // std::cout << y.size() << " = y_size \n";
+        assert(x.size()>=m_nrows) ;
+        assert(y.size()>=m_nrows) ;
+        for(std::size_t irow =0; irow<m_nrows;++irow)
         {
-          value += m_values[k]*x[m_cols[k]] ;
+          double value = 0 ;
+          for( int k = m_kcol[irow]; k < m_kcol[irow+1];++k)
+          {
+            value += m_values[k]*x[m_cols[k]] ;
+          }
+          y[irow] = value ;
         }
-        y[irow] = value ;
-      }
     }
-
 
     void ompmult(VectorType const& x, VectorType& y) const
     {
-      assert(x.size()>=m_nrows) ;
-      assert(y.size()>=m_nrows) ;
-      {
-         // todo OPENMP
-      }
+        assert(x.size()>=m_nrows) ;
+        assert(y.size()>=m_nrows) ;
+        #pragma omp parallel shared(x,y)
+        {
+          #pragma omp for schedule(dynamic,m_chunk_size) nowait  //static,dynamic,guided
+          for(std::size_t irow =0; irow<m_nrows;++irow)
+          {
+            double value = 0 ;
+            for( int k = m_kcol[irow]; k < m_kcol[irow+1];++k)
+            {
+              value += m_values[k]*x[m_cols[k]] ;
+            }
+            y[irow] = value ;
+          }
+        }
     }
+    void printVerySimple() const{
+        std::cout << "Cols tab size : " << m_cols.size() << "\n";
+        std::cout << "cols : [" << m_cols[0] << ", ..., " << m_cols[m_cols.size()-1] << "]\n";
+
+        std::cout << "\nkcols size : " << m_kcol.size() << "\n";
+        std::cout << "kcols : [" << m_kcol[0] << ", ..., " << m_kcol[m_kcol.size()-1] << "]\n";
+    }
+
+    void printSimple(){
+        std::cout << "Values :\n";
+        for(size_t i = 0; i < m_values.size(); ++i){
+            std::cout << m_values[i] << ", ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Cols :\n";
+        for(size_t i = 0; i < m_cols.size(); ++i){
+            std::cout << m_cols[i] << ", ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Row ptr :\n";
+        for(size_t i = 0; i < m_kcol.size(); ++i){
+            std::cout << m_kcol[i] << ", ";
+        }
+        std::cout << std::endl;
+
+    }
+    void printCSR(){
+        for(std::size_t irow=0; irow < m_nrows; ++irow){
+
+        }
+    }
+
+    std::vector<double> values()const{
+        return m_values;
+    }
+    std::vector<int> kcol()const{
+        return m_kcol;
+    }
+    std::vector<int> cols()const{
+        return m_cols;
+    }
+
   private:
     // number of lines
     std::size_t         m_nrows = 0;

@@ -264,7 +264,22 @@ namespace PPTP
 
       std::vector<double> m_values ;
 
-    private:
+      void mult(VectorType const& x, VectorType& y, int cols) const
+      {
+        double const* matrix_ptr = m_values.data() ;
+        for(std::size_t irow =0; irow<m_nrows;irow++)
+        {
+          double value = 0 ;
+          for(std::size_t jcol =0; jcol<cols;jcol++)
+          {
+            value += matrix_ptr[jcol]*x[jcol] ;
+          }
+          y[irow] = value ;
+          matrix_ptr += cols ;
+        }
+      }
+
+    // private:
       // number of lines
       std::size_t         m_nrows = 0;
       std::size_t         m_ncols = 0;
