@@ -21,6 +21,7 @@
 //make install &> make.log ; grep error make.log
 //mpirun --np 3 ../bin/sparsemv_mpi.exe --nx 2 --debug true --m-type 1
 
+//Ca remarche, cetait un probleme de buffer qui se supprimait avant detre envoye en asycnrhone
 //mpirun --np 3 ../bin/sparsemv_mpi.exe --nx 17 --debug true  FONCTIONNE
 //mpirun --np 3 ../bin/sparsemv_mpi.exe --nx 18 --debug true   BUG
 
