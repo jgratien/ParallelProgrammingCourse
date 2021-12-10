@@ -41,6 +41,7 @@ if __name__ == "__main__":
 
                 row = pd.Series([file, nx, npi, timeSpMV, timeSpMVMPI], index=columns)
                 logs = logs.append(row, ignore_index=True)
+            print(logs)
             logs.to_csv("SpMV_benchmark.csv", index=False, sep=";")
             print("Results from log file written to SpMV_benchmark.csv.")
         else:
@@ -54,11 +55,12 @@ if __name__ == "__main__":
                 #print(f"File {file} : nx = {nx}, npi = {npi}")
                 with open(directory + file) as f:
                     lines = pd.Series(f.readlines())
-                    lines = lines[lines.str.startswith(("DenseMV", "DenseMV MPI"))].str[:-1]
+                    lines = lines[lines.str.startswith(("DenseMV", "mult"))].str[:-1]
                     assert len(lines) != 0, "Could not extract lines with DenseMV or DenseMV MPI result from {}. Are the log files right ?".format(file)
                 timeDSMV = float(lines[lines.str.startswith("DenseMV")].values[0].split(":")[1])
                 timeDSMVMPI = lines[lines.str.startswith("mult")].str.split(":").str[1].astype(float).max()
                 row = pd.Series([file, nx, npi, timeDSMV, timeDSMVMPI], index=columns)
                 logs = logs.append(row, ignore_index=True)
             logs.to_csv("DenseMV_benchmark.csv", index=False, sep=";")
+            print(logs)
             print("Results from log file written to DenseMV_benchmark.csv.")
