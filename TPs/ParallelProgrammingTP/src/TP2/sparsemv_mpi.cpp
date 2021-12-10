@@ -94,10 +94,6 @@ int main(int argc, char ** argv) {
 
 
     //Declaring here so every proc knows the variable
-
-    // int max_size = -1;
-    // size_t local_size_previous;
-
     std::vector<int>    local_kcol{};
     std::vector<int>    local_col{};
     std::vector<double> local_values{};
@@ -110,28 +106,18 @@ int main(int argc, char ** argv) {
 
     if(my_rank == 0){
         {
-            Timer::Sentry sentry(timer, "SpMV no MPI");
+            Timer::Sentry sentry(timer, "SpMV_seq");
             matrix.mult(x, y);
         }
 
-        // std::cout << "original y size : " << y.size() << "\n";
-        // std::cout << "y : [" << y[0] << ", ..., " << y[y.size()-1] << "]\n";
-
         double normy = PPTP::norm2(y);
         std::cout << "SpMV no MPI ||y||=" << normy << std::endl;
-        // normy = PPTP::norm2(y2);
-        // std::cout << "SpMV no MPI OMP ||y||=" << normy << std::endl;
+
     }
 
 
     // Timer::Sentry sentry(timer, "SpMV MPI");
     if(my_rank == 0){
-        Timer::Sentry sentry(timer, "SpMV with MPI");
-
-        //Test computing without MPI, the end result should be equal to this
-        // for (std::size_t i = 0; i < nrows; ++i)
-        //     x[i] = i + 1;
-
         //to save the first result and store it later in local_variables
         std::vector<int>    save_kcol;
         std::vector<int>    save_col;
@@ -143,11 +129,8 @@ int main(int argc, char ** argv) {
         std::vector<MPI_Request> requests_col(nb_proc-1) ;
         std::vector<MPI_Request> requests_kcol(nb_proc-1) ;
 
-
-        // if(debug) std::cout << "##############################################\nPROCS INFOS (FROM MASTER)\n##############################################\n";
         for (int num_proc=0; num_proc < nb_proc; ++num_proc)
         {
-            // if(debug) std::cout << "#Proc " << num_proc << " :\n";
 
             /*We simple split the matrix by rows since we are solving a
             laplacian problem don't need to be careful at
@@ -160,10 +143,7 @@ int main(int argc, char ** argv) {
             local_size_rest = local_size;
             if(num_proc < rest){
                 local_size_rest ++;
-                // local_size ++;
-                // max_size = local_size_rest;
             }
-            // if(debug) std::cout << "    >> local size : " << local_size_rest << "\n";
 
 
             int step = 0;
@@ -217,7 +197,6 @@ int main(int argc, char ** argv) {
                     length,
                     counts[num_proc]+1
                 };
-                // size_t s = local_values.size();
 
                 MPI_Send(
                 sizes.data(),
@@ -300,10 +279,11 @@ int main(int argc, char ** argv) {
                 // save_vect = local_vect;
             }
 
+            //Since we are clearing the buffer, we can't do async
+            //because the buffer gets cleared before getting sent if its too big
             local_kcol.clear();
             local_values.clear();
             local_col.clear();
-            // local_size_previous = local_size_rest;
         }
 
 
@@ -316,9 +296,6 @@ int main(int argc, char ** argv) {
         // for(auto r : requests_kcol){
         //   MPI_Wait(&r, MPI_STATUS_IGNORE);
         // }
-
-
-        // if(debug) std::cout << "##############################################\n##############################################\n\n";
 
 
         //We load back our good arrays
@@ -381,17 +358,11 @@ int main(int argc, char ** argv) {
         );
 
         int sub = local_kcol[0];
-        //we substract the first element of kcol to simulate a new csr to compute
+      //we substract the first element of kcol to simulate a new csr to compute
         for(int i = 0; i < local_kcol.size(); ++i){
             local_kcol[i] -= sub;
         }
 
-        // std::cout << "    >> values : " << size_v;
-        // std::cout << "\n    >> cols   : " << size_c;
-        // std::cout << "\n    >> kcols  : " << size_kc << std::endl;
-        // std::cout << "kcols tab size : " << local_kcol.size() << "\n";
-        // std::cout << "kcols : [" << local_kcol[0] << ", ..., " << local_kcol[local_kcol.size()-1] << "]\n";
-        // std::cout << '\n' << std::endl;
     }
 
 
@@ -401,14 +372,18 @@ int main(int argc, char ** argv) {
     CSRMatrix my_matrix(local_kcol, local_col, local_values);
     std::vector<double> local_y(local_kcol.size()-1);
     //Faire le calcul
-    my_matrix.mult(x, local_y);
-
+    {
+        std::string str("SpMV_MPI_" + std::to_string(my_rank));
+        Timer::Sentry sentry(timer, str);
+        my_matrix.mult(x, local_y);
+    }
     if(debug){
         double normy = PPTP::norm2(local_y);
         std::cout << "|| Norm y ||" << my_rank << " = " << normy << "\n";
     }
 
     int s = local_y.size();
+
     //Envoyer/Recuperer les resultats
     if(my_rank == 0){
         MPI_Gatherv(
@@ -451,8 +426,6 @@ int main(int argc, char ** argv) {
                 }
             }
 
-            // std::cout << "yfinal size : " << yfinal.size() << "\n";
-            // std::cout << "yfinal : [" << yfinal[0] << ", ..., " << yfinal[yfinal.size()-1] << "]\n";
             double norm = PPTP::norm2(yfinal);
             std::cout << "SpMV MPI ||y||=" << norm << std::endl;
     }
@@ -469,18 +442,11 @@ int main(int argc, char ** argv) {
             0,
             MPI_COMM_WORLD);
     }
-        // if(debug){
-        //     std::cout << "Final vect computed : "<< std::endl;
-        //     for(int i = 0; i < yfinal.size(); ++i){
-        //         std::cout << yfinal[i] << " ";
-        //     }
-        //     std::cout << std::endl;
-        // }
 
+    timer.printInfo();
 
     MPI_Finalize();
 
-    if(my_rank == 0) timer.printInfo();
 
     return 0;
 }
