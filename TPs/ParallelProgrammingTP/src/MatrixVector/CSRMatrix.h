@@ -8,8 +8,12 @@
 #ifndef SRC_MATRIXVECTOR_CSRMATRIX_H_
 #define SRC_MATRIXVECTOR_CSRMATRIX_H_
 
+template <typename T>
+std::string tostring(std::vector<T> &x, int delTrailingZeros);
+
 namespace PPTP
 {
+
 
 class CSRMatrix
 {
@@ -20,6 +24,15 @@ class CSRMatrix
     CSRMatrix(std::size_t nrows=0)
     : m_nrows(nrows)
     {}
+
+    CSRMatrix(std::vector<int> rowoff, std::vector<int> colidx, std::vector<double> values) {
+      m_kcol = rowoff;
+      m_cols = colidx ;
+      m_values = values;
+      m_nrows = rowoff.size() - 1;
+      m_nnz   = values.size() ;
+    }
+
     virtual ~CSRMatrix(){}
 
     void setChunkSize(int chunk_size)
@@ -35,6 +48,30 @@ class CSRMatrix
       return m_nnz ;
     }
 
+    int* m_kcol_ptr() {
+      return m_kcol.data();
+    }
+
+    int* m_cols_ptr() {
+      return m_cols.data();
+    }
+
+    double* m_values_ptr() {
+      return m_values.data();
+    }
+
+    std::vector<int> & get_Rowoff() {
+      return m_kcol;
+    }
+
+    void keepFirstNRows(int n) {
+      m_kcol.resize(n + 1);
+      m_nrows = n;
+      m_cols.resize(m_kcol[n] - 1);
+      m_values.resize(m_kcol[n] - 1);
+      m_nnz = m_kcol[n] - 1;
+    }
+
     void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries)
     {
       std::vector< std::map<int,double> > rows(nrows) ;
@@ -46,8 +83,9 @@ class CSRMatrix
         rows[irow].insert(std::make_pair(jcol,val)) ;
       }
       int nnz = 0 ;
-      for( auto const& row : rows)
+      for( auto const& row : rows) {
         nnz += row.size() ;
+      }
       m_nrows = nrows ;
       m_nnz   = nnz ;
       m_kcol.resize(m_nrows+1) ;
@@ -66,6 +104,43 @@ class CSRMatrix
         }
       }
       m_kcol[nrows] = k ;
+    }
+
+    std::string string_m_values() const {
+      std::string s;
+      s += "y(";
+      for (unsigned int i=0; i < m_values.size(); ++i) {
+        s += std::to_string(m_values[i]);
+        s.erase(s.find_last_not_of('0') + 1, std::string::npos);
+
+        if (i < m_values.size() - 1) {s += "|";}
+      }
+      s += ")";
+      return s;
+    }
+
+    std::string string_m_kcol() const {
+      std::string s;
+      s += "y(";
+      for (unsigned int i=0; i < m_kcol.size(); ++i) {
+        s += std::to_string(m_kcol[i]);
+
+        if (i < m_kcol.size() - 1) {s += "|";}
+      }
+      s += ")";
+      return s;
+    }
+
+    std::string string_m_cols() const {
+      std::string s;
+      s += "y(";
+      for (unsigned int i=0; i < m_cols.size(); ++i) {
+        s += std::to_string(m_cols[i]);
+
+        if (i < m_cols.size() - 1) {s += "|";}
+      }
+      s += ")";
+      return s;
     }
 
     void mult(VectorType const& x, VectorType& y) const
@@ -88,10 +163,21 @@ class CSRMatrix
     {
       assert(x.size()>=m_nrows) ;
       assert(y.size()>=m_nrows) ;
+    #pragma omp parallel shared(x,y)
       {
-         // todo OPENMP
+        #pragma omp for schedule(dynamic,m_chunk_size) nowait  //static,dynamic,guided
+        for(std::size_t irow =0; irow<m_nrows;++irow)
+        {
+          double value = 0 ;
+          for( int k = m_kcol[irow]; k < m_kcol[irow+1];++k)
+          {
+            value += m_values[k]*x[m_cols[k]] ;
+          }
+          y[irow] = value ;
+        }
       }
     }
+
   private:
     // number of lines
     std::size_t         m_nrows = 0;
