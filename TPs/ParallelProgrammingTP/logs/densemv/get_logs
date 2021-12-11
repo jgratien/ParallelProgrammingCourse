@@ -1,0 +1,22 @@
+#!/bin/bash
+
+rm all_logs seq_logs.csv MPI_logs.csv
+
+for np in 1 2 4 8 12 16 24
+do
+    for nx in 50 100 150 200
+    do
+        grep SpMV_ log-NX${nx}-NPI${np} | awk '{ printf ""'${nx}'"_"'${np}'""; print }' | sed 's/SpMV//' | sed 's/:/_/g' >> all_logs
+    done
+done
+
+sed -i -e 's/_/;/g' all_logs
+
+grep seq all_logs > seq_logs.csv
+grep MPI all_logs > MPI_logs.csv
+
+sed -i -e 's/;MPI//' MPI_logs.csv
+sed -i -e 's/;seq//' seq_logs.csv
+
+sed -i -e '1i nx;np;time' seq_logs.csv
+sed -i -e '1i nx;np;num_p;time' MPI_logs.csv
