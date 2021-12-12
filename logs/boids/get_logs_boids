@@ -1,0 +1,8 @@
+#!/bin/bash
+
+rm boids_TBB.csv boids_seq.csv boids_OMP.csv
+
+grep Seq logs_bench_exec | sed 's/Seq_//' >> boids_seq.csv
+grep TBB logs_bench_exec | sed 's/TBB_//' >> boids_TBB.csv
+grep OMP logs_bench_exec | sed 's/OMP_//' >> boids_OMP.csv
+
