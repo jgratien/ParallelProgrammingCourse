@@ -19,6 +19,20 @@
 #include "MatrixVector/MatrixGenerator.h"
 #include "Utils/Timer.h"
 
+using vd = std::vector<double>;
+
+vd mult(const vd& x, const vd& values, const int& rows, const int& cols){
+  vd y;
+  for (int row = 0; row < rows; row++) {
+      double value = 0;
+      for (int col = 0; col < cols; col++) {
+          value += values[row * cols + col] * x[col];
+      }
+      y.push_back(value);
+  }
+  return y;
+}
+
 int main(int argc, char** argv) {
     using namespace boost::program_options;
     options_description desc;
@@ -51,27 +65,23 @@ int main(int argc, char** argv) {
 
     if (my_rank == 0) {
         DenseMatrix matrix;
-        std::size_t local_size_;
-
         int nx = vm["nx"].as<int>();
         generator.genLaplacian(nx, matrix);
 
         int nrows = matrix.nrows();
         std::vector<double> x;
+        std::vector<double> y;
         x.resize(nrows);
+        y.resize(nrows);
 
-        for (std::size_t i = 0; i < nrows; ++i) x[i] = i + 1;
+        for (int i = 0; i < nrows; ++i) x[i] = i + 1;
 
         {
-            std::vector<double> y(nrows);
-            double normy = 0.;
-            {
-                Timer::Sentry sentry(timer, "DenseMV");
-                matrix.mult(x, y);
-                normy = PPTP::norm2(y);
-            }
-            std::cout << "||y||=" << normy << std::endl;
+            Timer::Sentry sentry(timer, "DenseMV");
+            matrix.mult(x, y);
         }
+        double normy = PPTP::norm2(y);
+        std::cout << "||y||=" << normy << std::endl;
 
         // std::cout << "nrows : " << matrix.nrows() << '\n';
         // std::cout << "ncols : " << matrix.nrows() << '\n';
@@ -81,122 +91,71 @@ int main(int argc, char** argv) {
         //     << '\n';
         //   }
         // }
+        // ==========================================================
 
-        Timer::Sentry sentry(timer,"DenseMPI") ;
+        Timer::Sentry sentry(timer,"DenseMPI");
 
-        {
-            MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-            unsigned long q = nrows / nb_proc;
-            unsigned long r = nrows % nb_proc;
-            double* matrix_ptr = matrix.data();
-            int epsilon = 0;
-            if (r > 0) epsilon = 1;
-            local_size_ = (q + epsilon);
-            // std::cout << "local_size_ : " << local_size_ << '\n';
-            double* local_ptr = matrix_ptr + nrows * local_size_;
-            // std::cout << "nrows : " << nrows << '\n';
-            for (int i = 1; i < nb_proc; ++i) {
-                // std::cout<<" SEND MATRIX DATA to proc "<<i<<std::endl ;
-                int proc_local_size = q;
-                if (i < r) proc_local_size++;
-                MPI_Send(&proc_local_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-                MPI_Send(local_ptr, proc_local_size * nrows, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
-                local_ptr += proc_local_size * nrows;
-            }
+        unsigned long q = nrows / nb_proc;
+        unsigned long r = nrows % nb_proc;
+
+        double* pvalues = matrix.data();
+
+        int epsilon = 0;
+        if (r > 0) epsilon = 1;
+
+        int local_size = (q + epsilon);
+        // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
+        double* local_vptr = pvalues + nrows * local_size;
+
+        for (int i = 1; i < nb_proc; ++i) {
+            int proc_local_size = q;
+            if (i < r) proc_local_size++;
+            MPI_Send(&proc_local_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+            MPI_Send(local_vptr, proc_local_size * nrows, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
+            local_vptr += proc_local_size * nrows;
         }
 
-        {
-            MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            // for(double e : x){
-            //   std::cout << "Sent : x values : " << e << '\n';
-            // }
-        }
+        std::vector<double> local_values;
+        local_values.insert(local_values.end(), pvalues, pvalues + local_size * nrows);
 
-        DenseMatrix local_matrix;
-        std::vector<double> y_local(local_size_);
+        y = mult(x, local_values, local_size, nrows);
+        result = 0;
+        for (auto const& e : y) result += e * e;
 
-        {
-            local_matrix.init(local_size_, nrows);
-            double* ptr = local_matrix.data();
-            double const* matrix_ptr = matrix.data();
-            for (int i = 0; i < (local_size_ * nrows); i++) {
-                ptr[i] = matrix_ptr[i];
-            }
-
-            matrix_ptr = local_matrix.data();
-            for (std::size_t irow = 0; irow < local_size_; ++irow) {
-                double value = 0;
-                for (std::size_t jcol = 0; jcol < nrows; ++jcol) {
-                    value += matrix_ptr[jcol] * x[jcol];
-                }
-                y_local[irow] = value;
-                matrix_ptr += nrows;
-            }
-            // std::cout << "Rank : " << my_rank << ", Done." << '\n';
-            result = 0;
-            for (auto const& x : y_local) result += x * x;
-            // std::cout << "Rank : " << my_rank << " and " << result << '\n';
-        }
     } else {
-        DenseMatrix local_matrix;
         int nrows;
         int local_size;
-
-        {
-            MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-            MPI_Recv(&local_size, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            // std::cout << "Received [rank: " << my_rank << ", local_size: " << local_size << "]" << '\n';
-            local_matrix.init(local_size, nrows);
-            double* ptr = local_matrix.data();
-            MPI_Recv(ptr, local_size * nrows, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            // for(int e = 0; e < local_size * nrows; e++){
-            //   std::cout << "[Received] Element [e : " << e << ", value : " <<
-            //   ptr[e] << "]" << '\n';
-            // }
-        }
-
         std::vector<double> x;
+        std::vector<double> local_values;
+
+        MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
         x.resize(nrows);
-        {
-            MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            // for(double e : x){
-            //   std::cout << "Received : x values : " << e << '\n';
-            // }
-        }
+        MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-        std::vector<double> y_local(local_size);
-        y_local.resize(local_size);
-        {
-            double const* matrix_ptr = local_matrix.data();
-            for (std::size_t irow = 0; irow < local_size; ++irow) {
-                double value = 0;
-                for (std::size_t jcol = 0; jcol < nrows; ++jcol) {
-                    value += matrix_ptr[jcol] * x[jcol];
-                }
-                y_local[irow] = value;
-                matrix_ptr += nrows;
-            }
+        MPI_Recv(&local_size, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
 
-            // for(double e : y_local){
-            //   std::cout << "[Checked] Element [e : " << e << "]" << '\n';
-            // }
+        local_values.resize(local_size * nrows);
+        double* pvalues = local_values.data();
+        MPI_Recv(pvalues, local_size * nrows, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        // for(auto e : local_values){
+        //   std::cout << "my_rank : " << my_rank << ", e : " << e << '\n';
+        // }
 
-            // std::cout << "Rank : " << my_rank << ", Done." << '\n';
-            result_ = 0;
-            for (auto const& x : y_local) result_ += x * x;
-            // std::cout << "Rank : " << my_rank << " and " << result_ << '\n';
-        }
+        std::vector<double> y = mult(x, local_values, local_size, nrows);
+
+        result_ = 0;
+        for (auto const& e : y) result_ += e * e;
     }
     MPI_Gather(&result_, 1, MPI_DOUBLE, data, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0) {
-        Timer::Sentry sentry(timer,"DenseMPI") ;
-        int i;
-        for (i = 1; i < nb_proc; i++) {
-            result += data[i];
-        }
+        Timer::Sentry sentry(timer,"DenseMPI");
+        for (int i = 1; i < nb_proc; i++) result += data[i];
         result = std::sqrt(result);
         std::cout << "||y||=" << result << '\n';
     }

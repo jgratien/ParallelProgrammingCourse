@@ -23,7 +23,7 @@
 using vi = std::vector<int>;
 using vd = std::vector<double>;
 
-int count(int* vector_ptr, int n){
+int count(const int* vector_ptr, const int& n){
   int nb_elems = 0;
   for(int i = 0; i < n; i++){
     nb_elems += *(vector_ptr + i);
@@ -34,7 +34,6 @@ int count(int* vector_ptr, int n){
 vd mult(const vd& x, const vi& rows, const vi& cols, const vd& values){
   int nb_elems = 0;
   vd y;
-  // y.resize(cols.size());
   for(int row : rows){
     double value = 0;
     for(int i = 0; i < row; i++){
@@ -98,11 +97,13 @@ int main(int argc, char** argv) {
     for(int i = 0; i < nrows; ++i) x[i] = i + 1;
 
     {
-      // Timer::Sentry sentry(timer,"SpMV") ;
+      Timer::Sentry sentry(timer,"SpMV");
       matrix.mult(x,y) ;
     }
     double normy = PPTP::norm2(y) ;
-    std::cout << "SpMV||y||=" << normy << std::endl;
+    std::cout << "||y||=" << normy << std::endl;
+
+    Timer::Sentry sentry(timer,"SparseMPI");
 
     MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -214,11 +215,8 @@ int main(int argc, char** argv) {
   MPI_Gather(&result_, 1, MPI_DOUBLE, data, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   if (my_rank == 0) {
-      // Timer::Sentry sentry(timer,"SparseMPI") ;
-      int i;
-      for (i = 1; i < nb_proc; i++) {
-          result += data[i];
-      }
+      Timer::Sentry sentry(timer,"SparseMPI");
+      for (int i = 1; i < nb_proc; i++) result += data[i];
       result = std::sqrt(result);
       std::cout << "||y||=" << result << '\n';
   }

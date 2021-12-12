@@ -35,6 +35,10 @@ namespace PPTP
         return m_ncols ;
       }
 
+      int size() const {
+        return m_values.size();
+      }
+
       void setChunkSize(int chunk_size)
       {
         m_chunk_size = chunk_size ;
