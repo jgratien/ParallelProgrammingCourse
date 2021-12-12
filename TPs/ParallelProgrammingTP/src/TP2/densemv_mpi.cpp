@@ -59,9 +59,8 @@ int main(int argc, char** argv) {
     Timer timer;
     MatrixGenerator generator;
 
-    double data[nb_proc - 1];
-    double result;
-    double result_;
+    std::vector<double> y_final;
+    std::vector<double> y_local;
 
     if (my_rank == 0) {
         DenseMatrix matrix;
@@ -71,8 +70,12 @@ int main(int argc, char** argv) {
         int nrows = matrix.nrows();
         std::vector<double> x;
         std::vector<double> y;
+        std::vector<int> positions;
+        std::vector<int> sizes;
         x.resize(nrows);
         y.resize(nrows);
+        positions.resize(nb_proc);
+        sizes.resize(nb_proc);
 
         for (int i = 0; i < nrows; ++i) x[i] = i + 1;
 
@@ -93,7 +96,7 @@ int main(int argc, char** argv) {
         // }
         // ==========================================================
 
-        Timer::Sentry sentry(timer,"DenseMPI");
+
 
         MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
         MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -110,20 +113,33 @@ int main(int argc, char** argv) {
         // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
         double* local_vptr = pvalues + nrows * local_size;
 
+        int position = 0;
+        positions[0] = position;
+        sizes[0] = local_size;
+
         for (int i = 1; i < nb_proc; ++i) {
             int proc_local_size = q;
             if (i < r) proc_local_size++;
             MPI_Send(&proc_local_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
             MPI_Send(local_vptr, proc_local_size * nrows, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
             local_vptr += proc_local_size * nrows;
+            position += proc_local_size;
+            sizes[i] = proc_local_size;
+            positions[i] = position;
         }
 
         std::vector<double> local_values;
         local_values.insert(local_values.end(), pvalues, pvalues + local_size * nrows);
+        {
+          Timer::Sentry sentry(timer,"DenseMPI");
+          y_local = mult(x, local_values, local_size, nrows);
+        }
 
-        y = mult(x, local_values, local_size, nrows);
-        result = 0;
-        for (auto const& e : y) result += e * e;
+        y_final.resize(nrows);
+        MPI_Gatherv(y_local.data(), local_size, MPI_DOUBLE, y_final.data(), sizes.data(), positions.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+        normy = PPTP::norm2(y_final);
+        std::cout << "||y||=" << normy << std::endl;
 
     } else {
         int nrows;
@@ -146,18 +162,10 @@ int main(int argc, char** argv) {
         //   std::cout << "my_rank : " << my_rank << ", e : " << e << '\n';
         // }
 
-        std::vector<double> y = mult(x, local_values, local_size, nrows);
+        //std::vector<double> y
+        y_local = mult(x, local_values, local_size, nrows);
 
-        result_ = 0;
-        for (auto const& e : y) result_ += e * e;
-    }
-    MPI_Gather(&result_, 1, MPI_DOUBLE, data, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-    if (my_rank == 0) {
-        Timer::Sentry sentry(timer,"DenseMPI");
-        for (int i = 1; i < nb_proc; i++) result += data[i];
-        result = std::sqrt(result);
-        std::cout << "||y||=" << result << '\n';
+        MPI_Gatherv(y_local.data(), local_size, MPI_DOUBLE, NULL, NULL, NULL, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     }
 
     timer.printInfo();
