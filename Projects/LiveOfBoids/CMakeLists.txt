@@ -6,6 +6,7 @@ set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)                                                                                                                                               
 
+SET(CMAKE_COLOR_MAKEFILE ON)
 # This message also avoid warning : "Manually-specified variables were not used by the project"
 message(STATUS "Using toolchain file: ${CMAKE_TOOLCHAIN_FILE}")
 

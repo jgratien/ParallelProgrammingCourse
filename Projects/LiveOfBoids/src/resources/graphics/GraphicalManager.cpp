@@ -3,6 +3,8 @@
 #endif
 #include <vector>
 #include <tuple>
+#include <math.h>
+#include <omp.h>
 #include "GraphicalManager.hpp"
 #include "glx.hpp"
 #include "graphics.hpp"
@@ -11,6 +13,7 @@
 #include "shaders/lines.hpp"
 #include "shaders/points.hpp"
 #include "shaders/triangle.hpp"
+
 #include "../model/Flock.hpp"
 #include "../model/Bird.hpp"
 #include "../model/Eagle.hpp"
@@ -125,7 +128,7 @@ GraphicalManager::GraphicalManager(Color myBackgroundColor, bool fullScreen) {
 	// new
 	lines_shaderProgram = ShaderProgram_new(lines::vertex_shader_text, lines::fragment_shader_text);
 	lines_vertexArray = VertexArray_new();
-	lines_buffer = Buffer_new();
+	lines_buffer = Buffer_new(); 
 	// init
 	VertexArray_bind(lines_vertexArray);
 	Buffer_bind(lines_buffer, GL_ARRAY_BUFFER);
@@ -170,12 +173,12 @@ bool GraphicalManager::mainLoop() {
 		glViewport(0, 0, m_width, m_height);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-
 		{
 			if ((*MAIN_pFLOCK).optimized_computing) {
 				(*MAIN_pFLOCK).updateAgents();
 			}
 
+			#pragma omp parallel for shared(MAIN_pFLOCK)
 			for (int i = 0; i < (*MAIN_pFLOCK).getPopSize(); ++i){
 				Agent *bird = (*MAIN_pFLOCK)[i];
 				std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors;
@@ -190,6 +193,7 @@ bool GraphicalManager::mainLoop() {
 				std::vector<Agent*> bVec = std::get<0>(allNeighbors);
 				std::vector<Agent*> eVec = std::get<1>(allNeighbors);
 
+				//std::cout << "Debut ici bird " << i << " thread " << omp_get_num_threads() << '\n';
 				if (run_boids) {
 					(*bird).computeLaws(bVec, eVec);
 					(*bird).prepareMove();
@@ -200,19 +204,26 @@ bool GraphicalManager::mainLoop() {
 					(*bird).setNextPosition(keepPositionInScreen((*bird).getNextPosition(), (float)m_width, (float)m_height));
 					(*bird).move();
 				}
+				//std::cout << "fin ici bird " << i << " thread " << omp_get_num_threads() << std::endl;
 
 				if (prettyAgents) {
 					// Fill vertex array of groups of 6 points each for double triangles
 					mat2x6 result = triangleDisplay.drawAgent(bird);
-					for (int j = 0; j < (int)result.size(); ++j) {
-						vertex_data_triangle.push_back(triangle::Vertex{ {result[j].x, result[j].y }, (*bird).getGLColor() });
+					#pragma omp critical
+					{
+						for (size_t j = 0; j < result.size(); ++j) {
+							vertex_data_triangle.push_back(triangle::Vertex{ {result[j].x, result[j].y }, (*bird).getGLColor() });
+						}
 					}
 				}
 				else {
 					// Fill vertex array of points for each agents
 					Vec2 res = (dotDisplayer.drawAgent(bird))[0];
-					vertex_data_dots.push_back(points::Vertex{ {res.x, res.y}, (*bird).getGLColor() });
-				}				
+					#pragma omp critical
+					{
+						vertex_data_dots.push_back(points::Vertex{ {res.x, res.y}, (*bird).getGLColor() });
+					}
+				}
 			}
 
 			(*MAIN_pFLOCK).destroyAgents();
