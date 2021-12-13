@@ -12,6 +12,10 @@ TPs/ParallelProgrammingTP/src/archives
 
 TPs/ParallelProgrammingTP/logfiles/
 
+TPs/ParallelProgrammingTP/logfiles-no-coms/
+
+TPs/ParallelProgrammingTP/logfiles-coms/
+
 TPs/ParallelProgrammingTP/script.py
 
 *.png
