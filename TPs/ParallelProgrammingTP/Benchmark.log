@@ -1,5 +1,3 @@
-
-DenseMV  np: 4  nx: 30  Time DenseMV: 0.00100682 Time MPI: 0.000235987 Acceleration: 4.26642
 DenseMV  np: 1  nx: 50  Time DenseMV: 0.0140787 Time MPI: 2.25002e-317 Acceleration: inf
 SPMV  np: 1  nx: 50  Time SPMV: 2.2416e-05 Time MPI: 1.74979e-05 Acceleration: 1.28107
 DenseMV  np: 1  nx: 100  Time DenseMV: 0.20902 Time MPI: 2.25002e-317 Acceleration: inf
