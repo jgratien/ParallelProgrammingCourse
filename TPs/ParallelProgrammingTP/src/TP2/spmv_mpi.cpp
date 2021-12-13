@@ -246,10 +246,9 @@ else
   x.resize(nrows) ;
   MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD) ;
   }
-
+    y_local.resize(localSize - 1);
   {
     Timer::Sentry sentry(timer,"SpMV_mpi") ;
-    y_local.resize(localSize - 1);
     local_matrix.mult(x, y_local);
   }
 

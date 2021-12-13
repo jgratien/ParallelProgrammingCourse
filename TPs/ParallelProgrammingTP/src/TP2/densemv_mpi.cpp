@@ -213,10 +213,9 @@ int main(int argc, char** argv)
       x.resize(nrows) ;
       MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD) ;
     }
-
+      y_local.resize(localSize);
     {
       Timer::Sentry sentry(timer,"DenseMV") ;
-      y_local.resize(localSize);
       local_matrix.mult(x, y_local);
     }
 
