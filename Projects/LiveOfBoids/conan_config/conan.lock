@@ -1,0 +1,197 @@
+{
+ "graph_lock": {
+  "nodes": {
+   "0": {
+    "options": "eigen:MPL2_only=False\nglad:extensions=''\nglad:gl_profile=compatibility\nglad:gl_version=3.3\nglad:gles1_version=None\nglad:gles2_version=None\nglad:glsc2_version=None\nglad:no_loader=False\nglad:shared=False\nglad:spec=gl\nglfw:shared=False\nglfw:vulkan_static=False\ngtest:build_gmock=True\ngtest:hide_symbols=False\ngtest:no_main=False\ngtest:shared=False\njasper:jpegturbo=deprecated\njasper:shared=False\njasper:with_libjpeg=libjpeg\njbig:build_executables=True\njbig:shared=False\nlibdeflate:shared=False\nlibjpeg:shared=False\nlibpng:api_prefix=\nlibpng:shared=False\nlibpng:sse=True\nlibtiff:cxx=True\nlibtiff:jbig=True\nlibtiff:jpeg=libjpeg\nlibtiff:libdeflate=True\nlibtiff:lzma=True\nlibtiff:shared=False\nlibtiff:webp=True\nlibtiff:zlib=True\nlibtiff:zstd=True\nlibwebp:near_lossless=True\nlibwebp:shared=False\nlibwebp:swap_16bit_csp=False\nlibwebp:with_simd=True\nopencv:contrib=False\nopencv:detect_cpu_baseline=False\nopencv:dnn=True\nopencv:parallel=False\nopencv:shared=False\nopencv:with_ade=True\nopencv:with_cuda=False\nopencv:with_eigen=True\nopencv:with_imgcodec_hdr=False\nopencv:with_imgcodec_pfm=False\nopencv:with_imgcodec_pxm=False\nopencv:with_imgcodec_sunraster=False\nopencv:with_jpeg=libjpeg\nopencv:with_jpeg2000=jasper\nopencv:with_openexr=True\nopencv:with_png=True\nopencv:with_quirc=True\nopencv:with_tiff=True\nopencv:with_webp=True\nopenexr:shared=False\nprotobuf:lite=False\nprotobuf:shared=False\nprotobuf:with_rtti=True\nprotobuf:with_zlib=True\nquirc:max_regions=254\nquirc:shared=False\nxz_utils:shared=False\nzlib:minizip=deprecated\nzlib:shared=False\nzstd:shared=False",
+    "requires": [
+     "1",
+     "2",
+     "4",
+     "5"
+    ],
+    "path": "..\\conanfile.txt",
+    "context": "host"
+   },
+   "1": {
+    "ref": "gtest/1.10.0",
+    "options": "build_gmock=True\nhide_symbols=False\nno_main=False\nshared=False",
+    "package_id": "5ad274d83035c78ba2b205e6cf4f1b317aee8e05",
+    "prev": "0",
+    "context": "host"
+   },
+   "2": {
+    "ref": "glfw/3.3.3",
+    "options": "shared=False\nvulkan_static=False",
+    "package_id": "d3cffeefc8c8bcb6be8abdd182cb1b56fc81bacc",
+    "prev": "0",
+    "requires": [
+     "3"
+    ],
+    "context": "host"
+   },
+   "3": {
+    "ref": "opengl/system",
+    "options": "",
+    "package_id": "5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9",
+    "prev": "0",
+    "context": "host"
+   },
+   "4": {
+    "ref": "glad/0.1.34",
+    "options": "extensions=''\ngl_profile=compatibility\ngl_version=3.3\ngles1_version=None\ngles2_version=None\nglsc2_version=None\nno_loader=False\nshared=False\nspec=gl",
+    "package_id": "473c24ae8996a862e6a24597d141497cb708b730",
+    "prev": "0",
+    "context": "host"
+   },
+   "5": {
+    "ref": "opencv/4.5.1",
+    "options": "contrib=False\ndetect_cpu_baseline=False\ndnn=True\nparallel=False\nshared=False\nwith_ade=True\nwith_cuda=False\nwith_eigen=True\nwith_imgcodec_hdr=False\nwith_imgcodec_pfm=False\nwith_imgcodec_pxm=False\nwith_imgcodec_sunraster=False\nwith_jpeg=libjpeg\nwith_jpeg2000=jasper\nwith_openexr=True\nwith_png=True\nwith_quirc=True\nwith_tiff=True\nwith_webp=True\neigen:MPL2_only=False\njasper:jpegturbo=deprecated\njasper:shared=False\njasper:with_libjpeg=libjpeg\njbig:build_executables=True\njbig:shared=False\nlibdeflate:shared=False\nlibjpeg:shared=False\nlibpng:api_prefix=\nlibpng:shared=False\nlibpng:sse=True\nlibtiff:cxx=True\nlibtiff:jbig=True\nlibtiff:jpeg=libjpeg\nlibtiff:libdeflate=True\nlibtiff:lzma=True\nlibtiff:shared=False\nlibtiff:webp=True\nlibtiff:zlib=True\nlibtiff:zstd=True\nlibwebp:near_lossless=True\nlibwebp:shared=False\nlibwebp:swap_16bit_csp=False\nlibwebp:with_simd=True\nopenexr:shared=False\nprotobuf:lite=False\nprotobuf:shared=False\nprotobuf:with_rtti=True\nprotobuf:with_zlib=True\nquirc:max_regions=254\nquirc:shared=False\nxz_utils:shared=False\nzlib:minizip=deprecated\nzlib:shared=False\nzstd:shared=False",
+    "package_id": "cbc335694b8733a22bfc483483cc48b23d686d01",
+    "prev": "0",
+    "requires": [
+     "6",
+     "7",
+     "8",
+     "9",
+     "10",
+     "11",
+     "17",
+     "16",
+     "18",
+     "19",
+     "20"
+    ],
+    "context": "host"
+   },
+   "6": {
+    "ref": "zlib/1.2.11",
+    "options": "minizip=deprecated\nshared=False",
+    "package_id": "3fb49604f9c2f729b85ba3115852006824e72cab",
+    "prev": "0",
+    "context": "host"
+   },
+   "7": {
+    "ref": "libjpeg/9d",
+    "options": "shared=False",
+    "package_id": "3fb49604f9c2f729b85ba3115852006824e72cab",
+    "prev": "0",
+    "context": "host"
+   },
+   "8": {
+    "ref": "jasper/2.0.32",
+    "options": "shared=False\nwith_libjpeg=libjpeg\nlibjpeg:shared=False",
+    "package_id": "10934f48e3a9d3affb8eebc26bdd5de2f78c9555",
+    "prev": "0",
+    "requires": [
+     "7"
+    ],
+    "context": "host"
+   },
+   "9": {
+    "ref": "libpng/1.6.37",
+    "options": "api_prefix=\nshared=False\nsse=True\nzlib:minizip=deprecated\nzlib:shared=False",
+    "package_id": "ce650d9f1f1c1c0839cf0694a55c1351ddbed859",
+    "prev": "0",
+    "requires": [
+     "6"
+    ],
+    "context": "host"
+   },
+   "10": {
+    "ref": "openexr/2.5.7",
+    "options": "shared=False\nzlib:minizip=deprecated\nzlib:shared=False",
+    "package_id": "d140711d95cc16a85766a8fc3a551dfafe84cf63",
+    "prev": "0",
+    "requires": [
+     "6"
+    ],
+    "context": "host"
+   },
+   "11": {
+    "ref": "libtiff/4.3.0",
+    "options": "cxx=True\njbig=True\njpeg=libjpeg\nlibdeflate=True\nlzma=True\nshared=False\nwebp=True\nzlib=True\nzstd=True\njbig:build_executables=True\njbig:shared=False\nlibdeflate:shared=False\nlibjpeg:shared=False\nlibwebp:near_lossless=True\nlibwebp:shared=False\nlibwebp:swap_16bit_csp=False\nlibwebp:with_simd=True\nxz_utils:shared=False\nzlib:minizip=deprecated\nzlib:shared=False\nzstd:shared=False",
+    "package_id": "a08a8e56550da57f6f3d93bb076a90cc6c19cfa2",
+    "prev": "0",
+    "requires": [
+     "6",
+     "12",
+     "13",
+     "7",
+     "14",
+     "15",
+     "16"
+    ],
+    "context": "host"
+   },
+   "12": {
+    "ref": "libdeflate/1.8",
+    "options": "shared=False",
+    "package_id": "3fb49604f9c2f729b85ba3115852006824e72cab",
+    "prev": "0",
+    "context": "host"
+   },
+   "13": {
+    "ref": "xz_utils/5.2.5",
+    "options": "shared=False",
+    "package_id": "3fb49604f9c2f729b85ba3115852006824e72cab",
+    "prev": "0",
+    "context": "host"
+   },
+   "14": {
+    "ref": "jbig/20160605",
+    "options": "build_executables=True\nshared=False",
+    "package_id": "1c06f8aa5b65435590877732bd94377a1ed95260",
+    "prev": "0",
+    "context": "host"
+   },
+   "15": {
+    "ref": "zstd/1.5.0",
+    "options": "shared=False",
+    "package_id": "3fb49604f9c2f729b85ba3115852006824e72cab",
+    "prev": "0",
+    "context": "host"
+   },
+   "16": {
+    "ref": "libwebp/1.2.0",
+    "options": "near_lossless=True\nshared=False\nswap_16bit_csp=False\nwith_simd=True",
+    "package_id": "638042d3fd356128c913f5e725646a0c2af264c7",
+    "prev": "0",
+    "context": "host"
+   },
+   "17": {
+    "ref": "eigen/3.3.9",
+    "options": "MPL2_only=False",
+    "package_id": "5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9",
+    "prev": "0",
+    "context": "host"
+   },
+   "18": {
+    "ref": "quirc/1.1",
+    "options": "max_regions=254\nshared=False",
+    "package_id": "8e7d69ac1d5596196386f046159aacd9644a7227",
+    "prev": "0",
+    "context": "host"
+   },
+   "19": {
+    "ref": "protobuf/3.17.1",
+    "options": "lite=False\nshared=False\nwith_rtti=True\nwith_zlib=True\nzlib:minizip=deprecated\nzlib:shared=False",
+    "package_id": "9e56137bbb1f5dae27f8e6f5a1977466799557b9",
+    "prev": "0",
+    "requires": [
+     "6"
+    ],
+    "context": "host"
+   },
+   "20": {
+    "ref": "ade/0.1.1f",
+    "options": "",
+    "package_id": "3fb49604f9c2f729b85ba3115852006824e72cab",
+    "prev": "0",
+    "context": "host"
+   }
+  },
+  "revisions_enabled": false
+ },
+ "version": "0.4",
+ "profile_host": "[settings]\narch=x86_64\narch_build=x86_64\nbuild_type=Release\ncompiler=Visual Studio\ncompiler.runtime=MD\ncompiler.version=16\nos=Windows\nos_build=Windows\n[options]\n[build_requires]\n[env]\n"
+}
