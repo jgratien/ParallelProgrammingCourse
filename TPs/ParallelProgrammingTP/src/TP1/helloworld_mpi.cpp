@@ -32,7 +32,7 @@ int main(int argc, char** argv)
   }
 
   // Initialize MPI
-  // MPI_Init(argc,arcv) ;
+  MPI_Init(&argc,&argv) ;
 
 
   PPTP::Timer timer ;
@@ -42,16 +42,18 @@ int main(int argc, char** argv)
 
     //#pragma omp ....CREATE PARALLEL SECTION
     {
-      int my_rank = 0 ;
-      int nb_procs = 1 ;
-      // get nb procs
+      int nbTask;
+      int myRank;
+      // get nb proc
+      MPI_Comm_size(MPI_COMM_WORLD, &nbTask); // total nb process
       // get process rank
-      std::cout<<"Hello world ("<<my_rank<<","<<nb_procs<<")"<<std::endl ;
+      MPI_Comm_rank(MPI_COMM_WORLD, &myRank); // get current process with MPI_Comm_rank and write it in variable myRank
+      std::cout<<"Hello world ("<<myRank<<","<<nbTask<<")"<<std::endl ;
     }
   }
   timer.printInfo() ;
 
   // Finalyze MPI
-  // MPI_Finalize() ;
+  MPI_Finalize() ;
   return 0 ;
 }

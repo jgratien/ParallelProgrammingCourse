@@ -44,11 +44,11 @@ int main(int argc, char** argv)
   {
     PPTP::Timer::Sentry sentry(timer,"HelloWord") ;
 
-
-    //#pragma omp ....CREATE PARALLEL SECTION
+    int id;
+    #pragma omp parallel private (id)
     {
-      int id = 0 ;
-      int nb_threads = 1 ;
+      id = omp_get_thread_num() ;
+      //int nb_threads = nb_available_threads ;
       sleep(id) ;
       std::cout<<"Hello world ("<<id<<","<<nb_threads<<")"<<std::endl ;
     }

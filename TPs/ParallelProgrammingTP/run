@@ -15,7 +15,8 @@
 ### usage : oarsub -l core=32 -S ./job_exemple.sh
 
 ### indiquer votre executable
-MONPROG=/gext/jean-marc.gratien/ParallelProgrammingTP/bin/densemv_mpi.exe
+MONPROG=/gext/eduardo.vital_brasil/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
+MONPROG2=/gext/eduardo.vital_brasil/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe
 ### indiquer votre fichier de donnees
 MYDATA=
 
@@ -25,14 +26,14 @@ MYDATA=
 echo DEBUT
 date
 
-NP=$(cat $OAR_NODE_FILE | wc -l)
-echo execution sur $NP coeurs
-echo sur les nodes $(cat $OAR_NODE_FILE)
+#NP=$(cat $OAR_NODE_FILE | wc -l)
+#echo execution sur $NP coeurs
+#echo sur les nodes $(cat $OAR_NODE_FILE)
 
 #MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun \
 #  -n $NP \
 #  -machinefile $OAR_NODE_FILE "
- 
+
 MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun"
 
 set -x
@@ -45,6 +46,7 @@ if [ -f $MONPROG ] ; then
     for nx in 50 100 150 200
     do
     $MPIRUN -np ${np}  $MONPROG --nx $nx > log-NX${nx}-NPI${np}
+    $MPIRUN -np ${np}  $MONPROG2 --nx $nx > log-NX${nx}-NPI${np}
     done
   done
   else
