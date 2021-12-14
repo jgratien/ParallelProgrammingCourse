@@ -50,7 +50,7 @@ void stadandardLoop(Flock * flock_ptr){
 
 }
 
-int ompLoop(Flock * flock_ptr, int nb_threads) {
+void ompLoop(Flock * flock_ptr, int nb_threads) {
 
     long int t = 0;
     do {
@@ -70,10 +70,9 @@ int ompLoop(Flock * flock_ptr, int nb_threads) {
         ++t;
     } while (t <= nb_iters);
 
-    return 0;
 }
 
-int tbbLoop(Flock * flock_ptr, int nb_threads) {
+void tbbLoop(Flock * flock_ptr, int nb_threads) {
 
     long int t = 0;
     tbb::task_scheduler_init init(nb_threads);
@@ -97,7 +96,6 @@ int tbbLoop(Flock * flock_ptr, int nb_threads) {
         ++t;
     } while (t <= nb_iters);
 
-    return 0;
 }
 
 int main() {
