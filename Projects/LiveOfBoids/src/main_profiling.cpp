@@ -8,6 +8,7 @@
 #include <sstream>
 #include <omp.h>
 #include <vector>
+#include "tbb/tbb.h"
 
 #include "lib/myMath/Vec2.hpp"
 #include "lib/myMath/utils.hpp"
@@ -80,7 +81,38 @@ int main() {
         } while (t <= 100);
     }
 
+
+    {
+        PPTP::Timer::Sentry sentry(timer, "TBB");
+        long int t = 0;
+        do {
+            std::cout << "Tour " << t << '\n';
+
+            tbb::parallel_for(tbb::blocked_range<int>(0, (*MAIN_pFLOCK).getPopSize()),
+                [&](tbb::blocked_range<int> r)
+                {
+                    for ( int i = r.begin(); i < r.end(); ++i) {
+                        Agent* bird = (*MAIN_pFLOCK)[i];
+
+                        std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors =
+                            (*MAIN_pFLOCK).computeNeighbors(*bird); //this costs performance
+                        std::vector<Agent*> bVec = std::get<0>(allNeighbors);
+                        std::vector<Agent*> eVec = std::get<1>(allNeighbors);
+
+                        (*bird).computeLaws(bVec, eVec);
+                        (*bird).prepareMove();
+                        (*bird).setNextPosition(keepPositionInScreen((*bird).getNextPosition(), 800, 800));
+                        (*bird).move();
+                    }
+                });
+            ++t;
+        } while (t <= 100);
+    }
+
+
+
     timer.printInfo();
 
     return 0;
+
 }
