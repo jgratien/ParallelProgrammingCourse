@@ -1,9 +1,9 @@
 #include "glx.hpp"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/mat.hpp>
-#include <opencv2/imgcodecs.hpp>
+//#include <opencv2/opencv.hpp>
+//#include <opencv2/core/mat.hpp>
+//#include <opencv2/imgcodecs.hpp>
 #include <vector>
 
 VertexArray VertexArray_new() {
@@ -61,7 +61,7 @@ GLint ShaderProgram_getUniformLocation(ShaderProgram& shaderProgram, const char*
   const GLint loc = glGetUniformLocation(shaderProgram.program, name);
   return loc;
 }
-
+/*
 void saveImage(char* filepath, GLFWwindow* w) {
   int width{}, height{};
   glfwGetFramebufferSize(w, &width, &height);
@@ -90,4 +90,4 @@ void saveImage(char* filepath, GLFWwindow* w) {
     }
   }
   imwrite(filepath, img);
-}
+}*/

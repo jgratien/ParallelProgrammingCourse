@@ -177,7 +177,7 @@ bool GraphicalManager::mainLoop() {
 				(*MAIN_pFLOCK).updateAgents();
 			}
 
-			int nb_threads = 2;
+			int nb_threads = 4;
 			omp_set_num_threads(nb_threads);
 			#pragma omp parallel for shared(MAIN_pFLOCK)
 			for (int i = 0; i < (*MAIN_pFLOCK).getPopSize(); ++i){
