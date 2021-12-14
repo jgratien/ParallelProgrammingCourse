@@ -104,12 +104,12 @@ int main() {
                 Sentry sentry(timer, str + std::to_string(nbth) + "_""OMP_Task");
                 long int t = 0;
                 do {
-                    #pragma omp parallel
+                    #pragma omp parallel shared(MAIN_pFLOCK) num_threads(nbth)
                     {
-                        #pragma omp single num_threads(nbth)
+                        #pragma omp single
                         {
                             for (int i = 0; i < (*MAIN_pFLOCK).getPopSize(); ++i) {
-                                #pragma omp task shared(MAIN_pFLOCK)
+                                #pragma omp task
                                 {
                                     //std::cout << omp_get_num_threads() << std::endl;
 
@@ -132,7 +132,6 @@ int main() {
                 } while (t <= LOOP_SIZE);
             }
 
-
             {
                 Sentry sentry(timer, str + std::to_string(nbth) + "_" + "TBB");
                 long int t = 0;
@@ -153,6 +152,38 @@ int main() {
                                 (*bird).prepareMove();
                                 (*bird).setNextPosition(keepPositionInScreen((*bird).getNextPosition(), 800, 800));
                                 (*bird).move();
+                            });
+                        });
+
+
+                    ++t;
+                } while (t <= LOOP_SIZE);
+            }
+
+            {
+                Sentry sentry(timer, str + std::to_string(nbth) + "_" + "TBB_Range");
+                long int t = 0;
+                do {
+                    // tbb::task_scheduler_init(NB_THREADS);
+                    tbb::task_arena arena(nbth);
+
+                    arena.execute([] {
+                        //tbb::parallel_for(size_t(0), (size_t)(*MAIN_pFLOCK).getPopSize(),
+                        //    [&](size_t i) {
+                        tbb::parallel_for(tbb::blocked_range<int>(0, (size_t)(*MAIN_pFLOCK).getPopSize()),
+                            [&](tbb::blocked_range<int> const r){
+                                for (auto irow = r.begin(); irow < r.end(); ++irow) {
+                                    Agent* bird = (*MAIN_pFLOCK)[irow];
+                                    std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors =
+                                        (*MAIN_pFLOCK).computeNeighbors(*bird); //this costs performance
+                                    std::vector<Agent*> bVec = std::get<0>(allNeighbors);
+                                    std::vector<Agent*> eVec = std::get<1>(allNeighbors);
+
+                                    (*bird).computeLaws(bVec, eVec);
+                                    (*bird).prepareMove();
+                                    (*bird).setNextPosition(keepPositionInScreen((*bird).getNextPosition(), 800, 800));
+                                    (*bird).move();
+                                }
                             });
                         });
 
