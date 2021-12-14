@@ -1,0 +1,25 @@
+
+Standard Time: 1.65252
+nb_threads: 1 OMP Time: 2.16738 Tbb Time: 1.87461
+nb_threads: 2 OMP Time: 1.2487 Tbb Time: 1.13923
+nb_threads: 4 OMP Time: 0.89128 Tbb Time: 0.615302
+nb_threads: 8 OMP Time: 0.689116 Tbb Time: 0.485336
+nb_threads: 12 OMP Time: 0.611958 Tbb Time: 0.435393
+nb_threads: 16 OMP Time: 0.621618 Tbb Time: 0.477537
+nb_threads: 24 OMP Time: 0.585105 Tbb Time: 0.489899
+Standard Time: 4.25562
+nb_threads: 1 OMP Time: 3.44157 Tbb Time: 4.83361
+nb_threads: 2 OMP Time: 1.96314 Tbb Time: 2.90957
+nb_threads: 4 OMP Time: 1.53928 Tbb Time: 1.42261
+nb_threads: 8 OMP Time: 1.6258 Tbb Time: 0.852671
+nb_threads: 12 OMP Time: 1.57375 Tbb Time: 0.732815
+nb_threads: 16 OMP Time: 1.70405 Tbb Time: 0.908294
+nb_threads: 24 OMP Time: 1.70639 Tbb Time: 1.04282
+Standard Time: 4.23276
+nb_threads: 1 OMP Time: 3.73444 Tbb Time: 4.43958
+nb_threads: 2 OMP Time: 4.79131 Tbb Time: 2.41618
+nb_threads: 4 OMP Time: 1.63899 Tbb Time: 1.39513
+nb_threads: 8 OMP Time: 1.57134 Tbb Time: 1.86419
+nb_threads: 12 OMP Time: 1.5347 Tbb Time: 1.41286
+nb_threads: 16 OMP Time: 1.43629 Tbb Time: 1.0914
+nb_threads: 24 OMP Time: 1.766 Tbb Time: 1.39876
