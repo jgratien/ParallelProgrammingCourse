@@ -87,7 +87,7 @@ int main() {
 
                         Agent* bird = (*MAIN_pFLOCK)[i];
                         std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors =
-                            (*MAIN_pFLOCK).computeNeighbors(*bird); //this costs performance
+                            (*MAIN_pFLOCK).computeNeighbors(*bird);
                         std::vector<Agent*> bVec = std::get<0>(allNeighbors);
                         std::vector<Agent*> eVec = std::get<1>(allNeighbors);
 
@@ -95,6 +95,38 @@ int main() {
                         (*bird).prepareMove();
                         (*bird).setNextPosition(keepPositionInScreen((*bird).getNextPosition(), 800, 800));
                         (*bird).move();
+                    }
+                    ++t;
+                } while (t <= LOOP_SIZE);
+            }
+
+            {
+                Sentry sentry(timer, str + std::to_string(nbth) + "_""OMP_Task");
+                long int t = 0;
+                do {
+                    #pragma omp parallel
+                    {
+                        #pragma omp single num_threads(nbth)
+                        {
+                            for (int i = 0; i < (*MAIN_pFLOCK).getPopSize(); ++i) {
+                                #pragma omp task shared(MAIN_pFLOCK)
+                                {
+                                    //std::cout << omp_get_num_threads() << std::endl;
+
+                                    Agent* bird = (*MAIN_pFLOCK)[i];
+                                    std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors =
+                                        (*MAIN_pFLOCK).computeNeighbors(*bird);
+                                    std::vector<Agent*> bVec = std::get<0>(allNeighbors);
+                                    std::vector<Agent*> eVec = std::get<1>(allNeighbors);
+
+                                    (*bird).computeLaws(bVec, eVec);
+                                    (*bird).prepareMove();
+                                    (*bird).setNextPosition(keepPositionInScreen((*bird).getNextPosition(), 800, 800));
+                                    (*bird).move();
+                                }
+                            }
+                        #pragma omp taskwait
+                        }
                     }
                     ++t;
                 } while (t <= LOOP_SIZE);
