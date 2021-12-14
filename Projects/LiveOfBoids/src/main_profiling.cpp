@@ -63,7 +63,7 @@ int main() {
                 // std::cout << "Tour " << t << '\n';
                 for (auto& bird : *MAIN_pFLOCK) {
                     std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors =
-                        (*MAIN_pFLOCK).computeNeighbors(*bird); //this costs performance
+                        (*MAIN_pFLOCK).computeNeighbors(*bird);
                     std::vector<Agent*> bVec = std::get<0>(allNeighbors);
                     std::vector<Agent*> eVec = std::get<1>(allNeighbors);
 
@@ -145,7 +145,7 @@ int main() {
                             [&](size_t i) {
                                 Agent* bird = (*MAIN_pFLOCK)[i];
                                 std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors =
-                                    (*MAIN_pFLOCK).computeNeighbors(*bird); //this costs performance
+                                    (*MAIN_pFLOCK).computeNeighbors(*bird);
                                 std::vector<Agent*> bVec = std::get<0>(allNeighbors);
                                 std::vector<Agent*> eVec = std::get<1>(allNeighbors);
 
@@ -176,7 +176,7 @@ int main() {
                                 for (auto irow = r.begin(); irow < r.end(); ++irow) {
                                     Agent* bird = (*MAIN_pFLOCK)[irow];
                                     std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors =
-                                        (*MAIN_pFLOCK).computeNeighbors(*bird); //this costs performance
+                                        (*MAIN_pFLOCK).computeNeighbors(*bird);
                                     std::vector<Agent*> bVec = std::get<0>(allNeighbors);
                                     std::vector<Agent*> eVec = std::get<1>(allNeighbors);
 

@@ -1,0 +1,9 @@
+
+Complete matrix result ||y||=349557
+
+MPI result ||y||=349557 , Rank:0
+================================
+PERF INFO : 
+DenseMV_MPI_0:0.0982318
+DenseMV_seq:0.101351
+================================

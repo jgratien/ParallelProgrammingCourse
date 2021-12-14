@@ -14,6 +14,8 @@
 #include "omp.h"
 
 #include "Utils/Timer.h"
+#include <mpi.h>
+//#include "mpi/mpi.h"
 
 int main(int argc, char** argv)
 {
@@ -32,7 +34,7 @@ int main(int argc, char** argv)
   }
 
   // Initialize MPI
-  // MPI_Init(argc,arcv) ;
+   MPI_Init(&argc,&argv) ;
 
 
   PPTP::Timer timer ;
@@ -41,17 +43,22 @@ int main(int argc, char** argv)
 
 
     //#pragma omp ....CREATE PARALLEL SECTION
+	#pragma omp parallel
     {
       int my_rank = 0 ;
       int nb_procs = 1 ;
       // get nb procs
+//      int nb_procs = omp_get_num_procs();
+      MPI_Comm_size(MPI_COMM_WORLD, &nb_procs) ;
       // get process rank
+      MPI_Comm_rank(MPI_COMM_WORLD, &my_rank) ;
+
       std::cout<<"Hello world ("<<my_rank<<","<<nb_procs<<")"<<std::endl ;
     }
   }
   timer.printInfo() ;
 
   // Finalyze MPI
-  // MPI_Finalize() ;
+   MPI_Finalize() ;
   return 0 ;
 }

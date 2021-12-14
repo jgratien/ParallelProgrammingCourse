@@ -1,2 +1,4 @@
 ./Projects/LiveOfBoids/build/*
 /.vs
+/Projects/LiveOfBoids/.vs
+/Projects/LiveOfBoids/build

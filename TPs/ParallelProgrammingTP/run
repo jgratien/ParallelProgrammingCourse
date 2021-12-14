@@ -15,7 +15,8 @@
 ### usage : oarsub -l core=32 -S ./job_exemple.sh
 
 ### indiquer votre executable
-MONPROG=/gext/jean-marc.gratien/ParallelProgrammingTP/bin/densemv_mpi.exe
+MONPROG=/gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
+MONPROGCSR=/gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe
 ### indiquer votre fichier de donnees
 MYDATA=
 
@@ -32,8 +33,9 @@ echo sur les nodes $(cat $OAR_NODE_FILE)
 #MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun \
 #  -n $NP \
 #  -machinefile $OAR_NODE_FILE "
- 
+
 MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun"
+# MPIRUN="mpirun"
 
 set -x
 export OMP_NUM_THREADS=1
@@ -44,7 +46,8 @@ if [ -f $MONPROG ] ; then
   do
     for nx in 50 100 150 200
     do
-    $MPIRUN -np ${np}  $MONPROG --nx $nx > log-NX${nx}-NPI${np}
+    # $MPIRUN -np ${np}  $MONPROG --nx ${nx} > logs/DenseMV/log-NX${nx}-NPI${np}
+    $MPIRUN -np ${np}  $MONPROGCSR --nx ${nx} > logs/SpMV/log-NX${nx}-NPI${np}
     done
   done
   else

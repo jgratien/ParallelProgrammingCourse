@@ -46,11 +46,18 @@ int main(int argc, char** argv)
 
 
     //#pragma omp ....CREATE PARALLEL SECTION
+
+
+	#pragma omp parallel for //private(id)
+    for(int i = 0; i < nb_threads; ++i)
     {
-      int id = 0 ;
-      int nb_threads = 1 ;
-      sleep(id) ;
-      std::cout<<"Hello world ("<<id<<","<<nb_threads<<")"<<std::endl ;
+    	unsigned int id = i;
+    	sleep(id);
+    	std::cout<<"Hello world ("<<id<<","<<nb_threads<<")\n";
+//      int id = 0 ;
+//      int nb_threads = 1 ;
+//      sleep(id) ;
+//      std::cout<<"Hello world ("<<id<<","<<nb_threads<<")"<<std::endl ;
     }
   }
   timer.printInfo() ;

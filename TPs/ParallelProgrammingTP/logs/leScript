@@ -1,0 +1,26 @@
+#!/bin/bash
+# rm all_logs_Dense seq_logs_Dense.csv MPI_logs_Dense.csv
+# rm all_logs_Sparse seq_logs_Sparse.csv MPI_logs_Sparse.csv
+for np in 1 2 4 8 12 16 24
+do
+    for nx in 50 100 150 200
+    do
+        grep DenseMV_ DenseMV/log-NX${nx}-NPI${np} | awk '{ printf ""'${nx}'"_"'${np}'""; print }' | sed 's/DenseMV//' | sed 's/:/_/g' >> all_logs_Dense
+        grep SpMV_ SpMV/log-NX${nx}-NPI${np} | awk '{ printf ""'${nx}'"_"'${np}'""; print }' | sed 's/SpMV//' | sed 's/:/_/g' >> all_logs_Sparse
+    done
+done
+sed -i -e 's/_/;/g' all_logs_Dense
+grep seq all_logs_Dense > seq_logs_Dense.csv
+grep MPI all_logs_Dense > MPI_logs_Dense.csv
+sed -i -e 's/;MPI//' MPI_logs_Dense.csv
+sed -i -e 's/;seq//' seq_logs_Dense.csv
+sed -i -e '1i nx;np;time' seq_logs_Dense.csv
+sed -i -e '1i nx;np;num_p;time' MPI_logs_Dense.csv
+
+sed -i -e 's/_/;/g' all_logs_Sparse
+grep seq all_logs_Sparse > seq_logs_Sparse.csv
+grep MPI all_logs_Sparse > MPI_logs_Sparse.csv
+sed -i -e 's/;MPI//' MPI_logs_Sparse.csv
+sed -i -e 's/;seq//' seq_logs_Sparse.csv
+sed -i -e '1i nx;np;time' seq_logs_Sparse.csv
+sed -i -e '1i nx;np;num_p;time' MPI_logs_Sparse.csv

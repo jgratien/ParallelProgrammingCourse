@@ -1,8 +1,8 @@
-# Install script for directory: /work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP
+# Install script for directory: /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP")
+  set(CMAKE_INSTALL_PREFIX "/gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,10 +39,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP1/cmake_install.cmake")
-  include("/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/cmake_install.cmake")
-  include("/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP3/cmake_install.cmake")
-  include("/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP4/cmake_install.cmake")
+  include("/gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP1/cmake_install.cmake")
+  include("/gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/cmake_install.cmake")
 
 endif()
 
@@ -54,5 +52,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

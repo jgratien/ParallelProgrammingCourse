@@ -1,0 +1,75 @@
+DEBUT
+Sat Dec 11 17:54:21 CET 2021
+execution sur 24 coeurs
+sur les nodes n-in2 n-in2 n-in2 n-in2 n-in2 n-in2 n-in2 n-in2 n-in2 n-in2 n-in2 n-in2 n-in3 n-in3 n-in3 n-in3 n-in3 n-in3 n-in3 n-in3 n-in3 n-in3 n-in3 n-in3
++ export OMP_NUM_THREADS=1
++ OMP_NUM_THREADS=1
++ '[' -f /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe ']'
++ '[' -f ']'
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 1 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 1 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 1 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 1 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 2 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 2 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 2 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 2 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 4 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 4 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 4 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 4 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 8 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 8 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 8 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 8 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 12 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 12 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 12 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 12 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 16 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 16 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 16 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 16 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 24 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 24 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 24 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 24 /gext/julian.auriac/paraProg/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe --nx 200
++ date
+Sat Dec 11 18:01:05 CET 2021
++ echo FIN
+FIN
