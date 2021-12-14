@@ -107,79 +107,80 @@ int main(int argc, char** argv) {
     double normy = PPTP::norm2(y) ;
     std::cout << "||y||=" << normy << std::endl;
 
-    MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-    std::vector<int> rows = matrix.rows();
-    std::vector<int> cols = matrix.cols();
-    std::vector<double> values = matrix.values();
-    for (int i = rows.size() - 1; i > 0; i--) rows[i] -= rows[i - 1];
-
-    int q = nrows / nb_proc;
-    int r = nrows % nb_proc;
-
-    // std::cout << "q : " << q << '\n';
-    // std::cout << "r : " << r << '\n';
-
-    int* prows = rows.data() + 1; // the first element is not interesting
-    int* pcols = cols.data();
-    double* pvalues = values.data();
-
-    // vi trows;
-    // trows.insert(trows.end(), rows.begin() + 1, rows.end());
-    // vd temp = mult(x, trows, cols, values);
-    // std::cout << "temp size : " << temp.size() << '\n';
-    // std::cout << "nrows : " << nrows << '\n';
-    // double rrr = 0;
-    // for (auto e : temp) rrr += e * e;
-    // std::cout << "rrr||y||=" << std::sqrt(rrr) << '\n';
-
-    int epsilon = 0;
-    if (r > 0) epsilon = 1;
-    int local_size = (q + epsilon);
-    int local_nb_elems = count(prows, local_size);
-    // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
-    int* local_cptr = pcols + local_nb_elems;
-    double* local_vptr = pvalues + local_nb_elems;
-    // std::cout << "my_rank : " << my_rank << ", nb_elems : " << local_nb_elems << '\n';
-    int* local_rptr = prows + local_size;
-
-    int position = 0;
-    positions[0] = position;
-    sizes[0] = local_size;
-
-    for (int i = 1; i < nb_proc; i++){
-      int proc_local_size = q;
-      if (i < r) proc_local_size++;
-      MPI_Send(&proc_local_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-      MPI_Send(local_rptr, proc_local_size, MPI_INT, i, 1, MPI_COMM_WORLD);
-
-      int nb_elems = count(local_rptr, proc_local_size);
-      MPI_Send(&nb_elems, 1, MPI_INT, i, 2, MPI_COMM_WORLD);
-      MPI_Send(local_cptr, nb_elems, MPI_INT, i, 3, MPI_COMM_WORLD);
-      MPI_Send(local_vptr, nb_elems, MPI_DOUBLE, i, 4, MPI_COMM_WORLD);
-      local_cptr += nb_elems;
-      local_vptr += nb_elems;
-      local_rptr += proc_local_size;
-      position += proc_local_size;
-      sizes[i] = proc_local_size;
-      positions[i] = position;
-    }
-
-    std::vector<int> local_rows;
-    std::vector<int> local_cols;
-    std::vector<double> local_values;
-    local_rows.insert(local_rows.end(), prows, prows + local_size);
-    local_cols.insert(local_cols.end(), pcols, pcols + local_nb_elems);
-    local_values.insert(local_values.end(), pvalues, pvalues + local_nb_elems);
-
     {
       Timer::Sentry sentry(timer,"SparseMPI");
-      y_local = mult(x, local_rows, local_cols, local_values);
-    }
+      MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
+      MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    y_final.resize(nrows);
-    MPI_Gatherv(y_local.data(), local_size, MPI_DOUBLE, y_final.data(), sizes.data(), positions.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+      std::vector<int> rows = matrix.rows();
+      std::vector<int> cols = matrix.cols();
+      std::vector<double> values = matrix.values();
+      for (int i = rows.size() - 1; i > 0; i--) rows[i] -= rows[i - 1];
+
+      int q = nrows / nb_proc;
+      int r = nrows % nb_proc;
+
+      // std::cout << "q : " << q << '\n';
+      // std::cout << "r : " << r << '\n';
+
+      int* prows = rows.data() + 1; // the first element is not interesting
+      int* pcols = cols.data();
+      double* pvalues = values.data();
+
+      // vi trows;
+      // trows.insert(trows.end(), rows.begin() + 1, rows.end());
+      // vd temp = mult(x, trows, cols, values);
+      // std::cout << "temp size : " << temp.size() << '\n';
+      // std::cout << "nrows : " << nrows << '\n';
+      // double rrr = 0;
+      // for (auto e : temp) rrr += e * e;
+      // std::cout << "rrr||y||=" << std::sqrt(rrr) << '\n';
+
+      int epsilon = 0;
+      if (r > 0) epsilon = 1;
+      int local_size = (q + epsilon);
+      int local_nb_elems = count(prows, local_size);
+      // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
+      int* local_cptr = pcols + local_nb_elems;
+      double* local_vptr = pvalues + local_nb_elems;
+      // std::cout << "my_rank : " << my_rank << ", nb_elems : " << local_nb_elems << '\n';
+      int* local_rptr = prows + local_size;
+
+      int position = 0;
+      positions[0] = position;
+      sizes[0] = local_size;
+
+      for (int i = 1; i < nb_proc; i++){
+        int proc_local_size = q;
+        if (i < r) proc_local_size++;
+        MPI_Send(&proc_local_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+        MPI_Send(local_rptr, proc_local_size, MPI_INT, i, 1, MPI_COMM_WORLD);
+
+        int nb_elems = count(local_rptr, proc_local_size);
+        MPI_Send(&nb_elems, 1, MPI_INT, i, 2, MPI_COMM_WORLD);
+        MPI_Send(local_cptr, nb_elems, MPI_INT, i, 3, MPI_COMM_WORLD);
+        MPI_Send(local_vptr, nb_elems, MPI_DOUBLE, i, 4, MPI_COMM_WORLD);
+        local_cptr += nb_elems;
+        local_vptr += nb_elems;
+        local_rptr += proc_local_size;
+        position += proc_local_size;
+        sizes[i] = proc_local_size;
+        positions[i] = position;
+      }
+
+      std::vector<int> local_rows;
+      std::vector<int> local_cols;
+      std::vector<double> local_values;
+      local_rows.insert(local_rows.end(), prows, prows + local_size);
+      local_cols.insert(local_cols.end(), pcols, pcols + local_nb_elems);
+      local_values.insert(local_values.end(), pvalues, pvalues + local_nb_elems);
+
+
+      y_local = mult(x, local_rows, local_cols, local_values);
+
+      y_final.resize(nrows);
+      MPI_Gatherv(y_local.data(), local_size, MPI_DOUBLE, y_final.data(), sizes.data(), positions.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    }
 
     normy = PPTP::norm2(y_final);
     std::cout << "||y||=" << normy << std::endl;

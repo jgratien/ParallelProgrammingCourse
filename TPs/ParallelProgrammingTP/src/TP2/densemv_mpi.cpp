@@ -97,46 +97,45 @@ int main(int argc, char** argv) {
         // ==========================================================
 
 
-
-        MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-        unsigned long q = nrows / nb_proc;
-        unsigned long r = nrows % nb_proc;
-
-        double* pvalues = matrix.data();
-
-        int epsilon = 0;
-        if (r > 0) epsilon = 1;
-
-        int local_size = (q + epsilon);
-        // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
-        double* local_vptr = pvalues + nrows * local_size;
-
-        int position = 0;
-        positions[0] = position;
-        sizes[0] = local_size;
-
-        for (int i = 1; i < nb_proc; ++i) {
-            int proc_local_size = q;
-            if (i < r) proc_local_size++;
-            MPI_Send(&proc_local_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-            MPI_Send(local_vptr, proc_local_size * nrows, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
-            local_vptr += proc_local_size * nrows;
-            position += proc_local_size;
-            sizes[i] = proc_local_size;
-            positions[i] = position;
-        }
-
-        std::vector<double> local_values;
-        local_values.insert(local_values.end(), pvalues, pvalues + local_size * nrows);
         {
           Timer::Sentry sentry(timer,"DenseMPI");
-          y_local = mult(x, local_values, local_size, nrows);
-        }
+          MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
+          MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-        y_final.resize(nrows);
-        MPI_Gatherv(y_local.data(), local_size, MPI_DOUBLE, y_final.data(), sizes.data(), positions.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+          unsigned long q = nrows / nb_proc;
+          unsigned long r = nrows % nb_proc;
+
+          double* pvalues = matrix.data();
+
+          int epsilon = 0;
+          if (r > 0) epsilon = 1;
+
+          int local_size = (q + epsilon);
+          // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
+          double* local_vptr = pvalues + nrows * local_size;
+
+          int position = 0;
+          positions[0] = position;
+          sizes[0] = local_size;
+
+          for (int i = 1; i < nb_proc; ++i) {
+              int proc_local_size = q;
+              if (i < r) proc_local_size++;
+              MPI_Send(&proc_local_size, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+              MPI_Send(local_vptr, proc_local_size * nrows, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
+              local_vptr += proc_local_size * nrows;
+              position += proc_local_size;
+              sizes[i] = proc_local_size;
+              positions[i] = position;
+          }
+
+          std::vector<double> local_values;
+          local_values.insert(local_values.end(), pvalues, pvalues + local_size * nrows);
+          y_local = mult(x, local_values, local_size, nrows);
+
+          y_final.resize(nrows);
+          MPI_Gatherv(y_local.data(), local_size, MPI_DOUBLE, y_final.data(), sizes.data(), positions.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+        }
 
         normy = PPTP::norm2(y_final);
         std::cout << "||y||=" << normy << std::endl;
