@@ -37,11 +37,12 @@ std::vector<Agent*> mainFlock;
 int main() {
     Timer timer;
 
-    //std::vector<int> sizes = { 1,10,100,250,500,1000,2000,3000,5000,8000,10000 };
-     std::vector<int> sizes = {1,10,100,250,500};
+    std::vector<int> sizes = { 1,10,100,250,500,1000,2000,3000,5000,8000,10000 };
+    //std::vector<int> sizes = {1,10,100,250,500};
 
-    std::vector<int> nb_threads = {1,16,24};
-    //std::vector<int> nb_threads = { 1,2,4,8,12,16,24 };
+    //std::vector<int> nb_threads = {1,16,24};
+    //std::vector<int> nb_threads = {1,2,4,8,12,16};
+    std::vector<int> nb_threads = { 1,2,4,8,12,16,24 };
     int i = 0;
     int end = sizes.size();
     for (int sz : sizes) {
