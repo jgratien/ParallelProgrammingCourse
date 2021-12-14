@@ -1,3 +1,6 @@
 [submodule "Project/cpp-life-of-boids"]
 	path = Project/cpp-life-of-boids
 	url = https://github.com/bourbonut/cpp-life-of-boids.git
+[submodule "Projects/cpp-life-of-boids"]
+	path = Projects/cpp-life-of-boids
+	url = https://github.com/bourbonut/cpp-life-of-boids.git
