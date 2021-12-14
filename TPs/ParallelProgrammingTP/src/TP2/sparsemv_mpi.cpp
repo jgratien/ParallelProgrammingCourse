@@ -78,15 +78,6 @@ int main(int argc, char** argv) {
     CSRMatrix matrix;
     int nx = vm["nx"].as<int>();
     generator.genLaplacian(nx, matrix);
-    // std::cout << "m_kcol : " << matrix.rows().size() << '\n';
-    // for(auto e : matrix.rows()){
-    //   std::cout << "e : " << e << '\n';
-    // }
-    // std::cout << "m_cols : " << matrix.cols().size() << '\n';
-    // std::cout << "m_values : " << matrix.values().size() << '\n';
-    // std::cout << "m_nrows : " << matrix.nrows() << '\n';
-    // ====================================================
-
 
     int nrows = matrix.nrows();
     std::vector<double> x;
@@ -109,6 +100,7 @@ int main(int argc, char** argv) {
 
     {
       Timer::Sentry sentry(timer,"SparseMPI");
+      // Share common information to everybody
       MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
       MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
@@ -120,36 +112,23 @@ int main(int argc, char** argv) {
       int q = nrows / nb_proc;
       int r = nrows % nb_proc;
 
-      // std::cout << "q : " << q << '\n';
-      // std::cout << "r : " << r << '\n';
-
       int* prows = rows.data() + 1; // the first element is not interesting
       int* pcols = cols.data();
       double* pvalues = values.data();
-
-      // vi trows;
-      // trows.insert(trows.end(), rows.begin() + 1, rows.end());
-      // vd temp = mult(x, trows, cols, values);
-      // std::cout << "temp size : " << temp.size() << '\n';
-      // std::cout << "nrows : " << nrows << '\n';
-      // double rrr = 0;
-      // for (auto e : temp) rrr += e * e;
-      // std::cout << "rrr||y||=" << std::sqrt(rrr) << '\n';
 
       int epsilon = 0;
       if (r > 0) epsilon = 1;
       int local_size = (q + epsilon);
       int local_nb_elems = count(prows, local_size);
-      // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
       int* local_cptr = pcols + local_nb_elems;
       double* local_vptr = pvalues + local_nb_elems;
-      // std::cout << "my_rank : " << my_rank << ", nb_elems : " << local_nb_elems << '\n';
       int* local_rptr = prows + local_size;
 
       int position = 0;
       positions[0] = position;
       sizes[0] = local_size;
 
+      // Send information to other procs
       for (int i = 1; i < nb_proc; i++){
         int proc_local_size = q;
         if (i < r) proc_local_size++;
@@ -168,16 +147,16 @@ int main(int argc, char** argv) {
         positions[i] = position;
       }
 
+      // Create local matrix and compute the product
       std::vector<int> local_rows;
       std::vector<int> local_cols;
       std::vector<double> local_values;
       local_rows.insert(local_rows.end(), prows, prows + local_size);
       local_cols.insert(local_cols.end(), pcols, pcols + local_nb_elems);
       local_values.insert(local_values.end(), pvalues, pvalues + local_nb_elems);
-
-
       y_local = mult(x, local_rows, local_cols, local_values);
 
+      // Collect other y_local and store in y_final
       y_final.resize(nrows);
       MPI_Gatherv(y_local.data(), local_size, MPI_DOUBLE, y_final.data(), sizes.data(), positions.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
     }
@@ -200,31 +179,20 @@ int main(int argc, char** argv) {
     MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     MPI_Recv(&local_size, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
 
     local_rows.resize(local_size);
     int* prows = local_rows.data();
     MPI_Recv(prows, local_size, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    // for(auto e : local_rows){
-    //   std::cout << "my_rank : " << my_rank << ", e : " << e << '\n';
-    // }
 
     MPI_Recv(&nb_elems, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    // std::cout << "my_rank : " << my_rank << ", nb_elems : " << nb_elems << '\n';
 
     local_cols.resize(nb_elems);
     int* pcols = local_cols.data();
     MPI_Recv(pcols, nb_elems, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    // for(auto e1 : local_cols){
-    //   std::cout << "my_rank : " << my_rank << ", e1 : " << e1 << '\n';
-    // }
 
     local_values.resize(nb_elems);
     double* pvalues = local_values.data();
     MPI_Recv(pvalues, nb_elems, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    // for(auto e2 : local_values){
-    //   std::cout << "my_rank : " << my_rank << ", e2 : " << e2 << '\n';
-    // }
 
     y_local = mult(x, local_rows, local_cols, local_values);
 

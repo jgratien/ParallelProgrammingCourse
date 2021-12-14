@@ -86,21 +86,12 @@ int main(int argc, char** argv) {
         double normy = PPTP::norm2(y);
         std::cout << "||y||=" << normy << std::endl;
 
-        // std::cout << "nrows : " << matrix.nrows() << '\n';
-        // std::cout << "ncols : " << matrix.nrows() << '\n';
-        // for(int i = 0; i < matrix.nrows(); i++){
-        //   for(int j = 0; j < matrix.nrows(); j++){
-        //     std::cout << "Matrix " << i << "; " << j << " : " << matrix(i, j)
-        //     << '\n';
-        //   }
-        // }
-        // ==========================================================
-
-
         {
           Timer::Sentry sentry(timer,"DenseMPI");
+          // Share common information to everybody
           MPI_Bcast(&nrows, 1, MPI_INT, 0, MPI_COMM_WORLD);
           MPI_Bcast(x.data(), x.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
 
           unsigned long q = nrows / nb_proc;
           unsigned long r = nrows % nb_proc;
@@ -111,13 +102,13 @@ int main(int argc, char** argv) {
           if (r > 0) epsilon = 1;
 
           int local_size = (q + epsilon);
-          // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
           double* local_vptr = pvalues + nrows * local_size;
 
           int position = 0;
           positions[0] = position;
           sizes[0] = local_size;
 
+          // Send information to other procs
           for (int i = 1; i < nb_proc; ++i) {
               int proc_local_size = q;
               if (i < r) proc_local_size++;
@@ -129,10 +120,12 @@ int main(int argc, char** argv) {
               positions[i] = position;
           }
 
+          // Create local matrix and compute the product
           std::vector<double> local_values;
           local_values.insert(local_values.end(), pvalues, pvalues + local_size * nrows);
           y_local = mult(x, local_values, local_size, nrows);
 
+          // Collect other y_local and store in y_final
           y_final.resize(nrows);
           MPI_Gatherv(y_local.data(), local_size, MPI_DOUBLE, y_final.data(), sizes.data(), positions.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
@@ -152,16 +145,11 @@ int main(int argc, char** argv) {
         MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
         MPI_Recv(&local_size, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        // std::cout << "my_rank : " << my_rank << ", local_size : " << local_size << '\n';
 
         local_values.resize(local_size * nrows);
         double* pvalues = local_values.data();
         MPI_Recv(pvalues, local_size * nrows, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        // for(auto e : local_values){
-        //   std::cout << "my_rank : " << my_rank << ", e : " << e << '\n';
-        // }
 
-        //std::vector<double> y
         y_local = mult(x, local_values, local_size, nrows);
 
         MPI_Gatherv(y_local.data(), local_size, MPI_DOUBLE, NULL, NULL, NULL, MPI_DOUBLE, 0, MPI_COMM_WORLD);
