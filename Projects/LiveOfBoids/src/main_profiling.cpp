@@ -20,7 +20,8 @@
 #include "resources/controller/flock_generator.hpp"
 #include "lib/Timers/timers.hpp"
 
-#define NB_THREADS 4
+//#define NB_THREADS 4
+//std::vector <int> np_vector = {2, 4, 8, 12, 16, 24};
 
 
 Flock* MAIN_pFLOCK = nullptr;
@@ -58,15 +59,16 @@ int main() {
             ++t;
         } while (t <= 100);
     }
-
+   // for (int np:np_vector)
     {
         PPTP::Timer::Sentry sentry(timer, "OMP");
         long int t = 0;
         do {
-            std::cout << "Tour " << t << '\n';
+            //std::cout << "Tour " << t << '\n';
 
             #pragma omp parallel for shared(MAIN_pFLOCK) num_threads(4)
-            for (auto& bird : *MAIN_pFLOCK) {
+            for (int i = 0; i < (*MAIN_pFLOCK).getPopSize(); i++) {
+                Agent* bird = (*MAIN_pFLOCK)[i];
                 std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors =
                     (*MAIN_pFLOCK).computeNeighbors(*bird); //this costs performance
                 std::vector<Agent*> bVec = std::get<0>(allNeighbors);
@@ -81,13 +83,13 @@ int main() {
         } while (t <= 100);
     }
 
-
+    //for (int np : np_vector)
     {
         PPTP::Timer::Sentry sentry(timer, "TBB");
         long int t = 0;
         do {
-            std::cout << "Tour " << t << '\n';
-
+            //std::cout << "Tour " << t << '\n';
+            tbb::task_scheduler_init init(4);
             tbb::parallel_for(tbb::blocked_range<int>(0, (*MAIN_pFLOCK).getPopSize()),
                 [&](tbb::blocked_range<int> r)
                 {
