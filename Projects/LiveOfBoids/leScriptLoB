@@ -1,0 +1,11 @@
+#!/bin/bash
+# rm ./forLoB/logLoB ./forLoB/logLoB.csv
+
+grep TBB run.log | sed 's/TBB_Range/TBBRange/g' >> ./forLoB/logLoB
+grep OMP run.log | sed 's/OMP_Task/OMPTask/g' >> ./forLoB/logLoB
+grep Seq run.log >> ./forLoB/logLoB
+
+sed -i -e 's/_/;/g' ./forLoB/logLoB
+sed -i -e 's/Seq/0;Seq/g' ./forLoB/logLoB
+grep -v Warning ./forLoB/logLoB > ./forLoB/logLoB.csv
+sed -i -e '1i nx;np;type;time' ./forLoB/logLoB.csv
