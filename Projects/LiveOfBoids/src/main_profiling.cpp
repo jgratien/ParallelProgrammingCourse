@@ -20,8 +20,8 @@
 #include "resources/controller/flock_generator.hpp"
 #include "lib/Timers/timers.hpp"
 
-//#define NB_THREADS 4
-//std::vector <int> np_vector = {2, 4, 8, 12, 16, 24};
+#define NB_THREADS 8
+
 
 
 Flock* MAIN_pFLOCK = nullptr;
@@ -33,6 +33,8 @@ int main() {
     mainFlock.reserve(size);
 
     PPTP::Timer timer;
+
+    std::cout << "NB THREADS : " << NB_THREADS << '\n';
 
 
 
@@ -47,7 +49,7 @@ int main() {
 
             for (auto& bird : *MAIN_pFLOCK) {
                 std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors =
-                    (*MAIN_pFLOCK).computeNeighbors(*bird); //this costs performance
+                    (*MAIN_pFLOCK).computeNeighbors(*bird); 
                 std::vector<Agent*> bVec = std::get<0>(allNeighbors);
                 std::vector<Agent*> eVec = std::get<1>(allNeighbors);
 
@@ -59,14 +61,14 @@ int main() {
             ++t;
         } while (t <= 100);
     }
-   // for (int np:np_vector)
+   
     {
         PPTP::Timer::Sentry sentry(timer, "OMP");
         long int t = 0;
         do {
-            //std::cout << "Tour " << t << '\n';
+            
 
-            #pragma omp parallel for shared(MAIN_pFLOCK) num_threads(4)
+            #pragma omp parallel for shared(MAIN_pFLOCK) num_threads(NB_THREADS)
             for (int i = 0; i < (*MAIN_pFLOCK).getPopSize(); i++) {
                 Agent* bird = (*MAIN_pFLOCK)[i];
                 std::tuple<std::vector<Agent*>, std::vector<Agent*>> allNeighbors =
@@ -83,13 +85,13 @@ int main() {
         } while (t <= 100);
     }
 
-    //for (int np : np_vector)
+    
     {
         PPTP::Timer::Sentry sentry(timer, "TBB");
         long int t = 0;
         do {
             //std::cout << "Tour " << t << '\n';
-            tbb::task_scheduler_init init(4);
+            tbb::task_scheduler_init init(NB_THREADS);
             tbb::parallel_for(tbb::blocked_range<int>(0, (*MAIN_pFLOCK).getPopSize()),
                 [&](tbb::blocked_range<int> r)
                 {
