@@ -46,11 +46,11 @@ int main(int argc, char** argv)
 
 
     //#pragma omp ....CREATE PARALLEL SECTION
+    #pragma omp parallel 
     {
-      int id = 0 ;
-      int nb_threads = 1 ;
+      int id = omp_get_thread_num();
       sleep(id) ;
-      std::cout<<"Hello world ("<<id<<","<<nb_threads<<")"<<std::endl ;
+      std::cout<< "\nHello world ("<< id <<", "<< nb_threads << ")" <<std::endl ;
     }
   }
   timer.printInfo() ;

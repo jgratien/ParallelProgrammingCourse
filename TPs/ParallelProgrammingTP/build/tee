@@ -1,0 +1,28 @@
+make[1]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 10%] Built target helloworld_tbb.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 20%] Built target helloworld_task.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 30%] Built target helloworld_openmp.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 40%] Built target helloworld_stdthread.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 50%] Built target helloworld_mpi.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 60%] Built target spmv.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 70%] Built target densemv.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 75%] Building CXX object src/TP2/CMakeFiles/densemv_mpi.exe.dir/densemv_mpi.cpp.o
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[1]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'

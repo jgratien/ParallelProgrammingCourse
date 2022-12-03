@@ -8,6 +8,9 @@
 #ifndef SRC_MATRIXVECTOR_DENSEMATRIX_H_
 #define SRC_MATRIXVECTOR_DENSEMATRIX_H_
 
+#include <iostream>
+#include "tbb/tbb.h"
+
 namespace PPTP
 {
 
@@ -41,6 +44,7 @@ namespace PPTP
       void init(std::size_t nrows)
       {
         m_nrows = nrows ;
+		m_ncols = nrows;
         if(m_nrows>0)
         {
           m_values.resize(m_nrows*m_nrows) ;
@@ -76,7 +80,7 @@ namespace PPTP
           int irow = std::get<0>(entry) ;
           int jcol = std::get<1>(entry) ;
           auto const& val = std::get<2>(entry) ;
-          m_values[irow*m_nrows+jcol] = val ;
+          m_values[irow*m_ncols+jcol] = val ;
         }
       }
 
@@ -85,7 +89,7 @@ namespace PPTP
         assert(m_nrows>0) ;
         assert(i<m_nrows) ;
         assert(j<m_nrows) ;
-        return m_values[i*m_nrows+j] ;
+        return m_values[i*m_ncols+j] ;
       }
 
       double operator()(std::size_t i,std::size_t j) const
@@ -93,7 +97,7 @@ namespace PPTP
         assert(m_nrows>0) ;
         assert(i<m_nrows) ;
         assert(j<m_nrows) ;
-        return m_values[i*m_nrows+j] ;
+        return m_values[i*m_ncols+j] ;
       }
 
       double* data() {
@@ -123,8 +127,21 @@ namespace PPTP
         assert(y.size()>=m_nrows) ;
 
         {
-           // TODO OPENMP
-        }
+			
+			double const* matrix_ptr = m_values.data();
+		
+			#pragma omp parallel for
+			for(std::size_t irow =0; irow<m_nrows;++irow)
+			{
+			  double value = 0;
+			  double const* m_ptr = (matrix_ptr + (irow * m_ncols)); 
+			  for(std::size_t jcol =0; jcol<m_ncols;++jcol)
+			  {
+				value += m_ptr[jcol]*x[jcol] ;
+			  }
+			  y[irow] = value ;
+			}
+		}
       }
 
       void omptaskmult(VectorType const& x, VectorType& y) const
@@ -132,9 +149,30 @@ namespace PPTP
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
 
-        std::size_t nb_task = (m_nrows+m_chunk_size-1)/m_chunk_size ;
-        {
-            //TODO TASK OPENMP
+        std::size_t nb_tasks = (m_nrows+m_chunk_size-1)/m_chunk_size ;
+		//std::cout << "Total Num tasks: " << nb_tasks << std::endl;
+		double const* matrix_ptr = m_values.data();
+		#pragma omp parallel
+        {	
+			#pragma omp single
+			for (size_t t=0; t<nb_tasks; ++t) {
+				
+				size_t row_st = t * m_chunk_size;
+				size_t row_end = row_st + m_chunk_size;
+				#pragma omp task
+				{
+					for(size_t irow=row_st; irow<row_end; ++irow) {
+
+						double value = 0;
+						double const* m_ptr = (matrix_ptr + (irow * m_ncols));
+						for(std::size_t jcol =0; jcol<m_ncols;++jcol) {
+							value += m_ptr[jcol]*x[jcol] ;
+						}
+						y[irow] = value ;
+					}
+				}
+			}
+			#pragma omp taskwait
         }
       }
 
@@ -156,10 +194,20 @@ namespace PPTP
       {
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
-
-        {
-            //TODO TBB
-        }
+		double const* matrix_ptr = m_values.data();
+	
+		tbb::parallel_for(size_t(0),
+						size_t(m_nrows),
+						[matrix_ptr, &y, &x, this](size_t irow) {
+						  double value = 0;
+						  double const* m_ptr = (matrix_ptr + (irow * m_ncols)); 
+						  for(std::size_t jcol =0; jcol<m_ncols;++jcol)
+						  {
+							value += m_ptr[jcol]*x[jcol] ;
+						  }
+						  y[irow] = value ;
+						}
+						);
       }
 
 
@@ -192,7 +240,6 @@ namespace PPTP
       int m_chunk_size = 1 ;
 
   };
-
 } /* namespace PPTP */
 
 #endif /* SRC_MATRIXVECTOR_DENSEMATRIX_H_ */

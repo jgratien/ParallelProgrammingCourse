@@ -1,0 +1,75 @@
+-- PROJECT ARCH :
+-- BUILD ROOT :
+-- PROJECT ROOT :/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP
+-- MPI TYPE : OpenMPI
+statusTBB LIB : TBB_LIBRARY_RELEASE-NOTFOUND
+statusTBB INC : /softs/intel/tbb/include
+-- PACKAGE: Fortran      : not found
+-- PACKAGE: Mpi          : OpenMPI
+-- PACKAGE: Mpi          : /softs/mpi/openmpi-4.0.1/gcc-7.3.0/include
+-- PACKAGE: Mpi          : /softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib/libmpi.so;rt;dl
+-- PACKAGE: Boost        : /softs/boost/1.63.0/include
+-- PACKAGE: Blas         : not found
+-- PACKAGE: Lapack       : not found
+-- PACKAGE: MKL          : not found
+-- PACKAGE: EIGEN3       : /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include
+-- PACKAGE: Numa         : not found
+-- PACKAGE: HWLOC        : not found
+-- PACKAGE: TBB        : /softs/intel/tbb/include
+-- PACKAGE: TBB        : optimized;/softs/intel/tbb/lib/intel64/gcc4.4/libtbb.so;debug;/softs/intel/tbb/lib/intel64/gcc4.4/libtbb_debug.so
+-- PACKAGE: PAPI         : not found
+-- PACKAGE: GoogleProf   : not found
+-- PACKAGE: XML2         : not found
+-- PACKAGE: OpenCV       : not found
+ Enable OpenMP (-DUSE_OMP)
+-- APPLI_LIBS : 
+-- --> APPLI_LIBS : pthread;/softs/boost/1.63.0/lib/libboost_thread.a;/softs/boost/1.63.0/lib/libboost_serialization.a;/softs/boost/1.63.0/lib/libboost_chrono.a;/softs/boost/1.63.0/lib/libboost_system.a;/softs/boost/1.63.0/lib/libboost_program_options.a;/softs/boost/1.63.0/lib/libboost_regex.a;/softs/boost/1.63.0/lib/libboost_filesystem.a;optimized;/softs/intel/tbb/lib/intel64/gcc4.4/libtbb.so;debug;/softs/intel/tbb/lib/intel64/gcc4.4/libtbb_debug.so;/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib/libmpi.so;rt;dl;rt
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build
+make[1]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 11%] Built target helloworld_tbb.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 22%] Built target helloworld_task.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 33%] Built target helloworld_openmp.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 44%] Built target helloworld_stdthread.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 55%] Built target helloworld_mpi.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+Scanning dependencies of target spmv_mpi.exe
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 61%] Building CXX object src/TP2/CMakeFiles/spmv_mpi.exe.dir/spmv_mpi.cpp.o
+[ 66%] Linking CXX executable spmv_mpi.exe
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 66%] Built target spmv_mpi.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 77%] Built target spmv.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 88%] Built target densemv.exe
+make[2]: Entering directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[100%] Built target densemv_mpi.exe
+make[1]: Leaving directory '/home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+Install the project...
+-- Install configuration: "RELEASE"
+-- Up-to-date: /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_stdthread.exe
+-- Up-to-date: /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_openmp.exe
+-- Up-to-date: /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_task.exe
+-- Up-to-date: /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_tbb.exe
+-- Up-to-date: /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_mpi.exe
+-- Installing: /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe
+-- Set runtime path of "/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe" to "/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib"
+-- Up-to-date: /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe
+-- Up-to-date: /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe
+-- Up-to-date: /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
