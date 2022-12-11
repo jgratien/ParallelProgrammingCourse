@@ -1,0 +1,2 @@
+/softs/binutils/2.32/bin/ar qc libmovement_omp.a  CMakeFiles/movement_omp.dir/object.cpp.o
+/softs/binutils/2.32/bin/ranlib libmovement_omp.a

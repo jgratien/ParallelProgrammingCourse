@@ -1,0 +1,2 @@
+/softs/binutils/2.32/bin/ar qc libfruits_omp.a  CMakeFiles/fruits_omp.dir/eco.cpp.o CMakeFiles/fruits_omp.dir/fruit.cpp.o CMakeFiles/fruits_omp.dir/tree.cpp.o
+/softs/binutils/2.32/bin/ranlib libfruits_omp.a

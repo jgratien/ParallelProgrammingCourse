@@ -20,6 +20,16 @@ class CSRMatrix
     CSRMatrix(std::size_t nrows=0)
     : m_nrows(nrows)
     {}
+
+	void initLocal(std::size_t l_nrows, std::size_t l_nnz, std::vector<int>& l_kcol, std::vector<int>& l_cols, std::vector<double>& l_data) {
+			
+			m_nrows = l_nrows;
+			m_nnz = l_nnz;
+			m_kcol = l_kcol;
+			m_cols = l_cols;
+			m_values = l_data;
+	}
+
     virtual ~CSRMatrix(){}
 
     void setChunkSize(int chunk_size)
@@ -35,7 +45,19 @@ class CSRMatrix
       return m_nnz ;
     }
 
-    void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries)
+	double* data() {
+		return m_values.data();
+	}
+
+	int* cols() {
+		return m_cols.data();
+	}
+	
+	int* rowptrs() {
+		return m_kcol.data();
+	}
+    
+	void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries)
     {
       std::vector< std::map<int,double> > rows(nrows) ;
       for( const auto& entry : entries )
@@ -77,12 +99,12 @@ class CSRMatrix
         double value = 0 ;
         for( int k = m_kcol[irow]; k < m_kcol[irow+1];++k)
         {
-          value += m_values[k]*x[m_cols[k]] ;
+			int id = (m_kcol[0] == 0) ? k : k % m_kcol[0];
+			value += m_values[id] * x[m_cols[id]] ;
         }
         y[irow] = value ;
       }
     }
-
 
     void ompmult(VectorType const& x, VectorType& y) const
     {

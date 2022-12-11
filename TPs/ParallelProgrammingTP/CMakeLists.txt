@@ -3,6 +3,10 @@ PROJECT(ParallelProgramming)
 cmake_minimum_required(VERSION 3.7.2)
 cmake_policy(SET CMP0074 NEW)
 
+SET(CMAKE_CXX_STANDARD 17)
+SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(CMAKE_CXX_EXTENSIONS OFF)
+
 
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
@@ -87,6 +91,7 @@ endmacro(GEN_EXE)
 
 ADD_SUBDIRECTORY(${SRC_DIR}/TP1)
 ADD_SUBDIRECTORY(${SRC_DIR}/TP2)
-ADD_SUBDIRECTORY(${SRC_DIR}/life-of-boids-par)
+ADD_SUBDIRECTORY(${SRC_DIR}/life-of-boids-omp)
+ADD_SUBDIRECTORY(${SRC_DIR}/life-of-boids-tbb)
 #ADD_SUBDIRECTORY(${SRC_DIR}/TP3)
 #ADD_SUBDIRECTORY(${SRC_DIR}/TP4)

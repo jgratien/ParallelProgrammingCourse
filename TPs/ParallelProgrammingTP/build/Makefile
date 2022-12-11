@@ -274,17 +274,95 @@ densemv_mpi.exe/fast:
 .PHONY : densemv_mpi.exe/fast
 
 #=============================================================================
-# Target rules for targets named life-of-boids
+# Target rules for targets named life-of-boids-omp
 
 # Build rule for target.
-life-of-boids: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 life-of-boids
-.PHONY : life-of-boids
+life-of-boids-omp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 life-of-boids-omp
+.PHONY : life-of-boids-omp
 
 # fast build rule for target.
-life-of-boids/fast:
-	$(MAKE) -f src/life-of-boids-par/CMakeFiles/life-of-boids.dir/build.make src/life-of-boids-par/CMakeFiles/life-of-boids.dir/build
-.PHONY : life-of-boids/fast
+life-of-boids-omp/fast:
+	$(MAKE) -f src/life-of-boids-omp/CMakeFiles/life-of-boids-omp.dir/build.make src/life-of-boids-omp/CMakeFiles/life-of-boids-omp.dir/build
+.PHONY : life-of-boids-omp/fast
+
+#=============================================================================
+# Target rules for targets named movement_omp
+
+# Build rule for target.
+movement_omp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 movement_omp
+.PHONY : movement_omp
+
+# fast build rule for target.
+movement_omp/fast:
+	$(MAKE) -f src/life-of-boids-omp/movement/CMakeFiles/movement_omp.dir/build.make src/life-of-boids-omp/movement/CMakeFiles/movement_omp.dir/build
+.PHONY : movement_omp/fast
+
+#=============================================================================
+# Target rules for targets named agents_omp
+
+# Build rule for target.
+agents_omp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 agents_omp
+.PHONY : agents_omp
+
+# fast build rule for target.
+agents_omp/fast:
+	$(MAKE) -f src/life-of-boids-omp/movement/agents/CMakeFiles/agents_omp.dir/build.make src/life-of-boids-omp/movement/agents/CMakeFiles/agents_omp.dir/build
+.PHONY : agents_omp/fast
+
+#=============================================================================
+# Target rules for targets named obstacles_omp
+
+# Build rule for target.
+obstacles_omp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 obstacles_omp
+.PHONY : obstacles_omp
+
+# fast build rule for target.
+obstacles_omp/fast:
+	$(MAKE) -f src/life-of-boids-omp/movement/obstacles/CMakeFiles/obstacles_omp.dir/build.make src/life-of-boids-omp/movement/obstacles/CMakeFiles/obstacles_omp.dir/build
+.PHONY : obstacles_omp/fast
+
+#=============================================================================
+# Target rules for targets named fruits_omp
+
+# Build rule for target.
+fruits_omp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 fruits_omp
+.PHONY : fruits_omp
+
+# fast build rule for target.
+fruits_omp/fast:
+	$(MAKE) -f src/life-of-boids-omp/movement/fruits/CMakeFiles/fruits_omp.dir/build.make src/life-of-boids-omp/movement/fruits/CMakeFiles/fruits_omp.dir/build
+.PHONY : fruits_omp/fast
+
+#=============================================================================
+# Target rules for targets named config_omp
+
+# Build rule for target.
+config_omp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 config_omp
+.PHONY : config_omp
+
+# fast build rule for target.
+config_omp/fast:
+	$(MAKE) -f src/life-of-boids-omp/config/CMakeFiles/config_omp.dir/build.make src/life-of-boids-omp/config/CMakeFiles/config_omp.dir/build
+.PHONY : config_omp/fast
+
+#=============================================================================
+# Target rules for targets named life-of-boids-tbb
+
+# Build rule for target.
+life-of-boids-tbb: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 life-of-boids-tbb
+.PHONY : life-of-boids-tbb
+
+# fast build rule for target.
+life-of-boids-tbb/fast:
+	$(MAKE) -f src/life-of-boids-tbb/CMakeFiles/life-of-boids-tbb.dir/build.make src/life-of-boids-tbb/CMakeFiles/life-of-boids-tbb.dir/build
+.PHONY : life-of-boids-tbb/fast
 
 #=============================================================================
 # Target rules for targets named movement
@@ -296,7 +374,7 @@ movement: cmake_check_build_system
 
 # fast build rule for target.
 movement/fast:
-	$(MAKE) -f src/life-of-boids-par/movement/CMakeFiles/movement.dir/build.make src/life-of-boids-par/movement/CMakeFiles/movement.dir/build
+	$(MAKE) -f src/life-of-boids-tbb/movement/CMakeFiles/movement.dir/build.make src/life-of-boids-tbb/movement/CMakeFiles/movement.dir/build
 .PHONY : movement/fast
 
 #=============================================================================
@@ -309,7 +387,7 @@ agents: cmake_check_build_system
 
 # fast build rule for target.
 agents/fast:
-	$(MAKE) -f src/life-of-boids-par/movement/agents/CMakeFiles/agents.dir/build.make src/life-of-boids-par/movement/agents/CMakeFiles/agents.dir/build
+	$(MAKE) -f src/life-of-boids-tbb/movement/agents/CMakeFiles/agents.dir/build.make src/life-of-boids-tbb/movement/agents/CMakeFiles/agents.dir/build
 .PHONY : agents/fast
 
 #=============================================================================
@@ -322,7 +400,7 @@ obstacles: cmake_check_build_system
 
 # fast build rule for target.
 obstacles/fast:
-	$(MAKE) -f src/life-of-boids-par/movement/obstacles/CMakeFiles/obstacles.dir/build.make src/life-of-boids-par/movement/obstacles/CMakeFiles/obstacles.dir/build
+	$(MAKE) -f src/life-of-boids-tbb/movement/obstacles/CMakeFiles/obstacles.dir/build.make src/life-of-boids-tbb/movement/obstacles/CMakeFiles/obstacles.dir/build
 .PHONY : obstacles/fast
 
 #=============================================================================
@@ -335,7 +413,7 @@ fruits: cmake_check_build_system
 
 # fast build rule for target.
 fruits/fast:
-	$(MAKE) -f src/life-of-boids-par/movement/fruits/CMakeFiles/fruits.dir/build.make src/life-of-boids-par/movement/fruits/CMakeFiles/fruits.dir/build
+	$(MAKE) -f src/life-of-boids-tbb/movement/fruits/CMakeFiles/fruits.dir/build.make src/life-of-boids-tbb/movement/fruits/CMakeFiles/fruits.dir/build
 .PHONY : fruits/fast
 
 #=============================================================================
@@ -348,7 +426,7 @@ config: cmake_check_build_system
 
 # fast build rule for target.
 config/fast:
-	$(MAKE) -f src/life-of-boids-par/config/CMakeFiles/config.dir/build.make src/life-of-boids-par/config/CMakeFiles/config.dir/build
+	$(MAKE) -f src/life-of-boids-tbb/config/CMakeFiles/config.dir/build.make src/life-of-boids-tbb/config/CMakeFiles/config.dir/build
 .PHONY : config/fast
 
 # Help Target
@@ -372,7 +450,13 @@ help:
 	@echo "... spmv.exe"
 	@echo "... densemv.exe"
 	@echo "... densemv_mpi.exe"
-	@echo "... life-of-boids"
+	@echo "... life-of-boids-omp"
+	@echo "... movement_omp"
+	@echo "... agents_omp"
+	@echo "... obstacles_omp"
+	@echo "... fruits_omp"
+	@echo "... config_omp"
+	@echo "... life-of-boids-tbb"
 	@echo "... movement"
 	@echo "... agents"
 	@echo "... obstacles"

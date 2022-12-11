@@ -1,0 +1,233 @@
+DEBUT
+Sun Dec 11 18:37:48 CET 2022
+execution sur 24 coeurs
+sur les nodes n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37 n-in37
++ '[' -f /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe ']'
++ '[' -f ']'
++ for np in 16 24
++ for nx in 1000 2000 3000 4000 5000
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -np 16 /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe --nx 1000
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in37
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+[n-in37:29949] [[17834,0],0] ORTE_ERROR_LOG: Data unpack would read past end of buffer in file util/show_help.c at line 513
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in37
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in37:29949] 14 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in37:29949] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in37:29949] 15 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 1000 2000 3000 4000 5000
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -np 16 /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe --nx 2000
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in37
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in37
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in37:30002] 15 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in37:30002] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in37:30002] 15 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 1000 2000 3000 4000 5000
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -np 16 /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe --nx 3000
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in37
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in37
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in37:30056] 15 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in37:30056] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in37:30056] 15 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 1000 2000 3000 4000 5000
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -np 16 /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe --nx 4000
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in37
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in37
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in37:30109] 15 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in37:30109] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in37:30109] 15 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 1000 2000 3000 4000 5000
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -np 16 /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe --nx 5000
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in37
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in37
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in37:30162] 15 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in37:30162] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in37:30162] 15 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for np in 16 24
++ for nx in 1000 2000 3000 4000 5000
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -np 24 /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe --nx 1000
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in37
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in37
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in37:30215] 23 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in37:30215] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in37:30215] 23 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 1000 2000 3000 4000 5000
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -np 24 /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe --nx 2000
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in37
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in37
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in37:30292] 23 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in37:30292] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in37:30292] 23 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 1000 2000 3000 4000 5000
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -np 24 /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe --nx 3000
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in37
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in37
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in37:30369] 23 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in37:30369] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in37:30369] 23 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 1000 2000 3000 4000 5000
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -np 24 /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe --nx 4000
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in37
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in37
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in37:30446] 23 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in37:30446] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in37:30446] 23 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 1000 2000 3000 4000 5000
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -np 24 /home/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe --nx 5000
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in37
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in37
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in37:30523] 23 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in37:30523] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in37:30523] 23 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ date
+Sun Dec 11 18:40:07 CET 2022
++ echo FIN
+FIN

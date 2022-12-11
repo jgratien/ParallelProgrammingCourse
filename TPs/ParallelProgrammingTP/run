@@ -5,12 +5,13 @@
 
 ### indiquer nombre de core et duree max de votre job hh:mm:ss
 #OAR -l core=24,walltime=00:50:00
+#OAR -p nbcores='24' and host='n-in6' or host='n-in7' or host='n-in8' or host='n-in9' or host='n-in10' or host='n-in11' or host='n-in12'
 ### indiquer le nom de votre job
 #OAR -n abhishekp-job
-#OAR -O %jobid%.out
-#OAR -E %jobid%.out
-JOB_DIR=$PWD/oarlogs/%jobid%
-mkdir $JOB_DIR
+#OAR -O oarlogs/%jobid%.out
+#OAR -E oarlogs/%jobid%.out
+JOB_DIR=$PWD/oarlogs
+mkdir -p $JOB_DIR
 ### execution par oar de $MONPROG avec $MYDATA
 ### usage : oarsub -S ./job_exemple.sh
 ### usage : oarsub -l core=32 -S ./job_exemple.sh
@@ -43,12 +44,12 @@ set -x
 
 if [ -f $MONPROG ] ; then
   if [ -f $MYDATA ] ; then
-  for np in 1 2 4 8 12 16 24
+  for np in 16 24
+## 1 2 4 8 12 16 24
   do
-    for nx in 50 100 150 200
+    for nx in 1000 2000 3000 4000 5000
     do
-    #$MPIRUN -np ${np}  $MONPROG --nx $nx > log-NX${nx}-NPI${np}
-    $MPIRUN -np ${np}  $MONPROG > $JOB_DIR/log-NX${nx}-NPI${np}
+    $MPIRUN -np ${np}  $MONPROG --nx ${nx} > $JOB_DIR/log-NX${nx}-NPI${np}
     done
   done
   else

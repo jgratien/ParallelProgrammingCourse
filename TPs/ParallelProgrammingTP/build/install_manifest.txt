@@ -7,4 +7,5 @@
 /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe
 /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe
 /gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
-/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/life-of-boids
+/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/life-of-boids-omp
+/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/life-of-boids-tbb

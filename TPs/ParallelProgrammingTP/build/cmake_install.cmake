@@ -41,7 +41,8 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP1/cmake_install.cmake")
   include("/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/cmake_install.cmake")
-  include("/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/life-of-boids-par/cmake_install.cmake")
+  include("/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/life-of-boids-omp/cmake_install.cmake")
+  include("/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/life-of-boids-tbb/cmake_install.cmake")
 
 endif()
 
