@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     if (argv[2] != NULL) num_birds = std::atoi(argv[2]);
 
     std::string mode;
-    if (argv[2] != NULL) mode = argv[3];
+    if (argv[3] != NULL) mode = argv[3];
 	
     // Agents initialization
     vars::agentWindowVars_t var = initAgentWindow(num_birds);
