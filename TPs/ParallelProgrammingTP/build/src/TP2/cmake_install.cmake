@@ -1,8 +1,8 @@
-# Install script for directory: /work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2
+# Install script for directory: /gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP")
+  set(CMAKE_INSTALL_PREFIX "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,85 +38,113 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  if(EXISTS "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe")
+  if(EXISTS "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe")
     file(RPATH_CHECK
-         FILE "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe"
-         RPATH "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib")
+         FILE "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe"
+         RPATH "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib")
   endif()
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe")
+   "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin" TYPE EXECUTABLE FILES "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/spmv.exe")
-  if(EXISTS "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe")
+file(INSTALL DESTINATION "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin" TYPE EXECUTABLE FILES "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/spmv.exe")
+  if(EXISTS "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe")
     file(RPATH_CHANGE
-         FILE "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe"
-         OLD_RPATH "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/opencv/3.4.7/lib64:"
-         NEW_RPATH "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib")
+         FILE "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe"
+         OLD_RPATH "/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+         NEW_RPATH "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/work/irlin355_1/gratienj/local/eb_new/centos_7/software/Compiler/GCCcore/7.3.0/binutils/2.30/bin/strip" "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe")
+      execute_process(COMMAND "/softs/binutils/2.32/bin/strip" "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv.exe")
     endif()
   endif()
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  if(EXISTS "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe")
+  if(EXISTS "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe")
     file(RPATH_CHECK
-         FILE "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe"
-         RPATH "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib")
+         FILE "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe"
+         RPATH "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib")
   endif()
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe")
+   "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin" TYPE EXECUTABLE FILES "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/densemv.exe")
-  if(EXISTS "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe")
+file(INSTALL DESTINATION "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin" TYPE EXECUTABLE FILES "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/densemv.exe")
+  if(EXISTS "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe")
     file(RPATH_CHANGE
-         FILE "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe"
-         OLD_RPATH "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/opencv/3.4.7/lib64:"
-         NEW_RPATH "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib")
+         FILE "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe"
+         OLD_RPATH "/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+         NEW_RPATH "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/work/irlin355_1/gratienj/local/eb_new/centos_7/software/Compiler/GCCcore/7.3.0/binutils/2.30/bin/strip" "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe")
+      execute_process(COMMAND "/softs/binutils/2.32/bin/strip" "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv.exe")
     endif()
   endif()
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  if(EXISTS "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe")
+  if(EXISTS "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe")
     file(RPATH_CHECK
-         FILE "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe"
-         RPATH "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib")
+         FILE "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe"
+         RPATH "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib")
   endif()
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe")
+   "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin" TYPE EXECUTABLE FILES "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/densemv_mpi.exe")
-  if(EXISTS "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe")
+file(INSTALL DESTINATION "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin" TYPE EXECUTABLE FILES "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/densemv_mpi.exe")
+  if(EXISTS "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe")
     file(RPATH_CHANGE
-         FILE "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe"
-         OLD_RPATH "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/opencv/3.4.7/lib64:"
-         NEW_RPATH "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib")
+         FILE "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe"
+         OLD_RPATH "/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+         NEW_RPATH "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/work/irlin355_1/gratienj/local/eb_new/centos_7/software/Compiler/GCCcore/7.3.0/binutils/2.30/bin/strip" "$ENV{DESTDIR}/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe")
+      execute_process(COMMAND "/softs/binutils/2.32/bin/strip" "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe")
+    endif()
+  endif()
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  if(EXISTS "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe")
+    file(RPATH_CHECK
+         FILE "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe"
+         RPATH "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib")
+  endif()
+  list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
+   "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe")
+  if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  endif()
+  if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  endif()
+file(INSTALL DESTINATION "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin" TYPE EXECUTABLE FILES "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/spmv_mpi.exe")
+  if(EXISTS "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe")
+    file(RPATH_CHANGE
+         FILE "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe"
+         OLD_RPATH "/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+         NEW_RPATH "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib")
+    if(CMAKE_INSTALL_DO_STRIP)
+      execute_process(COMMAND "/softs/binutils/2.32/bin/strip" "$ENV{DESTDIR}/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe")
     endif()
   endif()
 endif()

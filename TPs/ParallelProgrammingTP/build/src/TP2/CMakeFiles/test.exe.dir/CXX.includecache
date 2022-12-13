@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/test.cpp
+stdio.h
+-
+stdlib.h
+-
+mpi.h
+-
+
+/softs/mpi/openmpi-4.0.1/gcc-7.3.0/include/mpi.h
+stddef.h
+-
+mpi_portable_platform.h
+/softs/mpi/openmpi-4.0.1/gcc-7.3.0/include/mpi_portable_platform.h
+openmpi/ompi/mpi/cxx/mpicxx.h
+/softs/mpi/openmpi-4.0.1/gcc-7.3.0/include/openmpi/ompi/mpi/cxx/mpicxx.h
+
+/softs/mpi/openmpi-4.0.1/gcc-7.3.0/include/mpi_portable_platform.h
+omp.h
+/softs/mpi/openmpi-4.0.1/gcc-7.3.0/include/omp.h
+omp.h
+/softs/mpi/openmpi-4.0.1/gcc-7.3.0/include/omp.h
+

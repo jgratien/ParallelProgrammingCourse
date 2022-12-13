@@ -1,0 +1,3 @@
+#!/bin/bash
+
+gcc -o life-of-boids main.cpp config/config.cpp objects/object.cpp objects/agents/agent.cpp objects/agents/bird.cpp objects/agents/predator.cpp objects/obstacles/obstacle.cpp objects/obstacles/fruit.cpp objects/obstacles/tree.cpp objects/obstacles/eco.cpp -lstdc++ -lm -ldl -ltbb -fopenmp -w

@@ -50,14 +50,35 @@ class Timer
         iter->second += value ;
     }
 
-    void printInfo() const {
+    std::vector<double> printInfo() const {
+      std::vector<double> times;
       std::cout<<"================================"<<std::endl ;
       std::cout<<"PERF INFO : "<<std::endl ;
       for(auto const& iter : m_counters)
       {
         std::cout<<iter.first<<":"<<iter.second<<std::endl ;
+        times.push_back(iter.second);
       }
       std::cout<<"================================"<<std::endl ;
+      return times;
+    }
+
+    std::vector<double> times() const {
+        std::vector<double> times;
+        for (auto const& iter : m_counters)
+        {
+            times.push_back(iter.second);
+        }
+        return times;
+    }
+
+    double sum_time() const {
+        double sum_times = 0;
+        for (auto const& iter : m_counters)
+        {
+            sum_times += iter.second;
+        }
+        return sum_times;
     }
 
   private :

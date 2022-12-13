@@ -1,9 +1,3 @@
-/*
- * helloworld.cpp
- *
- *  Created on: Aug 16, 2018
- *      Author: gratienj
- */
 #include <mpi.h>
 #include <iostream>
 #include <boost/lexical_cast.hpp>
@@ -55,7 +49,7 @@ int main(int argc, char** argv)
 
   using namespace PPTP ;
 
-  Timer timer ;
+  Timer timer_seq, timer_mpi, timer_mpi_debug;
   MatrixGenerator generator ;
   int nx = vm["nx"].as<int>() ;
   if(vm["eigen"].as<int>()==1)
@@ -76,15 +70,14 @@ int main(int argc, char** argv)
 
     EigenVectorType y ;
     {
-      Timer::Sentry sentry(timer,"EigenDenseMV") ;
+      // Timer::Sentry sentry(timer,"EigenDenseMV") ;
       y = matrix*x ;
     }
 
     double normy = PPTP::norm2(y) ;
-    std::cout<<"||y||="<<normy<<std::endl ;
+    std::cout<<"||y||="<<normy<<std::endl;
 
   }
-
 
   if(my_rank==0)
   {
@@ -109,85 +102,105 @@ int main(int argc, char** argv)
     for(std::size_t i=0;i<nrows;++i)
       x[i] = i+1 ;
 
+    std::vector<double> y(nrows), z(nrows);
     {
-
-      // SEND GLOBAL SIZE
-
-
-      // SEND MATRIX
-      for (int i=1; i<nb_proc;++i)
-      {
-        std::cout<<" SEND MATRIX DATA to proc "<<i<<std::endl ;
-
-        // SEND LOCAL SIZE to PROC I
-
-        // SEND MATRIX DATA
-      }
+        // SEQUENTIAL MATRIX MULTIPLICATION
+        Timer::Sentry sentry(timer_seq, "Sequential SparseMV");
+        matrix.mult(x, y);
     }
+    double normy = PPTP::norm2(y);
+    std::cout << "||y_SEQ||=" << normy << std::endl;
 
     {
-      // BROAD CAST VECTOR X
-      /* ... */
-    }
+        // MPI DENSE MATRIX MULTIPLICATION
+        MPI_Status status; MPI_Request request;
 
+        double const* matrix_ptr = matrix.data();
+        std::size_t q = nrows / nb_proc; std::size_t r = nrows % nb_proc;
+
+        std::vector<int> displs(nb_proc); std::vector<int> recvcounts(nb_proc);
+        std::vector<int> displs_matrix(nb_proc); std::vector<int> recvcounts_matrix(nb_proc);
+
+        displs[0] = 0; recvcounts[0] = q;
+        displs_matrix[0] = 0; recvcounts_matrix[0] = q*nrows;
+
+        for (int destination = 1; destination < nb_proc; ++destination)
+        {
+            // DISPLACEMENTS & COUNTS FOR EACH PROC
+            std::size_t local_nrows = q; if (destination <= r) local_nrows++;
+            displs[destination] = displs[destination - 1] + recvcounts[destination - 1]; recvcounts[destination] = local_nrows;
+            displs_matrix[destination] = displs_matrix[destination-1] + recvcounts_matrix[destination-1]; recvcounts_matrix[destination] = local_nrows*nrows;
+        }
+
+        // BCAST GLOBAL & LOCAL SIZE
+        MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&q, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&r, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+
+        // BCAST X
+        MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+        {
+            Timer::Sentry sentry(timer_mpi, "MPI DenseMV");
+
+            std::size_t local_nrows(recvcounts[my_rank]);
+            std::vector<double> local_values(local_nrows * nrows);
+
+            // SCATTER DENSE MATRIX DATA
+            MPI_Scatterv(matrix_ptr, recvcounts_matrix.data(), displs_matrix.data(), MPI_DOUBLE, local_values.data(), local_nrows* nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+            // PROC 0
+            std::vector<double> local_y(recvcounts[my_rank]);
+            mult(x, local_y, recvcounts[my_rank], nrows, local_values);
+
+            // GATHER
+            MPI_Gatherv(local_y.data(), recvcounts[my_rank], MPI_DOUBLE, z.data(), recvcounts.data(), displs.data(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+        }
+
+        double normz = PPTP::norm2(z);
+        std::cout << "||y_MPI||=" << normz << std::endl;
+    }
+    
+    // TIME OUTPUT
+    std::ofstream outfile;
+    outfile.open("time.txt", std::ios_base::app);
+    if (nb_proc == 1 && nx == 50)
     {
-      std::vector<double> y(nrows);
-      {
-        Timer::Sentry sentry(timer,"DenseMV") ;
-        matrix.mult(x,y) ;
-      }
-      double normy = PPTP::norm2(y) ;
-      std::cout<<"||y||="<<normy<<std::endl ;
+        outfile << "nx	" << "np	" << "Time_MPI	" << "Time_SEQ	" << "Speed_Up" << std::endl;
     }
+    outfile << nx << "	" << nb_proc << "	" << timer_mpi.sum_time() << "	" << timer_seq.sum_time() << "	" << timer_seq.sum_time() / timer_mpi.sum_time() << std::endl;
 
-
-    // COMPUTE LOCAL MATRICE LOCAL VECTOR ON PROC 0
-    DenseMatrix local_matrix ;
-    std::size_t local_nrows ;
-
-    {
-      // EXTRACT LOCAL DATA FROM MASTER PROC
-
-      // COMPUTE LOCAL SIZE
-
-      // EXTRACT LOCAL MATRIX DATA
-    }
-
-    std::vector<double> local_y(local_nrows);
-    {
-      // compute parallel SPMV
-    }
   }
   else
   {
-    // COMPUTE LOCAL MATRICE LOCAL VECTOR
+    // SLAVE PROC
+    MPI_Status status; MPI_Request request;
+    std::size_t nrows, local_nrows, r;
+    int source = 0;
 
-    DenseMatrix local_matrix ;
-    std::size_t nrows ;
-    std::size_t local_nrows ;
+    // RECEIVE GLOBAL & LOCAL SIZE
+    MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&local_nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&r, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+    if (my_rank <= r) local_nrows++;
 
-    {
-      // RECV DATA FROM MASTER PROC
+    // RECEIVE X
+    std::vector<double> x(nrows);
+    MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-      // RECV GLOBAL SIZE
+    // RECEIVE DENSE MATRIX DATA
+    std::vector<double> local_values(nrows*local_nrows);
+    MPI_Scatterv(NULL, NULL, NULL, MPI_DOUBLE, local_values.data(), nrows*local_nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-      // RECV LOCAL SIZE
-
-      // RECV MATRIX DATA
-    }
-
-    std::vector<double> x;
-    {
-      // BROAD CAST VECTOR X
-      /* ... */
-    }
-
+    // COMPUTE LOCAL PRODUCT
     std::vector<double> local_y(local_nrows);
-    {
-      // compute parallel SPMV
-    }
+    mult(x, local_y, local_nrows, nrows, local_values);
 
+    // GATHER DATA
+    MPI_Gatherv(local_y.data(), local_nrows, MPI_DOUBLE, NULL, NULL, NULL, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   }
-  timer.printInfo() ;
+  
+  MPI_Finalize() ;
+  
   return 0 ;
 }

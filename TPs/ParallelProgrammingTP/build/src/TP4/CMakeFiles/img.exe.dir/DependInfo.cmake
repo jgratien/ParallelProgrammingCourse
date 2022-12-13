@@ -4,12 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP4/img.cpp" "/work/irlin355_1/gratienj/ParallelProgrammingCourse/GIT/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP4/CMakeFiles/img.exe.dir/img.cpp.o"
+  "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP4/img.cpp" "/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP4/CMakeFiles/img.exe.dir/img.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
+  "USE_EIGEN3"
   "USE_OMP"
   "USE_OPENCV"
   "USE_TBB"
@@ -19,10 +20,12 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/work/irlin355_1/gratienj/local/eb_new/centos_7/software/Compiler/GCC/7.3.0-2.30/impi/2018.3.222/include"
+  "/softs/mpi/openmpi-4.0.1/gcc-7.3.0/include"
+  "/softs/boost/1.63.0/include"
+  "../contrib/eigen/3.4/include"
   "../src"
-  "../contrib/opencv/3.4.7/include"
-  "../contrib/opencv/3.4.7/include/opencv"
+  "/home/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/opencv/3.4.7/include"
+  "/home/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/opencv/3.4.7/include/opencv"
   )
 
 # Targets to which this target links.

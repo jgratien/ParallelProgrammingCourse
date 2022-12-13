@@ -12,13 +12,10 @@
 
 ### execution par oar de $MONPROG avec $MYDATA
 ### usage : oarsub -S ./job_exemple.sh
-### usage : oarsub -l core=32 -S ./job_exemple.sh
+### usage : oarsub -l core=32,walltime=00:00:60 -S ./run 
 
 ### indiquer votre executable
-MONPROG=/gext/jean-marc.gratien/ParallelProgrammingTP/bin/densemv_mpi.exe
-### indiquer votre fichier de donnees
-MYDATA=
-
+MONPROG=/gext/ugo.pelissier/UE3-HPC/CPU/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
 
 ### en execution standand, rien a changer ci-apres
 
@@ -26,34 +23,32 @@ echo DEBUT
 date
 
 NP=$(cat $OAR_NODE_FILE | wc -l)
-echo execution sur $NP coeurs
-echo sur les nodes $(cat $OAR_NODE_FILE)
+#echo Execution sur $NP coeurs
+#echo sur les nodes $(cat $OAR_NODE_FILE)
 
 #MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun \
 #  -n $NP \
 #  -machinefile $OAR_NODE_FILE "
- 
-MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun"
 
-set -x
-export OMP_NUM_THREADS=1
+#MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun"
+MPIRUN="/softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun"
+
+#set -x
+#export OMP_NUM_THREADS=1
 
 if [ -f $MONPROG ] ; then
-  if [ -f $MYDATA ] ; then
-  for np in 1 2 4 8 12 16 24
+  for nx in 50 100 150 200
   do
-    for nx in 50 100 150 200
+    for np in 1 2 4 8 12 16 24
     do
-    $MPIRUN -np ${np}  $MONPROG --nx $nx > log-NX${nx}-NPI${np}
+	echo 
+	echo MPIRUN -$np --$nx
+	$MPIRUN -np $np  $MONPROG --nx $nx # > log-NX${nx}-NPI${np}
     done
   done
-  else
-    echo "ERREUR : data $MYDATA inexistant !!"
-  fi
 else
    echo "ERREUR : programme $MONPROG inexistant !!"
 fi
-
 
 date
 echo FIN

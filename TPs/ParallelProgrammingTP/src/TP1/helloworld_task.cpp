@@ -43,25 +43,24 @@ int main(int argc, char** argv)
   std::cout<<"NB AVAILABLE_THREADS :"<<nb_available_threads<<std::endl ;
   {
     PPTP::Timer::Sentry sentry(timer,"HelloWord") ;
-    //#pragma CREATE PARALLEL SECTION
+    #pragma omp parallel
     {
-      //#pragma CREATE SINGLE SECTION
+	  int id = omp_get_thread_num();
+      #pragma omp single
       {
-        int id = 0;
-        int nb_threads = 1;
         std::cout<<"Thread ( th_id="<<id<<", nb_th="<<nb_threads<<") create "<<nb_tasks<<" tasks"<<std::endl ;
         for(int itask=0;itask<nb_tasks;++itask)
         {
-          //#pragma CREATE TASK
+          #pragma omp task
           {
-            int id =0;  //GET THREAD ID
-            sleep(itask) ;
+            int id = omp_get_thread_num();
+            sleep(id) ;
             std::cout<<"Hello World (task_id="<<itask<<" th_id="<<id<<")"<<std::endl ;
           }
         }
-        //#pragma WAIT THAT ALL TASK ARE FINISHED
-        std::cout<<"Thread (th_id="<<id<<",nb_th="<<nb_threads<<") all tasks are executed"<<std::endl ;
-      }
+	  }
+      #pragma omp taskwait
+      std::cout<<"Thread (th_id="<<id<<",nb_th="<<nb_threads<<") all tasks are executed"<<std::endl ;
     }
   }
   timer.printInfo() ;

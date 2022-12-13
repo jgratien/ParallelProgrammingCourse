@@ -108,7 +108,6 @@ int main(int argc, char** argv)
       generator.genLaplacian(nx,matrix) ;
     }
 
-
     std::size_t nrows = matrix.nrows();
     std::vector<double> x,y,y2 ;
     x.resize(nrows) ;

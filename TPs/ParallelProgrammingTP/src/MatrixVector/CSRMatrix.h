@@ -20,6 +20,11 @@ class CSRMatrix
     CSRMatrix(std::size_t nrows=0)
     : m_nrows(nrows)
     {}
+
+    CSRMatrix(std::size_t nrows, std::size_t nnz, std::vector<int> kcol, std::vector<int> cols, std::vector<double> values)
+        : m_nrows(nrows), m_nnz(nnz), m_kcol(kcol), m_cols(cols), m_values(values)
+    {}
+
     virtual ~CSRMatrix(){}
 
     void setChunkSize(int chunk_size)
@@ -31,8 +36,32 @@ class CSRMatrix
       return m_nrows ;
     }
 
+    std::vector<int> kcol() const {
+        return m_kcol;
+    }
+
+    std::vector<int> cols() const {
+        return m_cols;
+    }
+
     std::size_t nnz() const {
       return m_nnz ;
+    }
+
+    std::vector<double> values() {
+        return m_values;
+    }
+
+    double* data() {
+        return m_values.data();
+    }
+
+    int* data_cols() {
+        return m_cols.data();
+    }
+
+    int* data_kcol() {
+        return m_kcol.data();
     }
 
     void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries)
@@ -75,7 +104,7 @@ class CSRMatrix
       for(std::size_t irow =0; irow<m_nrows;++irow)
       {
         double value = 0 ;
-        for( int k = m_kcol[irow]; k < m_kcol[irow+1];++k)
+        for( int k = (m_kcol[irow] - m_kcol[0]); k <( m_kcol[irow+1] - m_kcol[0]);++k)
         {
           value += m_values[k]*x[m_cols[k]] ;
         }
@@ -83,6 +112,20 @@ class CSRMatrix
       }
     }
 
+    void mult(VectorType const& x, VectorType& y, size_t const& min, size_t const& max) const
+    {
+      assert(x.size()>=m_nrows) ;
+      assert(y.size()>=m_nrows) ;
+      for(std::size_t irow=min; irow<max;++irow)
+      {
+        double value = 0 ;
+        for( int k = (m_kcol[irow] - m_kcol[0]); k <( m_kcol[irow+1] - m_kcol[0]);++k)
+        {
+          value += m_values[k]*x[m_cols[k]] ;
+        }
+        y[irow] = value ;
+      }
+    }
 
     void ompmult(VectorType const& x, VectorType& y) const
     {
@@ -110,6 +153,19 @@ class CSRMatrix
 
     int m_chunk_size = 1 ;
 };
+
+void mult(std::vector<double> const& x, std::vector<double> &y, std::size_t const& nrows, std::vector<int> const& kcol, std::vector<int> const& cols, std::vector<double> const& values)
+{
+	for(int irow=0; irow<nrows; ++irow)
+	{
+		double value=0;
+		for(int k=(kcol[irow]-kcol[0]); k<(kcol[irow+1]-kcol[0]); ++k)
+		{
+			value += values[k]*x[cols[k]];
+		}
+		y[irow]=value;
+	}
+}
 
 } /* namespace PPTP */
 
