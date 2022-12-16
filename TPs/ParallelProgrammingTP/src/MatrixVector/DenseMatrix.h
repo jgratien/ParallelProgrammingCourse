@@ -107,17 +107,17 @@ namespace PPTP
       void mult(VectorType const& x, VectorType& y) const
       {
         assert(x.size()>=m_nrows) ;
-        assert(y.size()>=m_nrows) ;
+        assert(y.size()>=m_ncols) ;
         double const* matrix_ptr = m_values.data() ;
         for(std::size_t irow =0; irow<m_nrows;++irow)
         {
           double value = 0 ;
-          for(std::size_t jcol =0; jcol<m_nrows;++jcol)
+          for(std::size_t jcol =0; jcol<m_ncols;++jcol)
           {
             value += matrix_ptr[jcol]*x[jcol] ;
           }
           y[irow] = value ;
-          matrix_ptr += m_nrows ;
+          matrix_ptr += m_ncols;
         }
       }
 

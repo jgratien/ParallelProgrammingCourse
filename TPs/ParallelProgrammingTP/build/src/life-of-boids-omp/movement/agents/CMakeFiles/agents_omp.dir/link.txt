@@ -1,2 +1,0 @@
-/softs/binutils/2.32/bin/ar qc libagents_omp.a  CMakeFiles/agents_omp.dir/agent.cpp.o CMakeFiles/agents_omp.dir/bird.cpp.o CMakeFiles/agents_omp.dir/predator.cpp.o
-/softs/binutils/2.32/bin/ranlib libagents_omp.a

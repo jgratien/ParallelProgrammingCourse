@@ -1,2 +1,0 @@
-/softs/binutils/2.32/bin/ar qc libconfig_omp.a  CMakeFiles/config_omp.dir/config.cpp.o
-/softs/binutils/2.32/bin/ranlib libconfig_omp.a

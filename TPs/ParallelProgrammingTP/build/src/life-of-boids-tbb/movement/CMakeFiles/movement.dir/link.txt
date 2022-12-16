@@ -1,2 +1,0 @@
-/softs/binutils/2.32/bin/ar qc libmovement.a  CMakeFiles/movement.dir/object.cpp.o
-/softs/binutils/2.32/bin/ranlib libmovement.a

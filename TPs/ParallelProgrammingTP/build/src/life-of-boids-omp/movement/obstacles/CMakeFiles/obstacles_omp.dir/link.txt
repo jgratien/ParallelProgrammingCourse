@@ -1,2 +1,0 @@
-/softs/binutils/2.32/bin/ar qc libobstacles_omp.a  CMakeFiles/obstacles_omp.dir/obstacle.cpp.o
-/softs/binutils/2.32/bin/ranlib libobstacles_omp.a

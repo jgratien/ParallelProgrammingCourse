@@ -21,13 +21,13 @@ class CSRMatrix
     : m_nrows(nrows)
     {}
 
-	void initLocal(std::size_t l_nrows, std::size_t l_nnz, std::vector<int>& l_kcol, std::vector<int>& l_cols, std::vector<double>& l_data) {
+	void initLocal(std::size_t l_nrows, std::size_t l_nnz, std::vector<int>&& l_kcol, std::vector<int>&& l_cols, std::vector<double>&& l_data) {
 			
 			m_nrows = l_nrows;
 			m_nnz = l_nnz;
-			m_kcol = l_kcol;
-			m_cols = l_cols;
-			m_values = l_data;
+			m_kcol = std::move(l_kcol);
+			m_cols = std::move(l_cols);
+			m_values = std::move(l_data);
 	}
 
     virtual ~CSRMatrix(){}

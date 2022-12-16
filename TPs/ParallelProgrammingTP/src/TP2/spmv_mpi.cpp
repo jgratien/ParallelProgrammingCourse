@@ -24,15 +24,9 @@
 
 #include "Utils/Timer.h"
 /*
-SpMV using MPI
-
-1. Initialize Matrix and Vector X on 0th rank
-2. Scatter Matrix values and Vector values to different ranks
-3. Compute spmv on all ranks
-4. 0th rank should wait for others to finish
-5. Gather all results on 
-*/
-
+ * I have removed some parts of the code that were not being used for this exercise
+ * 
+ */
 int main(int argc, char** argv) {
 	
 	using namespace boost::program_options ;
@@ -54,6 +48,9 @@ int main(int argc, char** argv) {
 	int* cols;
 	int* ptrs;
 	double* data;
+	std::stringstream ss;
+
+	MPI_Request req1, req2, req3, req4, req5;
 
     MPI_Init( & argc, & argv);
 
@@ -61,8 +58,7 @@ int main(int argc, char** argv) {
     int nb_proc = 1;
     
 	MPI_Comm_size(MPI_COMM_WORLD, & nb_proc);
-    MPI_Comm_rank(MPI_COMM_WORLD, & my_rank);
-	
+    MPI_Comm_rank(MPI_COMM_WORLD, & my_rank);	
 	using namespace PPTP ;
 
 //================COMMON VARS==================	
@@ -73,7 +69,6 @@ int main(int argc, char** argv) {
 	CSRMatrix matrix; // only for rank 0 to generate data
 	std::vector<double> local_data, x, local_y, y;
 	std::vector<int> local_ptrs, local_cols;
-
 	int* displs_1 = new int[nb_proc];
 	int* scounts_1 = new int[nb_proc];
 	int* displs_2 = new int[nb_proc];
@@ -81,41 +76,41 @@ int main(int argc, char** argv) {
 
 	Timer timer;
 	double mpi_st, mpi_end;
+	
 //================COMMON VARS==================	
 	if (my_rank == 0) {
-
+//===================INIT======================
 			MatrixGenerator generator ;
 			// Generate data
 			int nx = vm["nx"].as<int>() ;
 			generator.genLaplacian(nx, matrix) ;
 			nrows = matrix.nrows();
-			
-			x.resize(nrows);
-			y.resize(nrows);
-			for(std::size_t i=0;i<nrows;++i)
-				x[i] = i + 1;
-
-			{
-			  Timer::Sentry sentry(timer,"time spmv") ;
-			  matrix.mult(x, y) ;
-			}
-			double normy = PPTP::norm2(y);
-			std::cout<<"||seq_y||="<<normy<<std::endl;
-
-			mpi_st = MPI_Wtime();	
-			// broadcast vector X and its size	
-			MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
-			MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-			
 			data = matrix.data();
 			ptrs = matrix.rowptrs();
 			cols = matrix.cols();
 			std::size_t nnz = matrix.nnz();
-			
+
+			x.resize(nrows);
+			y.resize(nrows);
+
+			for(std::size_t i=0;i<nrows;++i)
+				x[i] = i + 1;
+//===================INIT======================
+
+//===================SEQ=======================
+			{
+			  Timer::Sentry sentry(timer,"SparseMV") ;
+			  matrix.mult(x, y) ;
+			}
+			double normy = PPTP::norm2(y);
+			std::cout<<"||seq_y||="<<normy<<std::endl;
+			timer.printInfo();
+//===================SEQ=======================
+
+//===========MPI START but even rank 0 starts the clock at the broadcast on line 140============================			
 			// p1 and p2 are helping with load balancing aspect for nnz	
 			int p1 = 0, p2 = p1 + 1, ulim_local_nnz = (int) nnz / nb_proc;
-
+			
 			// find displacements and strides for each rank and send the count of row pointers that are selected
 			for (int i=1; i<nb_proc; ++i) {
 
@@ -128,8 +123,9 @@ int main(int argc, char** argv) {
 				displs_2[i] = ptrs[p1];
 				scounts_2[i] = l_nnz;
 				p1 = p2 - 1;
-				MPI_Send(&scounts_1[i], 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+				MPI_Isend(&scounts_1[i], 1, MPI_INT, i, 0, MPI_COMM_WORLD, &req3);
 			}
+
 			// assign remaining work to the rank 0 itself
 			displs_1[0] = p1;
 			scounts_1[0] =  (nrows + 1) - p1;
@@ -138,50 +134,60 @@ int main(int argc, char** argv) {
 			local_nptrs = scounts_1[0];
 			local_nnz = scounts_2[0];
 
-	}
-	else {
-			// receive broadcasted vector X and its size
-			MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
-			x.resize(nrows);	
-			MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-			// receive the local number of offests or row pointers
-			MPI_Recv(&local_nptrs, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 	}
-	
+	else {
+			// receive the local number of offests or row pointers
+			MPI_Irecv(&local_nptrs, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &req3);
+	}
+
+//============================================================ALL RANKS==============================================================
+	MPI_Barrier(MPI_COMM_WORLD);
+	mpi_st = MPI_Wtime();
+	// broadcast vector X and its size
+	MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+	x.resize(nrows);
+	MPI_Ibcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD, &req2);
 	// scatter CSR to all ranks
+	if (my_rank != 0)
+		MPI_Wait(&req3, MPI_STATUS_IGNORE);
 	local_ptrs.resize(local_nptrs);
+	
 	MPI_Scatterv(ptrs, scounts_1, displs_1, MPI_INT, local_ptrs.data(), local_nptrs, MPI_INT, 0, MPI_COMM_WORLD);
 	
 	// compute local_nnz
  	local_nnz = local_ptrs[local_nptrs - 1] - local_ptrs[0];
-	local_cols.resize(local_nnz);
-	local_data.resize(local_nnz);
 	// scatter column indices and data to all ranks
-	MPI_Scatterv(cols, scounts_2, displs_2, MPI_INT, local_cols.data(), local_nnz, MPI_INT, 0, MPI_COMM_WORLD);
-	MPI_Scatterv(data, scounts_2, displs_2, MPI_DOUBLE, local_data.data(), local_nnz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-
-//===================LOCAL SPMV=====================
-
-	local_matrix.initLocal(local_nptrs-1, local_nnz, local_ptrs, local_cols, local_data);
+	// Note that I am using a non-blocking calls below to resize the vectors while data is being received.
+	local_cols.resize(local_nnz);
+	MPI_Iscatterv(cols, scounts_2, displs_2, MPI_INT, local_cols.data(), local_nnz, MPI_INT, 0, MPI_COMM_WORLD, &req4);
+	local_data.resize(local_nnz);
+	MPI_Iscatterv(data, scounts_2, displs_2, MPI_DOUBLE, local_data.data(), local_nnz, MPI_DOUBLE, 0, MPI_COMM_WORLD, &req5);
+//===================LOCAL SPMV=====================	
+	MPI_Wait(&req4, MPI_STATUS_IGNORE);
+	MPI_Wait(&req5, MPI_STATUS_IGNORE);
+	// I created a new function called initLocal() for applying the move semantics to the data without copying it
+	local_matrix.initLocal(local_nptrs-1, local_nnz, std::move(local_ptrs), std::move(local_cols), std::move(local_data));
 	local_y.resize(local_nptrs-1);
-	std::stringstream ss;
-	ss << "time spmv (rank " << my_rank << ") ";
-	{
-		Timer::Sentry sentry(timer, ss.str()) ;
-		local_matrix.mult(x, local_y);
-	}
-	timer.printInfo();
+	if (my_rank != 0)
+		MPI_Wait(&req2, MPI_STATUS_IGNORE);
+
+	local_matrix.mult(x, local_y);
+
 //===================LOCAL SPMV=====================
 	
-	// gather the results back	
-	MPI_Gatherv(local_y.data(), local_y.size(), MPI_DOUBLE, y.data(), scounts_1, displs_1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	
+	// gather the results back
+	MPI_Gatherv(local_y.data(), local_nptrs-1, MPI_DOUBLE, y.data(), scounts_1, displs_1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	// I am calling MPI_Barrier as a sanity check even though Gatherv above is a blocking call to all MPI ranks.
+	// still Rank 0 does not obtain the Maximum elapsed time.
+	MPI_Barrier(MPI_COMM_WORLD);
+	mpi_end = MPI_Wtime();
+//============================================================ALL RANKS==============================================================	
 	if (my_rank == 0) {
-		mpi_end = MPI_Wtime();
+		
 		double normy = PPTP::norm2(y);
 		std::cout<<"||mpi_y||=" << normy << std::endl;
+		std::cout << "SparseMVMPI:" << (mpi_end - mpi_st) << std::endl;
 	}
 	
 	// finalize
@@ -189,12 +195,8 @@ int main(int argc, char** argv) {
 	delete[] scounts_1;
 	delete[] displs_2;
 	delete[] scounts_2;
-	
+
 	MPI_Finalize();
 	
-	if (my_rank == 0) {
-		timer.printInfo();
-		std::cout << "time spmv mpi: " << (mpi_end - mpi_st) << std::endl;
-	}
 	return 0;
 }	
