@@ -1,0 +1,42 @@
+#!/bin/bash
+### script pour executer des jobs sur Cluster Cemef
+### [ 04/2019 ]
+
+### indiquer nombre de core et duree max de votre job hh:mm:ss
+#OAR -l core=24,walltime=00:50:00
+### indiquer le nom de votre job
+#OAR -n abhishekp-job
+#OAR -O oarlogs/%jobid%.out
+#OAR -E oarlogs/%jobid%.out
+
+### execution par oar de $MONPROG avec $MYDATA
+### usage : oarsub -S ./job_exemple.sh
+### usage : oarsub -l core=32 -S ./job_exemple.sh
+### indiquer votre executable
+## MONPROG=$PWD/bin/densemv_mpi.exe
+# MONPROG=/gext/jean-marc.gratien/ParallelProgrammingTP/bin/densemv_mpi.exe
+### indiquer votre fichier de donnees
+##CSV_PATH=/gext/abhishek.purandare/ue3/ParallelProgrammingCourse/TPs/ParallelProgramming/results
+##mkdir -p $CSV_PATH
+### en execution standand, rien a changer ci-apres
+
+echo DEBUT
+date
+
+NP=$(cat $OAR_NODE_FILE | wc -l)
+echo execution sur $NP coeurs
+echo sur les nodes $(cat $OAR_NODE_FILE)
+
+for np in 1 2 4 8 12 16 24
+do
+  for nx in 256 512 1024 2048 4096 8192
+  do
+    for m in 1 2 3
+    do
+      ./bin/life-of-boids --nb-threads ${np} --nb-birds ${nx} --method ${m}
+    done
+  done
+done
+
+date
+echo FIN

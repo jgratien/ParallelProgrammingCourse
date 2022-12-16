@@ -1,0 +1,2 @@
+/softs/binutils/2.32/bin/ar qc libconfig.a CMakeFiles/config.dir/config.cpp.o
+/softs/binutils/2.32/bin/ranlib libconfig.a
