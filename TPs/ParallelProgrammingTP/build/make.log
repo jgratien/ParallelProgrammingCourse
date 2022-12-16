@@ -1,0 +1,68 @@
+make[1]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[  5%] Built target helloworld_tbb.exe
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 11%] Built target helloworld_task.exe
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 17%] Built target helloworld_openmp.exe
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 22%] Built target helloworld_stdthread.exe
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 28%] Built target helloworld_mpi.exe
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 34%] Built target spmv_mpi.exe
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 40%] Built target densemv_mpi.exe
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 45%] Built target lu.exe
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 51%] Built target wave.exe
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+Scanning dependencies of target config
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 54%] Building CXX object src/software-engineering-project/config/CMakeFiles/config.dir/config.cpp.o
+[ 57%] Linking CXX static library libconfig.a
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 57%] Built target config
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 68%] Built target fruits
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 80%] Built target agents
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 85%] Built target obstacles
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 91%] Built target movement
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Entering directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 94%] Linking CXX executable life-of-boids
+make[2]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[100%] Built target life-of-boids
+make[1]: Leaving directory '/home/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+Install the project...
+-- Install configuration: "RELEASE"
+-- Up-to-date: /gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_stdthread.exe
+-- Up-to-date: /gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_openmp.exe
+-- Up-to-date: /gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_task.exe
+-- Up-to-date: /gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_tbb.exe
+-- Up-to-date: /gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/helloworld_mpi.exe
+-- Up-to-date: /gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/spmv_mpi.exe
+-- Up-to-date: /gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/densemv_mpi.exe
+-- Up-to-date: /gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/lu.exe
+-- Up-to-date: /gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/wave.exe
+-- Installing: /gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/life-of-boids
+-- Set runtime path of "/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/life-of-boids" to "/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/lib:/softs/mpi/openmpi-4.0.1/gcc-7.3.0/lib"

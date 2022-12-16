@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/software-engineering-project/config/config.h
+cstdio
+-
+array
+-
+cmath
+-
+chrono
+-
+
+/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/software-engineering-project/movement/object.h
+vector
+-
+unordered_map
+-
+algorithm
+-
+array
+-
+cmath
+-
+iomanip
+-
+iostream
+-
+random
+-
+../config/config.h
+/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/software-engineering-project/config/config.h
+
+/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/software-engineering-project/movement/obstacles/obstacle.cpp
+obstacle.h
+/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/software-engineering-project/movement/obstacles/obstacle.h
+
+/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/software-engineering-project/movement/obstacles/obstacle.h
+../object.h
+/gext/thomas.bancel/ue3/parallel_cpu/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/software-engineering-project/movement/object.h
+
