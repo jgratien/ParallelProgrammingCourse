@@ -50,8 +50,12 @@ int main(int argc, char** argv)
 
   {
     PPTP::Timer::Sentry sentry(timer,"HelloWord") ;
+	task_group g;
     for(std::size_t i=0;i<nb_threads;++i)
-      print_hello(i,nb_threads);
+		g.run([&]{print_hello(i,nb_threads);});
+      //print_hello(i,nb_threads);
+  
+	
 
     // USE TBB to call print info in parallel
   }

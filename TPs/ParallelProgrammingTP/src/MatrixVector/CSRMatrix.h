@@ -34,6 +34,18 @@ class CSRMatrix
     std::size_t nnz() const {
       return m_nnz ;
     }
+	
+	std::vector<int> kcol() const {
+		return m_kcol;
+	}
+
+	std::vector<int> col() const {
+		return m_cols;
+	}
+	
+	std::vector<double> val() {
+		return m_values;
+	}
 
     void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries)
     {
@@ -82,6 +94,21 @@ class CSRMatrix
         y[irow] = value ;
       }
     }
+	
+	void mult2(VectorType const& x, VectorType& y, std::size_t& nb_row) const
+    {
+      assert(x.size()>=nb_row) ;
+      assert(y.size()>=nb_row) ;
+      for(std::size_t irow =0; irow<nb_row;++irow)
+      {
+        double value = 0 ;
+        for( int k = (m_kcol[irow] - m_kcol[0]); k < (m_kcol[irow+1] - m_kcol[0]);++k)
+        {
+          value += m_values[k]*x[m_cols[k]] ;
+        }
+        y[irow] = value ;
+      }
+    }
 
 
     void ompmult(VectorType const& x, VectorType& y) const
@@ -92,6 +119,34 @@ class CSRMatrix
          // todo OPENMP
       }
     }
+	
+	void print_spmv(std::size_t number_row) {
+		std::size_t indice = 0;
+		for(std::size_t i =0; i<number_row; i++) {
+			std::size_t number_in_line = m_kcol[i] - m_kcol[i+1];
+			for(std::size_t j=0;j<m_nrows;j++){
+				if(number_in_line == 0){
+					std::cout<<"0 ";
+				}
+				if(number_in_line != 0 && m_cols[indice] == j) {
+					std::cout<<m_values[indice]<< " ";
+					indice = indice +1;
+				}
+				else{
+					std::cout<<"0 ";
+				}
+			}
+			std::cout<<"\n";
+		}
+	}
+	
+	void set_value(std::vector<int> const& row_list, std::vector<int> const& col_list, std::vector<double> const& val_list, std::size_t nb_col){
+		m_kcol = row_list;
+		m_cols = col_list;
+		m_values = val_list;
+		m_nrows = nb_col;
+	}
+	
   private:
     // number of lines
     std::size_t         m_nrows = 0;

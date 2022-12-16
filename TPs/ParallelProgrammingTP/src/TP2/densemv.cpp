@@ -4,15 +4,16 @@
  *  Created on: Aug 16, 2018
  *      Author: gratienj
  */
-
-#include <iostream>
 #include <boost/lexical_cast.hpp>
+#include <iostream>
+
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include "omp.h"
 #include "tbb/tbb.h"
+
 
 #include <string>
 #include <vector>

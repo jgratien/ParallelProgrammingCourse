@@ -117,6 +117,9 @@ int main(int argc, char** argv)
 
     for(std::size_t i=0;i<nrows;++i)
       x[i] = i+1 ;
+  
+  // print matrix
+	matrix.print_spmv();
 
     {
       Timer::Sentry sentry(timer,"SpMV") ;
