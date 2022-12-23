@@ -58,6 +58,7 @@ int main(int argc, char** argv)
   Timer timer ;
   MatrixGenerator generator ;
   int nx = vm["nx"].as<int>() ;
+
   if(vm["eigen"].as<int>()==1)
   {
     typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> EigenMatrixType ;
@@ -84,8 +85,7 @@ int main(int argc, char** argv)
     std::cout<<"||y||="<<normy<<std::endl ;
 
   }
-
-
+  
   if(my_rank==0)
   {
     DenseMatrix matrix ;
@@ -101,6 +101,7 @@ int main(int argc, char** argv)
       generator.genLaplacian(nx,matrix) ;
     }
 
+    std::cout<<"DENSEMV MPI with np="<<nb_proc<<" and nx="<<nx<<std::endl;
 
     std::size_t nrows = matrix.nrows();
     std::vector<double> x;
@@ -110,53 +111,115 @@ int main(int argc, char** argv)
       x[i] = i+1 ;
 
     {
+      Timer::Sentry sentry(timer,"Sequential DenseMV");
 
-      // SEND GLOBAL SIZE
-
-
-      // SEND MATRIX
-      for (int i=1; i<nb_proc;++i)
-      {
-        std::cout<<" SEND MATRIX DATA to proc "<<i<<std::endl ;
-
-        // SEND LOCAL SIZE to PROC I
-
-        // SEND MATRIX DATA
-      }
-    }
-
-    {
-      // BROAD CAST VECTOR X
-      /* ... */
-    }
-
-    {
       std::vector<double> y(nrows);
       {
-        Timer::Sentry sentry(timer,"DenseMV") ;
         matrix.mult(x,y) ;
       }
+	  
+      /*
+      printf("\nSequential - Vector Y\n\n");
+      for (std::size_t i = 0; i<nrows; i++) {
+	    std::cout << y[i] << std::endl ;
+	  }
+      std::cout << std::endl ;
+      */
       double normy = PPTP::norm2(y) ;
-      std::cout<<"||y||="<<normy<<std::endl ;
+      std::cout<<"Sequential ||y||="<<normy<<std::endl ;
+	  	
     }
-
-
-    // COMPUTE LOCAL MATRICE LOCAL VECTOR ON PROC 0
-    DenseMatrix local_matrix ;
-    std::size_t local_nrows ;
 
     {
-      // EXTRACT LOCAL DATA FROM MASTER PROC
 
-      // COMPUTE LOCAL SIZE
+      Timer::Sentry sentry(timer,"MPI DenseMV") ;
+      {
 
-      // EXTRACT LOCAL MATRIX DATA
+	// SEND GLOBAL SIZE
+	MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
+	
+	std::size_t local_nrows = nrows/nb_proc ;
+	  
+	// SEND MATRIX
+	for (int destination=1; destination<nb_proc;++destination)
+	  {
+	    //std::cout<<" SEND MATRIX DATA to proc "<<destination<<std::endl ;
+
+	    // SEND LOCAL SIZE to PROC I
+	    MPI_Send(&local_nrows, 1, MPI_UNSIGNED_LONG, destination, 0, MPI_COMM_WORLD) ;
+
+	    // SEND MATRIX DATA
+	    std::size_t start = destination * local_nrows*nrows;
+	    double const* matrix_ptr = matrix.data() + start ;
+	
+	    MPI_Send(matrix_ptr, local_nrows*nrows, MPI_DOUBLE, destination, 0, MPI_COMM_WORLD) ;
+	  }
+      }
+
+      {
+	// BROAD CAST VECTOR X
+	MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD) ;
+      }
+
+      // COMPUTE LOCAL MATRICE LOCAL VECTOR ON PROC 0
+      DenseMatrix local_matrix ;
+      std::size_t local_nrows ;
+      
+      {
+	// EXTRACT LOCAL DATA FROM MASTER PROC
+
+	// COMPUTE LOCAL SIZE
+	local_nrows = nrows/nb_proc ;
+
+	// EXTRACT LOCAL MATRIX DATA
+	local_matrix.init(local_nrows,nrows) ;
+	for (std::size_t i = 0; i<local_nrows; i++) {
+	  for (std::size_t j = 0; j<nrows; j++) {
+	    local_matrix(i,j) = matrix(i,j) ;
+	  }
+	}
+	
+      }
+	
+      std::vector<double> z(nrows);
+
+      std::vector<double> local_y(local_nrows);
+      {
+	// compute parallel SPMV
+	local_matrix.mult(x,local_y) ;
+      }
+	
+      for (std::size_t i = 0; i<local_nrows; i++) {
+	z[i] = local_y[i] ;
+      }
+	
+      // RECEIVE LOCAL VECTORS Y
+      for (int source=1; source<nb_proc; ++source)
+	{
+	  //std::cout << " RECEIVE VECTOR FROM proc " << source << std::endl ;
+	  
+	  MPI_Status status ;
+	  MPI_Recv(local_y.data(), local_nrows, MPI_DOUBLE, source, 1, MPI_COMM_WORLD, &status);
+	  
+	  for (std::size_t i = 0; i<local_nrows; i++) {
+	    z[source*local_nrows+i] = local_y[i] ;
+	  }
+	  
+	}
+	
+      /*
+      printf("\nMPI - Vector Y\n\n");
+      for (std::size_t i = 0; i<nrows; i++) {
+	std::cout << z[i] << std::endl ;
+      }
+      std::cout << std::endl ;
+      */
+
+      double normz = PPTP::norm2(z) ;
+      std::cout<<"MPI ||z||="<<normz<<std::endl ;
+   
     }
-
-    std::vector<double> local_y(local_nrows);
-    {
-      // compute parallel SPMV
-    }
+    timer.printInfo();
   }
   else
   {
@@ -165,29 +228,50 @@ int main(int argc, char** argv)
     DenseMatrix local_matrix ;
     std::size_t nrows ;
     std::size_t local_nrows ;
+	int source = 0 ;
+	
+	// RECV GLOBAL SIZE
+	MPI_Bcast(&nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD) ;
 
     {
-      // RECV DATA FROM MASTER PROC
-
-      // RECV GLOBAL SIZE
-
       // RECV LOCAL SIZE
+	  MPI_Status status ;
+	  MPI_Recv(&local_nrows, 1, MPI_UNSIGNED_LONG, source, 0, MPI_COMM_WORLD, &status);
 
       // RECV MATRIX DATA
+	  std::vector<double> local_coeff(nrows*local_nrows) ;
+	  MPI_Recv(local_coeff.data(), nrows*local_nrows, MPI_DOUBLE, source, 0, MPI_COMM_WORLD, &status);
+	  local_matrix.set(local_nrows,nrows,local_coeff) ;
+	  /*
+	  for (std::size_t i=0; i<local_nrows;i++){
+	        std::cout<<my_rank<<" ";
+		for (std::size_t j=0; j<nrows; j++){
+			std::cout<<local_matrix(i,j)<<" ";
+		}
+		std::cout<<"\n";
+		}*/
+	
     }
 
-    std::vector<double> x;
+    std::vector<double> x(nrows);
     {
       // BROAD CAST VECTOR X
-      /* ... */
+      MPI_Bcast(x.data(), nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD) ;
     }
 
     std::vector<double> local_y(local_nrows);
     {
       // compute parallel SPMV
+      local_matrix.mult(x,local_y) ;
     }
+	
+	// SEND BACK THE LOCAL VECTOR
+	int destination = 0 ;
+	MPI_Send(local_y.data(), local_nrows, MPI_DOUBLE, destination, 1, MPI_COMM_WORLD) ;
 
   }
-  timer.printInfo() ;
+  
+  MPI_Finalize() ;
+  
   return 0 ;
 }

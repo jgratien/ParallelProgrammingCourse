@@ -1,0 +1,2 @@
+/softs/binutils/2.32/bin/ar qc libmovement_tbb.a  CMakeFiles/movement_tbb.dir/object.cpp.o
+/softs/binutils/2.32/bin/ranlib libmovement_tbb.a

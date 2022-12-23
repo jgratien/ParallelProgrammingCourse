@@ -43,14 +43,12 @@ int main(int argc, char** argv)
   std::cout<<"NB AVAILABLE_THREADS :"<<nb_available_threads<<std::endl ;
   {
     PPTP::Timer::Sentry sentry(timer,"HelloWord") ;
-
-
-    //#pragma omp ....CREATE PARALLEL SECTION
+	
+    #pragma omp parallel
     {
-      int id = 0 ;
-      int nb_threads = 1 ;
-      sleep(id) ;
-      std::cout<<"Hello world ("<<id<<","<<nb_threads<<")"<<std::endl ;
+	  int id = omp_get_thread_num() ;
+      std::cout << "Hello world from thread " << id << std::endl ;
+	  sleep(id) ;
     }
   }
   timer.printInfo() ;

@@ -1,0 +1,2 @@
+/softs/binutils/2.32/bin/ar qc libfruits-tbb.a  CMakeFiles/fruits-tbb.dir/eco.cpp.o CMakeFiles/fruits-tbb.dir/fruit.cpp.o CMakeFiles/fruits-tbb.dir/tree.cpp.o
+/softs/binutils/2.32/bin/ranlib libfruits-tbb.a

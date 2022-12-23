@@ -1,0 +1,2 @@
+/softs/binutils/2.32/bin/ar qc libagents.a  CMakeFiles/agents.dir/agent.cpp.o CMakeFiles/agents.dir/bird.cpp.o CMakeFiles/agents.dir/predator.cpp.o
+/softs/binutils/2.32/bin/ranlib libagents.a

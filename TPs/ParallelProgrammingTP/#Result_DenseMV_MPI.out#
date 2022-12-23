@@ -1,0 +1,847 @@
+0;136;0cDEBUT
+Tue Dec 20 14:19:36 CET 2022
+Execution sur 24 coeurs
+sur les nodes n-in10 n-in10 n-in10 n-in10 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9
++ export OMP_NUM_THREADS=1
++ OMP_NUM_THREADS=1
++ '[' -f bin/densemv_mpi.exe ']'
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 1 bin/densemv_mpi.exe --nx 50
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=1 and nx=50
+Sequential ||y||=44092.9
+MPI ||z||=44092.9
+================================
+PERF INFO : 
+MPI DenseMV:0.0324219
+Sequential DenseMV:0.00664559
+================================
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 1 bin/densemv_mpi.exe --nx 100
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=1 and nx=100
+Sequential ||y||=349557
+MPI ||z||=349557
+================================
+PERF INFO : 
+MPI DenseMV:0.505483
+Sequential DenseMV:0.0976576
+================================
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 1 bin/densemv_mpi.exe --nx 150
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=1 and nx=150
+Sequential ||y||=1.1762e+06
+MPI ||z||=1.1762e+06
+================================
+PERF INFO : 
+MPI DenseMV:2.58405
+Sequential DenseMV:0.487109
+================================
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 1 bin/densemv_mpi.exe --nx 200
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=1 and nx=200
+Sequential ||y||=2.78383e+06
+MPI ||z||=2.78383e+06
+================================
+PERF INFO : 
+MPI DenseMV:8.08994
+Sequential DenseMV:1.55135
+================================
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 2 bin/densemv_mpi.exe --nx 50
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=2 and nx=50
+Sequential ||y||=44092.9
+MPI ||z||=44092.9
+================================
+PERF INFO : 
+MPI DenseMV:0.0409683
+Sequential DenseMV:0.00681736
+================================
+[n-in10:02289] 1 more process has sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:02289] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:02289] 1 more process has sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 2 bin/densemv_mpi.exe --nx 100
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=2 and nx=100
+Sequential ||y||=349557
+MPI ||z||=349557
+================================
+PERF INFO : 
+MPI DenseMV:0.669711
+Sequential DenseMV:0.0977837
+================================
+[n-in10:02374] 1 more process has sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:02374] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:02374] 1 more process has sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 2 bin/densemv_mpi.exe --nx 150
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=2 and nx=150
+Sequential ||y||=1.1762e+06
+[n-in10:02475] 1 more process has sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:02475] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:02475] 1 more process has sent help message help-mpi-btl-openib.txt / error in device init
+MPI ||z||=1.1762e+06
+================================
+PERF INFO : 
+MPI DenseMV:3.39637
+Sequential DenseMV:0.503358
+================================
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 2 bin/densemv_mpi.exe --nx 200
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=2 and nx=200
+[n-in10:02560] 1 more process has sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:02560] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:02560] 1 more process has sent help message help-mpi-btl-openib.txt / error in device init
+Sequential ||y||=2.78383e+06
+MPI ||z||=2.78383e+06
+================================
+PERF INFO : 
+MPI DenseMV:10.5162
+Sequential DenseMV:1.54278
+================================
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 4 bin/densemv_mpi.exe --nx 50
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=4 and nx=50
+Sequential ||y||=44092.9
+MPI ||z||=44092.9
+================================
+PERF INFO : 
+MPI DenseMV:0.0315636
+Sequential DenseMV:0.00694795
+================================
+[n-in10:02645] 3 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:02645] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:02645] 3 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 4 bin/densemv_mpi.exe --nx 100
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=4 and nx=100
+Sequential ||y||=349557
+MPI ||z||=349557
+================================
+PERF INFO : 
+MPI DenseMV:0.555723
+Sequential DenseMV:0.104306
+================================
+[n-in10:02736] 3 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:02736] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:02736] 3 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 4 bin/densemv_mpi.exe --nx 150
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=4 and nx=150
+Sequential ||y||=1.1762e+06
+MPI ||z||=1.1762e+06
+================================
+PERF INFO : 
+MPI DenseMV:2.77804
+Sequential DenseMV:0.533
+================================
+[n-in10:02828] 3 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:02828] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:02828] 3 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 4 bin/densemv_mpi.exe --nx 200
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=4 and nx=200
+[n-in10:02921] 3 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:02921] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:02921] 3 more processes have sent help message help-mpi-btl-openib.txt / error in device init
+Sequential ||y||=2.78383e+06
+MPI ||z||=2.78383e+06
+================================
+PERF INFO : 
+MPI DenseMV:8.8995
+Sequential DenseMV:1.6684
+================================
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 8 bin/densemv_mpi.exe --nx 50
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=8 and nx=50
+Sequential ||y||=44092.9
+MPI ||z||=43942.4
+================================
+PERF INFO : 
+MPI DenseMV:0.13432
+Sequential DenseMV:0.0069155
+================================
+[n-in10:03012] 7 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03012] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03012] 7 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 8 bin/densemv_mpi.exe --nx 100
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=8 and nx=100
+Sequential ||y||=349557
+MPI ||z||=349557
+================================
+PERF INFO : 
+MPI DenseMV:2.01408
+Sequential DenseMV:0.104519
+================================
+[n-in10:03103] 7 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03103] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03103] 7 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 8 bin/densemv_mpi.exe --nx 150
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in9
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=8 and nx=150
+Sequential ||y||=1.1762e+06
+[n-in10:03194] 7 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03194] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03194] 7 more processes have sent help message help-mpi-btl-openib.txt / error in device init
+MPI ||z||=1.17574e+06
+================================
+PERF INFO : 
+MPI DenseMV:10.4305
+Sequential DenseMV:0.526146
+================================
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 8 bin/densemv_mpi.exe --nx 200
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in9
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in9
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=8 and nx=200
+[n-in10:03285] 7 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03285] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03285] 7 more processes have sent help message help-mpi-btl-openib.txt / error in device init
+Sequential ||y||=2.78383e+06
+MPI ||z||=2.78383e+06
+================================
+PERF INFO : 
+MPI DenseMV:32.9993
+Sequential DenseMV:1.66643
+================================
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 12 bin/densemv_mpi.exe --nx 50
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=12 and nx=50
+Sequential ||y||=44092.9
+MPI ||z||=43942.4
+================================
+PERF INFO : 
+MPI DenseMV:0.167439
+Sequential DenseMV:0.00702375
+================================
+[n-in10:03376] 11 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03376] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03376] 11 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 12 bin/densemv_mpi.exe --nx 100
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=12 and nx=100
+Sequential ||y||=349557
+MPI ||z||=349254
+================================
+PERF INFO : 
+MPI DenseMV:2.50352
+Sequential DenseMV:0.105211
+================================
+[n-in10:03467] 11 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03467] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03467] 11 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 12 bin/densemv_mpi.exe --nx 150
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=12 and nx=150
+Sequential ||y||=1.1762e+06
+[n-in10:03558] 11 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03558] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03558] 11 more processes have sent help message help-mpi-btl-openib.txt / error in device init
+MPI ||z||=1.1762e+06
+================================
+PERF INFO : 
+MPI DenseMV:12.9909
+Sequential DenseMV:0.52639
+================================
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 12 bin/densemv_mpi.exe --nx 200
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=12 and nx=200
+[n-in10:03649] 11 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03649] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03649] 11 more processes have sent help message help-mpi-btl-openib.txt / error in device init
+Sequential ||y||=2.78383e+06
+MPI ||z||=2.78322e+06
+================================
+PERF INFO : 
+MPI DenseMV:41.2088
+Sequential DenseMV:1.72535
+================================
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 16 bin/densemv_mpi.exe --nx 50
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=16 and nx=50
+Sequential ||y||=44092.9
+MPI ||z||=43942.4
+================================
+PERF INFO : 
+MPI DenseMV:0.200781
+Sequential DenseMV:0.00724059
+================================
+[n-in10:03740] 15 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03740] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03740] 15 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 16 bin/densemv_mpi.exe --nx 100
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=16 and nx=100
+Sequential ||y||=349557
+MPI ||z||=349557
+================================
+PERF INFO : 
+MPI DenseMV:2.82429
+Sequential DenseMV:0.105124
+================================
+[n-in10:03831] 15 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03831] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03831] 15 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 16 bin/densemv_mpi.exe --nx 150
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=16 and nx=150
+Sequential ||y||=1.1762e+06
+[n-in10:03924] 15 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:03924] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:03924] 15 more processes have sent help message help-mpi-btl-openib.txt / error in device init
+MPI ||z||=1.17574e+06
+================================
+PERF INFO : 
+MPI DenseMV:14.2994
+Sequential DenseMV:0.53782
+================================
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 16 bin/densemv_mpi.exe --nx 200
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=16 and nx=200
+[n-in10:04015] 15 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:04015] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:04015] 15 more processes have sent help message help-mpi-btl-openib.txt / error in device init
+Sequential ||y||=2.78383e+06
+MPI ||z||=2.78383e+06
+================================
+PERF INFO : 
+MPI DenseMV:45.3026
+Sequential DenseMV:1.70411
+================================
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 24 bin/densemv_mpi.exe --nx 50
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=24 and nx=50
+Sequential ||y||=44092.9
+MPI ||z||=43942.4
+================================
+PERF INFO : 
+MPI DenseMV:0.250585
+Sequential DenseMV:0.00704285
+================================
+[n-in10:04130] 23 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:04130] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:04130] 23 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 24 bin/densemv_mpi.exe --nx 100
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+[n-in10:04221] [[30681,0],0] ORTE_ERROR_LOG: Data unpack would read past end of buffer in file util/show_help.c at line 501
+DENSEMV MPI with np=24 and nx=100
+Sequential ||y||=349557
+MPI ||z||=348410
+================================
+PERF INFO : 
+MPI DenseMV:3.36914
+Sequential DenseMV:0.105411
+================================
+[n-in10:04221] 23 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:04221] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:04221] 22 more processes have sent help message help-mpi-btl-openib.txt / error in device init
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 24 bin/densemv_mpi.exe --nx 150
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=24 and nx=150
+Sequential ||y||=1.1762e+06
+[n-in10:04313] 23 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:04313] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:04313] 23 more processes have sent help message help-mpi-btl-openib.txt / error in device init
+MPI ||z||=1.1749e+06
+================================
+PERF INFO : 
+MPI DenseMV:15.5463
+Sequential DenseMV:0.528939
+================================
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun -n 24 -machinefile /var/lib/oar/1971139 -np 24 bin/densemv_mpi.exe --nx 200
+--------------------------------------------------------------------------
+By default, for Open MPI 4.0 and later, infiniband ports on a device
+are not used by default.  The intent is to use UCX for these devices.
+You can override this policy by setting the btl_openib_allow_ib MCA parameter
+to true.
+
+  Local host:              n-in10
+  Local adapter:           mlx4_0
+  Local port:              1
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: There was an error initializing an OpenFabrics device.
+
+  Local host:   n-in10
+  Local device: mlx4_0
+--------------------------------------------------------------------------
+DENSEMV MPI with np=24 and nx=200
+[n-in10:04404] 23 more processes have sent help message help-mpi-btl-openib.txt / ib port not selected
+[n-in10:04404] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[n-in10:04404] 23 more processes have sent help message help-mpi-btl-openib.txt / error in device init
+Sequential ||y||=2.78383e+06
+MPI ||z||=2.78153e+06
+================================
+PERF INFO : 
+MPI DenseMV:49.3037
+Sequential DenseMV:1.69514
+================================
++ date
+Tue Dec 20 14:25:31 CET 2022
++ echo FIN
+FIN

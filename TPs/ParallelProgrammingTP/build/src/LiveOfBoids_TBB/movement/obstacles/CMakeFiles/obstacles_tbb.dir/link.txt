@@ -1,0 +1,2 @@
+/softs/binutils/2.32/bin/ar qc libobstacles_tbb.a  CMakeFiles/obstacles_tbb.dir/obstacle.cpp.o
+/softs/binutils/2.32/bin/ranlib libobstacles_tbb.a

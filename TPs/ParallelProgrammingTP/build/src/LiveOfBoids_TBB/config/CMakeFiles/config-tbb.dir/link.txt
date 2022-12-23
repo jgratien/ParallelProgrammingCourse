@@ -1,0 +1,2 @@
+/softs/binutils/2.32/bin/ar qc libconfig-tbb.a  CMakeFiles/config-tbb.dir/config.cpp.o
+/softs/binutils/2.32/bin/ranlib libconfig-tbb.a

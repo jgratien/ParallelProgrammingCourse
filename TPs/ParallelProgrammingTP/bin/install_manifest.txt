@@ -1,0 +1,10 @@
+/gext/maxime.naillon/Project/CPU/bin/helloworld_stdthread.exe
+/gext/maxime.naillon/Project/CPU/bin/helloworld_openmp.exe
+/gext/maxime.naillon/Project/CPU/bin/helloworld_task.exe
+/gext/maxime.naillon/Project/CPU/bin/helloworld_tbb.exe
+/gext/maxime.naillon/Project/CPU/bin/helloworld_mpi.exe
+/gext/maxime.naillon/Project/CPU/bin/spmv.exe
+/gext/maxime.naillon/Project/CPU/bin/densemv.exe
+/gext/maxime.naillon/Project/CPU/bin/densemv_mpi.exe
+/gext/maxime.naillon/Project/CPU/bin/spmv_mpi.exe
+/gext/maxime.naillon/Project/CPU/bin/spmv_mpi_save.exe

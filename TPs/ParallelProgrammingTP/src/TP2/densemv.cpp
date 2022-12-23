@@ -117,7 +117,8 @@ int main(int argc, char** argv)
       x[i] = i+1 ;
 
     {
-      std::vector<double> y(nrows);
+      std::vector<double> y(nrows,0.);
+	  
       {
         Timer::Sentry sentry(timer,"DenseMV") ;
         matrix.mult(x,y) ;
@@ -131,7 +132,7 @@ int main(int argc, char** argv)
       std::vector<double> y(nrows);
       {
         Timer::Sentry sentry(timer,"OMPDenseMV") ;
-        matrix.ompmult(x,y) ;
+        matrix.ompmult(x,y,nb_threads) ;
       }
       double normy = PPTP::norm2(y) ;
       std::cout<<"OMP ||y||="<<normy<<std::endl ;
@@ -141,7 +142,7 @@ int main(int argc, char** argv)
       std::vector<double> y(nrows);
       {
         Timer::Sentry sentry(timer,"OMPTaskDenseMV") ;
-        matrix.omptaskmult(x,y) ;
+        matrix.omptaskmult(x,y,nb_threads) ;
       }
       double normy = PPTP::norm2(y) ;
       std::cout<<"OMPTask ||y||="<<normy<<std::endl ;
@@ -151,7 +152,7 @@ int main(int argc, char** argv)
       std::vector<double> y(nrows);
       {
         Timer::Sentry sentry(timer,"OMPTileDenseMV") ;
-        matrix.omptilemult(x,y) ;
+        matrix.omptilemult(x,y,nb_threads) ;
       }
       double normy = PPTP::norm2(y) ;
       std::cout<<"OMPTile ||y||="<<normy<<std::endl ;
@@ -161,7 +162,7 @@ int main(int argc, char** argv)
       std::vector<double> y(nrows);
       {
         Timer::Sentry sentry(timer,"TBBDenseMV") ;
-        matrix.tbbmult(x,y) ;
+        matrix.tbbmult(x,y,nb_threads) ;
       }
       double normy = PPTP::norm2(y) ;
       std::cout<<"TBB ||y||="<<normy<<std::endl ;

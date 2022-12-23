@@ -20,6 +20,11 @@ class CSRMatrix
     CSRMatrix(std::size_t nrows=0)
     : m_nrows(nrows)
     {}
+
+    CSRMatrix(std::size_t nrows, std::size_t nnz, std::vector<int> kcol, std::vector<int> cols, std::vector<double> values)
+        : m_nrows(nrows), m_nnz(nnz), m_kcol(kcol), m_cols(cols), m_values(values)
+    {}
+
     virtual ~CSRMatrix(){}
 
     void setChunkSize(int chunk_size)
@@ -31,8 +36,32 @@ class CSRMatrix
       return m_nrows ;
     }
 
+    std::vector<int> kcol() const {
+        return m_kcol;
+    }
+
+    std::vector<int> cols() const {
+        return m_cols;
+    }
+
     std::size_t nnz() const {
       return m_nnz ;
+    }
+
+    std::vector<double> values() {
+        return m_values;
+    }
+
+    double* data() {
+        return m_values.data();
+    }
+
+    int* data_cols() {
+        return m_cols.data();
+    }
+
+    int* data_kcol() {
+        return m_kcol.data();
     }
 
     void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries)
@@ -68,21 +97,52 @@ class CSRMatrix
       m_kcol[nrows] = k ;
     }
 
-    void mult(VectorType const& x, VectorType& y) const
+	
+	void print()
+	{
+		printf("\nMatrix kcol\n");
+		for (std::size_t i = 0; i<m_nrows+1; i++) {
+			std::cout << m_kcol[i] << " ; ";
+		}
+		printf("\nMatrix cols\n");
+		for (std::size_t i = 0; i<m_kcol[m_nrows]-m_kcol[0]; i++) {
+			std::cout << m_cols[i] << " ; ";
+		}
+		printf("\nMatrix values\n");
+		for (std::size_t i = 0; i<m_kcol[m_nrows]-m_kcol[0]; i++) {
+			std::cout << m_values[i] << " ; ";
+		}
+		
+	}
+	
+	void setSparse(std::vector<int> const kcol, std::vector<int> const cols, std::vector<double> const values)
+	{
+		m_kcol.resize(kcol.size()) ;
+		m_cols.resize(cols.size()) ;
+		m_values.resize(values.size()) ;
+		for(int k=0; k<kcol.size();++k)
+			m_kcol[k]=kcol[k];
+		for(int c=0; c<cols.size();++c)
+			m_cols[c]=cols[c];
+		for(int v=0; v<values.size();++v)
+			m_values[v]=values[v];
+		m_nrows=kcol.size()-1;
+	}
+	
+	void mult(VectorType const& x, VectorType& y) const
     {
       assert(x.size()>=m_nrows) ;
       assert(y.size()>=m_nrows) ;
       for(std::size_t irow =0; irow<m_nrows;++irow)
       {
         double value = 0 ;
-        for( int k = m_kcol[irow]; k < m_kcol[irow+1];++k)
+        for( int k = (m_kcol[irow] - m_kcol[0]); k <( m_kcol[irow+1] - m_kcol[0]);++k)
         {
           value += m_values[k]*x[m_cols[k]] ;
         }
         y[irow] = value ;
       }
     }
-
 
     void ompmult(VectorType const& x, VectorType& y) const
     {

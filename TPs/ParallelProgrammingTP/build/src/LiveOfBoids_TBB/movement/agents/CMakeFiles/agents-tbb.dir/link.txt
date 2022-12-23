@@ -1,0 +1,2 @@
+/softs/binutils/2.32/bin/ar qc libagents-tbb.a  CMakeFiles/agents-tbb.dir/agent.cpp.o CMakeFiles/agents-tbb.dir/bird.cpp.o CMakeFiles/agents-tbb.dir/predator.cpp.o
+/softs/binutils/2.32/bin/ranlib libagents-tbb.a
