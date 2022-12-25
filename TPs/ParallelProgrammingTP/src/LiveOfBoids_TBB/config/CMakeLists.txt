@@ -1,0 +1,1 @@
+add_library(config_tbb config.cpp config.h)

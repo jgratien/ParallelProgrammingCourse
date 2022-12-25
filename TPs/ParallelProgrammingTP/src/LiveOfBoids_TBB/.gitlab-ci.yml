@@ -1,0 +1,33 @@
+image: ugopelissierminesparis/life-of-boids:latest
+
+build:
+  stage: build
+  before_script:
+    - gcc --version
+    - cmake --version
+    - conan --version
+  script:
+    # set up the build directory
+    - rm -rf build
+    - mkdir build
+    - cd build
+    # start the build process
+    - echo "[INFO] conan build process started"
+    - conan install ..
+    - export MODE=Release
+    - echo "[INFO] cmake build process started"
+    - cmake -DCMAKE_TOOLCHAIN_FILE=conan_paths.cmake -DCMAKE_BUILD_TYPE="${MODE}" ..
+    - cmake --build .
+    - echo "[INFO] Build was successful"
+
+  artifacts:
+    paths:
+      - build
+# run tests using the binary built before
+test:
+  stage: test
+  script:
+    - cd build
+    - ctest
+    - test -f src/life-of-boids
+    - echo "[INFO] Tests were successful. CI End."

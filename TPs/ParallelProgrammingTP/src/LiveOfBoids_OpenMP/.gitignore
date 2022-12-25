@@ -1,0 +1,6 @@
+.vs
+venv
+out
+build
+*/*.exe
+CMakeSettings.json
