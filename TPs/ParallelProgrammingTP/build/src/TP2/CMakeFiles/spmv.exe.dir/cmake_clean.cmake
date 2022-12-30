@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/spmv.exe.dir/spmv.cpp.o"
-  "spmv.exe.pdb"
   "spmv.exe"
+  "spmv.exe.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

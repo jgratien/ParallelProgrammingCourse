@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/spmv.cpp" "/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/CMakeFiles/spmv.exe.dir/spmv.cpp.o"
+  "/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/test.cpp" "/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build/src/TP2/CMakeFiles/test.exe.dir/test.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -12,7 +12,6 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 set(CMAKE_TARGET_DEFINITIONS_CXX
   "USE_EIGEN3"
   "USE_OMP"
-  "USE_OPENCV"
   "USE_TBB"
   "_MPI"
   "arch_Linux"
@@ -24,7 +23,6 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/softs/boost/1.63.0/include"
   "../contrib/eigen/3.4/include"
   "../src"
-  "/softs/opencv/4.6.0/include/opencv4"
   )
 
 # Targets to which this target links.
