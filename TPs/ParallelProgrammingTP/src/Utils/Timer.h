@@ -59,6 +59,20 @@ class Timer
       }
       std::cout<<"================================"<<std::endl ;
     }
+	
+	void time() const {
+		for (auto const& iter : m_counters)
+		{
+			std::cout<<iter.second<<std::endl;
+		}
+	}
+	
+	double sum_time() const{
+		for (auto const& iter : m_counters)
+		{
+			return iter.second;
+		}
+	}
 
   private :
     std::map<std::string,double> m_counters ;
