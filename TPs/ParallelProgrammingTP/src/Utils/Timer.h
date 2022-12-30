@@ -5,6 +5,7 @@
  *      Author: gratienj
  */
 #pragma once
+#include "omp.h"
 #include <string>
 #include <map>
 #include <chrono>
@@ -59,10 +60,25 @@ class Timer
       }
       std::cout<<"================================"<<std::endl ;
     }
+	
+	double getTime(int index) const {
+      int i = 0;
+      double time;
+      for(auto const& iter : m_counters)
+      {
+        if (i==index){
+          time = iter.second;
+        }
+        i++;
+      }
+      return time;
+    }
+
 
   private :
     std::map<std::string,double> m_counters ;
 };
 
 } /* namespace PPTP */
+
 
