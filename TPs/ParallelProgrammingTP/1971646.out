@@ -1,0 +1,61 @@
+DEBUT
+Fri Dec 30 16:56:30 CET 2022
+execution sur 24 coeurs
+sur les nodes n-in10 n-in10 n-in10 n-in10 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9
++ export OMP_NUM_THREADS=1
++ OMP_NUM_THREADS=1
++ '[' -f /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/life-of-boids ']'
++ '[' -f ']'
++ for np in 1 2 4 8 12 16 24
++ for mode in OMP TBB
++ ./bin/life-of-boids 1 OMP
+1770.91
++ for mode in OMP TBB
++ ./bin/life-of-boids 1 TBB
+1794.37
++ for np in 1 2 4 8 12 16 24
++ for mode in OMP TBB
++ ./bin/life-of-boids 2 OMP
+914.48
++ for mode in OMP TBB
++ ./bin/life-of-boids 2 TBB
+938.579
++ for np in 1 2 4 8 12 16 24
++ for mode in OMP TBB
++ ./bin/life-of-boids 4 OMP
+497.881
++ for mode in OMP TBB
++ ./bin/life-of-boids 4 TBB
+516.218
++ for np in 1 2 4 8 12 16 24
++ for mode in OMP TBB
++ ./bin/life-of-boids 8 OMP
+636.666
++ for mode in OMP TBB
++ ./bin/life-of-boids 8 TBB
+524.677
++ for np in 1 2 4 8 12 16 24
++ for mode in OMP TBB
++ ./bin/life-of-boids 12 OMP
+631.739
++ for mode in OMP TBB
++ ./bin/life-of-boids 12 TBB
+553.282
++ for np in 1 2 4 8 12 16 24
++ for mode in OMP TBB
++ ./bin/life-of-boids 16 OMP
+595.284
++ for mode in OMP TBB
++ ./bin/life-of-boids 16 TBB
+626.429
++ for np in 1 2 4 8 12 16 24
++ for mode in OMP TBB
++ ./bin/life-of-boids 24 OMP
+615.089
++ for mode in OMP TBB
++ ./bin/life-of-boids 24 TBB
+718.967
++ date
+Fri Dec 30 16:56:42 CET 2022
++ echo FIN
+FIN
