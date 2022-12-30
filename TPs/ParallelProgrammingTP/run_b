@@ -15,8 +15,7 @@
 ### usage : oarsub -l core=32 -S ./job_exemple.sh
 
 ### indiquer votre executable
-MONPROG=bin/densemv_mpi.exe
-MONPROG2=bin/sparsemv_mpi.exe
+#MONPROG= bin/life-of-boids
 ### indiquer votre fichier de donnees
 MYDATA=
 
@@ -34,27 +33,21 @@ echo sur les nodes $(cat $OAR_NODE_FILE)
 #  -n $NP \
 #  -machinefile $OAR_NODE_FILE "
  
+#MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun"
 MPIRUN="/softs/mpi/openmpi-4.0.1/gcc-7.3.0/bin/mpirun"
 
 set -x
 export OMP_NUM_THREADS=1
 
-if [ -f $MONPROG ] ; then
-  if [ -f $MONPROG2 ] ; then
-  for np in 1 2 4 8 12 16 24
-  do
-    for nx in 50 100 150 200
+
+  for mode in 0 1 2
+  do 
+    for  np in 1 2 4 8 12 16 24
     do
-    $MPIRUN -np ${np}  $MONPROG --nx $nx 
-	$MPIRUN -np ${np}  $MONPROG2 --nx $nx 
+    ./bin/life-of-boids --nb-threads ${np} --mode ${mode}
     done
   done
-  else
-    echo "ERREUR : data $MYDATA inexistant !!"
-  fi
-else
-   echo "ERREUR : programme $MONPROG inexistant !!"
-fi
+
 
 
 date
