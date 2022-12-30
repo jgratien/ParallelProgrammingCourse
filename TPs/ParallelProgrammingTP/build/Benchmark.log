@@ -1,0 +1,6 @@
+SPMV  np: 4  nx: 4  Time SPMV: SPMV  np: 4  nx: 4  Time SPMV: SPMV  np: 4  nx: 4  Time SPMV: 1.134e-06 Time MPI: 8.87e-07 Acceleration: 1.27847
+SPMV  np: 4  nx: 4  Time SPMV: 0.000153685 Time MPI: 1.68e-06 Acceleration: 91.4792
+SPMV  np: 4  nx: 4  Time SPMV: 0.000103594 Time MPI: 1.737e-06 Acceleration: 59.6396
+SPMV  np: 4  nx: 4  Time SPMV: 0.000106404 Time MPI: 1.66e-06 Acceleration: 64.0988
+SPMV  np: 4  nx: 4  Time SPMV: 0.000144815 Time MPI: 1.753e-06 Acceleration: 82.6098
+SPMV  np: 4  nx: 4  Time SPMV: 9.9601e-05 Time MPI: 1.51e-06 Acceleration: 65.9609

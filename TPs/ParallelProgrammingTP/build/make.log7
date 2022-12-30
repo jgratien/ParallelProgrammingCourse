@@ -1,0 +1,754 @@
+make[1]: Entering directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Entering directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 10%] Built target helloworld_tbb.exe
+make[2]: Entering directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 20%] Built target helloworld_task.exe
+make[2]: Entering directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 30%] Built target helloworld_openmp.exe
+make[2]: Entering directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 40%] Built target helloworld_stdthread.exe
+make[2]: Entering directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 50%] Built target helloworld_mpi.exe
+make[2]: Entering directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 60%] Built target spmv.exe
+make[2]: Entering directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 70%] Built target densemv_mpi.exe
+make[2]: Entering directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Leaving directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[2]: Entering directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+[ 75%] Building CXX object src/TP2/CMakeFiles/sparsemv_mpi.exe.dir/sparsemv_mpi.cpp.o
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:263:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/PacketMath.h:29:39: warning: ignoring attributes on template argument '__m128 {aka __vector(4) float}' [-Wignored-attributes]
+ template<> struct is_arithmetic<__m128>  { enum { value = true }; };
+                                       ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/PacketMath.h:30:40: warning: ignoring attributes on template argument '__m128i {aka __vector(2) long long int}' [-Wignored-attributes]
+ template<> struct is_arithmetic<__m128i> { enum { value = true }; };
+                                        ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/PacketMath.h:31:40: warning: ignoring attributes on template argument '__m128d {aka __vector(2) double}' [-Wignored-attributes]
+ template<> struct is_arithmetic<__m128d> { enum { value = true }; };
+                                        ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/PacketMath.h:101:43: warning: ignoring attributes on template argument 'Eigen::internal::Packet4f {aka __vector(4) float}' [-Wignored-attributes]
+ template<> struct unpacket_traits<Packet4f> { typedef float  type; enum {size=4}; };
+                                           ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/PacketMath.h:102:43: warning: ignoring attributes on template argument 'Eigen::internal::Packet2d {aka __vector(2) double}' [-Wignored-attributes]
+ template<> struct unpacket_traits<Packet2d> { typedef double type; enum {size=2}; };
+                                           ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/PacketMath.h:103:43: warning: ignoring attributes on template argument 'Eigen::internal::Packet4i {aka __vector(2) long long int}' [-Wignored-attributes]
+ template<> struct unpacket_traits<Packet4i> { typedef int    type; enum {size=4}; };
+                                           ^
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:263:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/PacketMath.h:586:35: warning: ignoring attributes on template argument 'Eigen::internal::Packet4f {aka __vector(4) float}' [-Wignored-attributes]
+ struct palign_impl<Offset,Packet4f>
+                                   ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/PacketMath.h:609:35: warning: ignoring attributes on template argument 'Eigen::internal::Packet4i {aka __vector(2) long long int}' [-Wignored-attributes]
+ struct palign_impl<Offset,Packet4i>
+                                   ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/PacketMath.h:632:35: warning: ignoring attributes on template argument 'Eigen::internal::Packet2d {aka __vector(2) double}' [-Wignored-attributes]
+ struct palign_impl<Offset,Packet2d>
+                                   ^
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:265:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/Complex.h:211:63: warning: ignoring attributes on template argument 'Eigen::internal::Packet4f {aka __vector(4) float}' [-Wignored-attributes]
+ template<> struct conj_helper<Packet4f, Packet2cf, false,false>
+                                                               ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/Complex.h:220:63: warning: ignoring attributes on template argument 'Eigen::internal::Packet4f {aka __vector(4) float}' [-Wignored-attributes]
+ template<> struct conj_helper<Packet2cf, Packet4f, false,false>
+                                                               ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/Complex.h:407:63: warning: ignoring attributes on template argument 'Eigen::internal::Packet2d {aka __vector(2) double}' [-Wignored-attributes]
+ template<> struct conj_helper<Packet2d, Packet1cd, false,false>
+                                                               ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/arch/SSE/Complex.h:416:63: warning: ignoring attributes on template argument 'Eigen::internal::Packet2d {aka __vector(2) double}' [-Wignored-attributes]
+ template<> struct conj_helper<Packet1cd, Packet2d, false,false>
+                                                               ^
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:276:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Functors.h:932:28: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+ struct functor_traits<std::binder2nd<T> >
+                            ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:276:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Functors.h:936:28: warning: 'template<class _Operation> class std::binder1st' is deprecated [-Wdeprecated-declarations]
+ struct functor_traits<std::binder1st<T> >
+                            ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:108:11: note: declared here
+     class binder1st
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:138:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:279,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h:62:32: warning: 'template<class _Operation> class std::binder1st' is deprecated [-Wdeprecated-declarations]
+ inline const CwiseUnaryOp<std::binder1st<std::equal_to<Scalar> >, const Derived>
+                                ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:108:11: note: declared here
+     class binder1st
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:138:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:279,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h: In member function 'const Eigen::CwiseUnaryOp<std::binder1st<std::equal_to<typename Eigen::internal::traits<T>::Scalar> >, const Derived> Eigen::MatrixBase<Derived>::cwiseEqual(const Scalar&) const':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h:65:28: warning: 'template<class _Operation> class std::binder1st' is deprecated [-Wdeprecated-declarations]
+   return CwiseUnaryOp<std::binder1st<std::equal_to<Scalar> >,const Derived>
+                            ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:108:11: note: declared here
+     class binder1st
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:326:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/products/GeneralBlockPanelKernel.h: In member function 'void Eigen::internal::gebp_kernel<LhsScalar, RhsScalar, Index, mr, nr, ConjugateLhs, ConjugateRhs>::operator()(Eigen::internal::gebp_kernel<LhsScalar, RhsScalar, Index, mr, nr, ConjugateLhs, ConjugateRhs>::ResScalar*, Index, const LhsScalar*, const RhsScalar*, Index, Index, Index, Eigen::internal::gebp_kernel<LhsScalar, RhsScalar, Index, mr, nr, ConjugateLhs, ConjugateRhs>::ResScalar, Index, Index, Index, Index, RhsScalar*)':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/products/GeneralBlockPanelKernel.h:574:9: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+         if(nr==4) traits.initAcc(C3);
+         ^~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/products/GeneralBlockPanelKernel.h:575:19: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+                   traits.initAcc(C4);
+                   ^~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/products/GeneralBlockPanelKernel.h:946:9: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+         if(nr==4) R3 = ploadu<ResPacket>(r3);
+         ^~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/products/GeneralBlockPanelKernel.h:948:19: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+                   traits.acc(C0, alphav, R0);
+                   ^~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/products/GeneralBlockPanelKernel.h:951:9: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+         if(nr==4) traits.acc(C3, alphav, R3);
+         ^~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/products/GeneralBlockPanelKernel.h:953:19: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+                   pstoreu(r0, R0);
+                   ^~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:108:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h: At global scope:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h:62:32: warning: 'template<class _Operation> class std::binder1st' is deprecated [-Wdeprecated-declarations]
+ inline const CwiseUnaryOp<std::binder1st<std::equal_to<Scalar> >, const Derived>
+                                ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:108:11: note: declared here
+     class binder1st
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:190:34: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+   inline const CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                                  ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:108:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h: In member function 'const Eigen::CwiseUnaryOp<std::binder1st<std::equal_to<typename Eigen::internal::traits<T>::Scalar> >, const Derived> Eigen::ArrayBase<Derived>::cwiseEqual(const Scalar&) const':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/MatrixCwiseUnaryOps.h:65:28: warning: 'template<class _Operation> class std::binder1st' is deprecated [-Wdeprecated-declarations]
+   return CwiseUnaryOp<std::binder1st<std::equal_to<Scalar> >,const Derived>
+                            ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:108:11: note: declared here
+     class binder1st
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h: In member function 'const Eigen::CwiseUnaryOp<std::binder2nd<std::equal_to<typename Eigen::internal::traits<T>::Scalar> >, const Derived> Eigen::ArrayBase<Derived>::operator==(const Scalar&) const':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h: In member function 'const Eigen::CwiseUnaryOp<std::binder2nd<std::not_equal_to<typename Eigen::internal::traits<T>::Scalar> >, const Derived> Eigen::ArrayBase<Derived>::operator!=(const Scalar&) const':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h: In member function 'const Eigen::CwiseUnaryOp<std::binder2nd<std::less<typename Eigen::internal::traits<T>::Scalar> >, const Derived> Eigen::ArrayBase<Derived>::operator<(const Scalar&) const':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h: In member function 'const Eigen::CwiseUnaryOp<std::binder2nd<std::less_equal<typename Eigen::internal::traits<T>::Scalar> >, const Derived> Eigen::ArrayBase<Derived>::operator<=(const Scalar&) const':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h: In member function 'const Eigen::CwiseUnaryOp<std::binder2nd<std::greater<typename Eigen::internal::traits<T>::Scalar> >, const Derived> Eigen::ArrayBase<Derived>::operator>(const Scalar&) const':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/ArrayBase.h:109:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:350,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h: In member function 'const Eigen::CwiseUnaryOp<std::binder2nd<std::greater_equal<typename Eigen::internal::traits<T>::Scalar> >, const Derived> Eigen::ArrayBase<Derived>::operator>=(const Scalar&) const':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: warning: 'template<class _Operation> class std::binder2nd' is deprecated [-Wdeprecated-declarations]
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/../plugins/ArrayCwiseUnaryOps.h:192:30: note: in definition of macro 'EIGEN_MAKE_SCALAR_CWISE_UNARY_OP'
+     return CwiseUnaryOp<std::binder2nd<FUNCTOR<Scalar> >, const Derived> \
+                              ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:143:11: note: declared here
+     class binder2nd
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:277:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h: In instantiation of 'class Eigen::DenseCoeffsBase<Eigen::Matrix<float, 4, 1>, 0>':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:274:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Matrix<float, 4, 1>, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:636:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Matrix<float, 4, 1>, 3>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/util/XprHelper.h:371:8:   required from 'struct Eigen::internal::special_scalar_op_base<Eigen::Matrix<float, 4, 1>, float, float, false>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseBase.h:41:34:   required from 'class Eigen::DenseBase<Eigen::Matrix<float, 4, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:48:34:   required from 'class Eigen::MatrixBase<Eigen::Matrix<float, 4, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:88:7:   required from 'class Eigen::PlainObjectBase<Eigen::Matrix<float, 4, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Matrix.h:127:7:   required from 'class Eigen::Matrix<float, 4, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Geometry/Quaternion.h:282:16:   required from 'class Eigen::Quaternion<float>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Geometry/arch/Geometry_SSE.h:22:3:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:56:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<float>::type {aka __vector(4) float}' [-Wignored-attributes]
+                      >::type PacketReturnType;
+                              ^~~~~~~~~~~~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h: In instantiation of 'class Eigen::DenseCoeffsBase<Eigen::Matrix<double, 4, 1>, 0>':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:274:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Matrix<double, 4, 1>, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:636:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Matrix<double, 4, 1>, 3>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/util/XprHelper.h:371:8:   required from 'struct Eigen::internal::special_scalar_op_base<Eigen::Matrix<double, 4, 1>, double, double, false>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseBase.h:41:34:   required from 'class Eigen::DenseBase<Eigen::Matrix<double, 4, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:48:34:   required from 'class Eigen::MatrixBase<Eigen::Matrix<double, 4, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:88:7:   required from 'class Eigen::PlainObjectBase<Eigen::Matrix<double, 4, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Matrix.h:127:7:   required from 'class Eigen::Matrix<double, 4, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Geometry/Quaternion.h:282:16:   required from 'class Eigen::Quaternion<double>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Geometry/arch/Geometry_SSE.h:63:3:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:56:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<double>::type {aka __vector(2) double}' [-Wignored-attributes]
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrixBase.h:140:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/SparseCore:37,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Sparse:19,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:18:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/../plugins/MatrixCwiseUnaryOps.h: At global scope:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/../plugins/MatrixCwiseUnaryOps.h:62:32: warning: 'template<class _Operation> class std::binder1st' is deprecated [-Wdeprecated-declarations]
+ inline const CwiseUnaryOp<std::binder1st<std::equal_to<Scalar> >, const Derived>
+                                ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:108:11: note: declared here
+     class binder1st
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrixBase.h:140:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/SparseCore:37,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Sparse:19,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:18:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/../plugins/MatrixCwiseUnaryOps.h: In member function 'const Eigen::CwiseUnaryOp<std::binder1st<std::equal_to<typename Eigen::internal::traits<T>::Scalar> >, const Derived> Eigen::SparseMatrixBase<Derived>::cwiseEqual(const Scalar&) const':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/../plugins/MatrixCwiseUnaryOps.h:65:28: warning: 'template<class _Operation> class std::binder1st' is deprecated [-Wdeprecated-declarations]
+   return CwiseUnaryOp<std::binder1st<std::equal_to<Scalar> >,const Derived>
+                            ^~~~~~~~~
+In file included from /softs/gcc/7.3.0/include/c++/7.3.0/bits/stl_function.h:1127:0,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/string:48,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/locale_classes.h:40,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/bits/ios_base.h:41,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ios:42,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/ostream:38,
+                 from /softs/gcc/7.3.0/include/c++/7.3.0/iostream:39,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:8:
+/softs/gcc/7.3.0/include/c++/7.3.0/backward/binders.h:108:11: note: declared here
+     class binder1st
+           ^~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:277:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h: In instantiation of 'class Eigen::DenseCoeffsBase<Eigen::Matrix<int, -1, 1>, 0>':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:274:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Matrix<int, -1, 1>, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:636:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Matrix<int, -1, 1>, 3>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/util/XprHelper.h:371:8:   required from 'struct Eigen::internal::special_scalar_op_base<Eigen::Matrix<int, -1, 1>, int, int, false>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseBase.h:41:34:   required from 'class Eigen::DenseBase<Eigen::Matrix<int, -1, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:48:34:   required from 'class Eigen::MatrixBase<Eigen::Matrix<int, -1, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:88:7:   required from 'class Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Matrix.h:127:7:   required from 'class Eigen::Matrix<int, -1, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCholesky/SimplicialCholesky.h:235:14:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:56:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<int>::type {aka __vector(2) long long int}' [-Wignored-attributes]
+                      >::type PacketReturnType;
+                              ^~~~~~~~~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/SparseLU:29:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Sparse:22,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:18:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseLU/SparseLU_gemm_kernel.h: In function 'void Eigen::internal::sparselu_gemm(Index, Index, Index, const Scalar*, Index, const Scalar*, Index, Scalar*, Index)':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseLU/SparseLU_gemm_kernel.h:78:9: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+         if(RK==4) b30 = pset1<Packet>(Bc0[3]);
+         ^~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseLU/SparseLU_gemm_kernel.h:79:19: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+                   b01 = pset1<Packet>(Bc1[0]);
+                   ^~~
+In file included from /softs/intel/composer_xe_2013_sp1.1.106/tbb/include/tbb/aligned_space.h:24:0,
+                 from /softs/intel/composer_xe_2013_sp1.1.106/tbb/include/tbb/tbb.h:35,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/DenseMatrix.h:3,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:20:
+/softs/intel/composer_xe_2013_sp1.1.106/tbb/include/tbb/task_group.h: In destructor 'tbb::internal::task_group_base::~task_group_base()':
+/softs/intel/composer_xe_2013_sp1.1.106/tbb/include/tbb/tbb_stddef.h:272:29: warning: throw will always call terminate() [-Wterminate]
+     #define __TBB_RETHROW() throw
+                             ^
+/softs/intel/composer_xe_2013_sp1.1.106/tbb/include/tbb/tbb_stddef.h:272:29: note: in definition of macro '__TBB_RETHROW'
+     #define __TBB_RETHROW() throw
+                             ^~~~~
+/softs/intel/composer_xe_2013_sp1.1.106/tbb/include/tbb/tbb_stddef.h:272:29: note: in C++11 destructors default to noexcept
+     #define __TBB_RETHROW() throw
+                             ^
+/softs/intel/composer_xe_2013_sp1.1.106/tbb/include/tbb/tbb_stddef.h:272:29: note: in definition of macro '__TBB_RETHROW'
+     #define __TBB_RETHROW() throw
+                             ^~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:20:0:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/DenseMatrix.h: In member function 'void PPTP::DenseMatrix::omptaskmult(const VectorType&, PPTP::DenseMatrix::VectorType&, const int&) const':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/DenseMatrix.h:140:26: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+     for(int itask=0;itask<nb_task;++itask)
+                     ~~~~~^~~~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/DenseMatrix.h:145:15: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+      if (itask==nb_task-1)
+          ~~~~~^~~~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:277:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h: In instantiation of 'class Eigen::DenseCoeffsBase<Eigen::Matrix<double, -1, 1>, 0>':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:274:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Matrix<double, -1, 1>, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:636:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Matrix<double, -1, 1>, 3>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/util/XprHelper.h:371:8:   required from 'struct Eigen::internal::special_scalar_op_base<Eigen::Matrix<double, -1, 1>, double, double, false>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseBase.h:41:34:   required from 'class Eigen::DenseBase<Eigen::Matrix<double, -1, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:48:34:   required from 'class Eigen::MatrixBase<Eigen::Matrix<double, -1, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:88:7:   required from 'class Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Matrix.h:127:7:   required from 'class Eigen::Matrix<double, -1, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/LinearAlgebra.h:21:23:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:56:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<double>::type {aka __vector(2) double}' [-Wignored-attributes]
+                      >::type PacketReturnType;
+                              ^~~~~~~~~~~~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h: In instantiation of 'class Eigen::DenseCoeffsBase<Eigen::Matrix<double, -1, -1>, 0>':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:274:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Matrix<double, -1, -1>, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:636:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Matrix<double, -1, -1>, 3>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/util/XprHelper.h:371:8:   required from 'struct Eigen::internal::special_scalar_op_base<Eigen::Matrix<double, -1, -1>, double, double, false>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseBase.h:41:34:   required from 'class Eigen::DenseBase<Eigen::Matrix<double, -1, -1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:48:34:   required from 'class Eigen::MatrixBase<Eigen::Matrix<double, -1, -1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:88:7:   required from 'class Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Matrix.h:127:7:   required from 'class Eigen::Matrix<double, -1, -1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/MatrixGenerator.h:24:13:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:56:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<double>::type {aka __vector(2) double}' [-Wignored-attributes]
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/SparseCore:37:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Sparse:19,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:18:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrixBase.h: In instantiation of 'class Eigen::SparseMatrixBase<Eigen::SparseMatrix<double> >':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:85:7:   required from 'class Eigen::SparseMatrix<double>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/MatrixGenerator.h:44:45:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrixBase.h:36:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<double>::type {aka __vector(2) double}' [-Wignored-attributes]
+                      >::type PacketReturnType;
+                              ^~~~~~~~~~~~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp: In function 'int main(int, char**)':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:97:32: error: 'y' was not declared in this scope
+     double normy = PPTP::norm2(y) ;
+                                ^
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:239:18: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for (int i=0; i<localSize; i++){
+                 ~^~~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:277:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h: In instantiation of 'class Eigen::DenseCoeffsBase<Eigen::CwiseBinaryOp<Eigen::internal::scalar_conj_product_op<double, double>, const Eigen::Matrix<double, -1, 1>, const Eigen::Matrix<double, -1, 1> >, 0>':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/util/XprHelper.h:371:8:   required from 'struct Eigen::internal::special_scalar_op_base<Eigen::CwiseBinaryOp<Eigen::internal::scalar_conj_product_op<double, double>, const Eigen::Matrix<double, -1, 1>, const Eigen::Matrix<double, -1, 1> >, double, double, false>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseBase.h:41:34:   required from 'class Eigen::DenseBase<Eigen::CwiseBinaryOp<Eigen::internal::scalar_conj_product_op<double, double>, const Eigen::Matrix<double, -1, 1>, const Eigen::Matrix<double, -1, 1> > >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:48:34:   required from 'class Eigen::MatrixBase<Eigen::CwiseBinaryOp<Eigen::internal::scalar_conj_product_op<double, double>, const Eigen::Matrix<double, -1, 1>, const Eigen::Matrix<double, -1, 1> > >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseBinaryOp.h:163:7:   required from 'class Eigen::CwiseBinaryOpImpl<Eigen::internal::scalar_conj_product_op<double, double>, const Eigen::Matrix<double, -1, 1>, const Eigen::Matrix<double, -1, 1>, Eigen::Dense>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseBinaryOp.h:106:7:   required from 'class Eigen::CwiseBinaryOp<Eigen::internal::scalar_conj_product_op<double, double>, const Eigen::Matrix<double, -1, 1>, const Eigen::Matrix<double, -1, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Dot.h:34:117:   required from 'static Eigen::internal::dot_nocheck<T, U, NeedToTranspose>::ResScalar Eigen::internal::dot_nocheck<T, U, NeedToTranspose>::run(const Eigen::MatrixBase<Derived>&, const Eigen::MatrixBase<U>&) [with T = Eigen::Matrix<double, -1, 1>; U = Eigen::Matrix<double, -1, 1>; bool NeedToTranspose = false; Eigen::internal::dot_nocheck<T, U, NeedToTranspose>::ResScalar = double]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Dot.h:73:58:   required from 'typename Eigen::internal::scalar_product_traits<typename Eigen::internal::traits<T>::Scalar, typename Eigen::internal::traits<OtherDerived>::Scalar>::ReturnType Eigen::MatrixBase<Derived>::dot(const Eigen::MatrixBase<OtherDerived>&) const [with OtherDerived = Eigen::Matrix<double, -1, 1>; Derived = Eigen::Matrix<double, -1, 1>; typename Eigen::internal::scalar_product_traits<typename Eigen::internal::traits<T>::Scalar, typename Eigen::internal::traits<OtherDerived>::Scalar>::ReturnType = double]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/LinearAlgebra.h:21:29:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:56:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<double>::type {aka __vector(2) double}' [-Wignored-attributes]
+                      >::type PacketReturnType;
+                              ^~~~~~~~~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/SparseCore:37:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Sparse:19,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:18:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrixBase.h: In instantiation of 'class Eigen::SparseMatrixBase<Eigen::SparseMatrix<double, 1, int> >':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:85:7:   required from 'class Eigen::SparseMatrix<double, 1, int>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:943:59:   required from 'void Eigen::internal::set_from_triplets(const InputIterator&, const InputIterator&, SparseMatrixType&, int) [with InputIterator = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; SparseMatrixType = Eigen::SparseMatrix<double>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:1013:30:   required from 'void Eigen::SparseMatrix<_Scalar, _Flags, _Index>::setFromTriplets(const InputIterators&, const InputIterators&) [with InputIterators = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; _Scalar = double; int _Options = 0; _Index = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/MatrixGenerator.h:65:59:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrixBase.h:36:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<double>::type {aka __vector(2) double}' [-Wignored-attributes]
+                      >::type PacketReturnType;
+                              ^~~~~~~~~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:277:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h: In instantiation of 'class Eigen::DenseCoeffsBase<Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >, 0>':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:274:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:636:7:   required from 'class Eigen::DenseCoeffsBase<Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >, 3>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/util/XprHelper.h:371:8:   required from 'struct Eigen::internal::special_scalar_op_base<Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >, int, int, false>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseBase.h:41:34:   required from 'class Eigen::DenseBase<Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> > >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:48:34:   [ skipping 2 instantiation contexts, use -ftemplate-backtrace-limit=0 to disable ]
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MapBase.h:168:34:   required from 'class Eigen::MapBase<Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >, 1>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Map.h:104:79:   required from 'class Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:1075:12:   required from 'Eigen::SparseMatrix<_Scalar, _Options, _Index>& Eigen::SparseMatrix<_Scalar, _Flags, _Index>::operator=(const Eigen::SparseMatrixBase<OtherDerived>&) [with OtherDerived = Eigen::SparseMatrix<double, 1, int>; _Scalar = double; int _Options = 0; _Index = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:966:7:   required from 'void Eigen::internal::set_from_triplets(const InputIterator&, const InputIterator&, SparseMatrixType&, int) [with InputIterator = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; SparseMatrixType = Eigen::SparseMatrix<double>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:1013:30:   required from 'void Eigen::SparseMatrix<_Scalar, _Flags, _Index>::setFromTriplets(const InputIterators&, const InputIterators&) [with InputIterators = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; _Scalar = double; int _Options = 0; _Index = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/MatrixGenerator.h:65:59:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:56:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<int>::type {aka __vector(2) long long int}' [-Wignored-attributes]
+                      >::type PacketReturnType;
+                              ^~~~~~~~~~~~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h: In instantiation of 'class Eigen::DenseCoeffsBase<Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >, 0>':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/util/XprHelper.h:371:8:   required from 'struct Eigen::internal::special_scalar_op_base<Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >, int, int, false>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseBase.h:41:34:   required from 'class Eigen::DenseBase<Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> > >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:48:34:   required from 'class Eigen::MatrixBase<Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> > >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:49:7:   required from 'class Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:334:30:   required from 'Derived& Eigen::DenseBase<Derived>::setConstant(const Scalar&) [with Derived = Eigen::Matrix<int, -1, 1>; Eigen::DenseBase<Derived>::Scalar = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:501:21:   required from 'Derived& Eigen::DenseBase<Derived>::setZero() [with Derived = Eigen::Matrix<int, -1, 1>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:949:5:   required from 'void Eigen::internal::set_from_triplets(const InputIterator&, const InputIterator&, SparseMatrixType&, int) [with InputIterator = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; SparseMatrixType = Eigen::SparseMatrix<double>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:1013:30:   required from 'void Eigen::SparseMatrix<_Scalar, _Flags, _Index>::setFromTriplets(const InputIterators&, const InputIterators&) [with InputIterators = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; _Scalar = double; int _Options = 0; _Index = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/MatrixGenerator.h:65:59:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:56:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<int>::type {aka __vector(2) long long int}' [-Wignored-attributes]
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h: In instantiation of 'class Eigen::DenseCoeffsBase<Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> > >, 0>':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/util/XprHelper.h:371:8:   required from 'struct Eigen::internal::special_scalar_op_base<Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> > >, int, int, false>'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseBase.h:41:34:   required from 'class Eigen::DenseBase<Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> > > >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/MatrixBase.h:48:34:   required from 'class Eigen::MatrixBase<Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> > > >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:49:7:   required from 'class Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> > >'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:334:30:   required from 'Derived& Eigen::DenseBase<Derived>::setConstant(const Scalar&) [with Derived = Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >; Eigen::DenseBase<Derived>::Scalar = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:501:21:   required from 'Derived& Eigen::DenseBase<Derived>::setZero() [with Derived = Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:1075:5:   required from 'Eigen::SparseMatrix<_Scalar, _Options, _Index>& Eigen::SparseMatrix<_Scalar, _Flags, _Index>::operator=(const Eigen::SparseMatrixBase<OtherDerived>&) [with OtherDerived = Eigen::SparseMatrix<double, 1, int>; _Scalar = double; int _Options = 0; _Index = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:966:7:   required from 'void Eigen::internal::set_from_triplets(const InputIterator&, const InputIterator&, SparseMatrixType&, int) [with InputIterator = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; SparseMatrixType = Eigen::SparseMatrix<double>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:1013:30:   required from 'void Eigen::SparseMatrix<_Scalar, _Flags, _Index>::setFromTriplets(const InputIterators&, const InputIterators&) [with InputIterators = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; _Scalar = double; int _Options = 0; _Index = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/MatrixGenerator.h:65:59:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/DenseCoeffsBase.h:56:30: warning: ignoring attributes on template argument 'Eigen::internal::packet_traits<int>::type {aka __vector(2) long long int}' [-Wignored-attributes]
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:284:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h: In instantiation of 'struct Eigen::internal::assign_traits<Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> > > >':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:499:64:   required from 'Derived& Eigen::DenseBase<Derived>::lazyAssign(const Eigen::DenseBase<OtherDerived>&) [with OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> > >; Derived = Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:520:123:   required from 'static Derived& Eigen::internal::assign_selector<Derived, OtherDerived, false, false>::run(Derived&, const OtherDerived&) [with Derived = Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >; OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> > >]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:564:62:   required from 'Derived& Eigen::MatrixBase<Derived>::operator=(const Eigen::DenseBase<OtherDerived>&) [with OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> > >; Derived = Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:334:20:   required from 'Derived& Eigen::DenseBase<Derived>::setConstant(const Scalar&) [with Derived = Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >; Eigen::DenseBase<Derived>::Scalar = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:501:21:   required from 'Derived& Eigen::DenseBase<Derived>::setZero() [with Derived = Eigen::Map<Eigen::Matrix<int, -1, 1>, 0, Eigen::Stride<0, 0> >]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:1075:5:   required from 'Eigen::SparseMatrix<_Scalar, _Options, _Index>& Eigen::SparseMatrix<_Scalar, _Flags, _Index>::operator=(const Eigen::SparseMatrixBase<OtherDerived>&) [with OtherDerived = Eigen::SparseMatrix<double, 1, int>; _Scalar = double; int _Options = 0; _Index = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:966:7:   required from 'void Eigen::internal::set_from_triplets(const InputIterator&, const InputIterator&, SparseMatrixType&, int) [with InputIterator = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; SparseMatrixType = Eigen::SparseMatrix<double>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:1013:30:   required from 'void Eigen::SparseMatrix<_Scalar, _Flags, _Index>::setFromTriplets(const InputIterators&, const InputIterators&) [with InputIterators = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; _Scalar = double; int _Options = 0; _Index = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/MatrixGenerator.h:65:59:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:53:57: warning: enum constant in boolean context [-Wint-in-bool-context]
+     MayLinearVectorize = MightVectorize && MayLinearize && DstHasDirectAccess
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:57:41: warning: enum constant in boolean context [-Wint-in-bool-context]
+     MaySliceVectorize  = MightVectorize && DstHasDirectAccess
+                          ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h: In instantiation of 'struct Eigen::internal::assign_traits<Eigen::Matrix<int, -1, 1>, Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> > >':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:499:64:   required from 'Derived& Eigen::DenseBase<Derived>::lazyAssign(const Eigen::DenseBase<OtherDerived>&) [with OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >; Derived = Eigen::Matrix<int, -1, 1>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:414:30:   required from 'Derived& Eigen::PlainObjectBase<Derived>::lazyAssign(const Eigen::DenseBase<OtherDerived>&) [with OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >; Derived = Eigen::Matrix<int, -1, 1>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:520:123:   required from 'static Derived& Eigen::internal::assign_selector<Derived, OtherDerived, false, false>::run(Derived&, const OtherDerived&) [with Derived = Eigen::Matrix<int, -1, 1>; OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:621:72:   required from 'Derived& Eigen::PlainObjectBase<Derived>::_set_noalias(const Eigen::DenseBase<OtherDerived>&) [with OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >; Derived = Eigen::Matrix<int, -1, 1>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:606:114:   [ skipping 2 instantiation contexts, use -ftemplate-backtrace-limit=0 to disable ]
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Matrix.h:172:24:   required from 'Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols>& Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols>::operator=(const Eigen::MatrixBase<OtherDerived>&) [with OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >; _Scalar = int; int _Rows = -1; int _Cols = 1; int _Options = 0; int _MaxRows = -1; int _MaxCols = 1]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:334:20:   required from 'Derived& Eigen::DenseBase<Derived>::setConstant(const Scalar&) [with Derived = Eigen::Matrix<int, -1, 1>; Eigen::DenseBase<Derived>::Scalar = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:501:21:   required from 'Derived& Eigen::DenseBase<Derived>::setZero() [with Derived = Eigen::Matrix<int, -1, 1>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:949:5:   required from 'void Eigen::internal::set_from_triplets(const InputIterator&, const InputIterator&, SparseMatrixType&, int) [with InputIterator = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; SparseMatrixType = Eigen::SparseMatrix<double>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:1013:30:   required from 'void Eigen::SparseMatrix<_Scalar, _Flags, _Index>::setFromTriplets(const InputIterators&, const InputIterators&) [with InputIterators = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; _Scalar = double; int _Options = 0; _Index = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/MatrixGenerator.h:65:59:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:53:57: warning: enum constant in boolean context [-Wint-in-bool-context]
+     MayLinearVectorize = MightVectorize && MayLinearize && DstHasDirectAccess
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:54:41: warning: enum constant in boolean context [-Wint-in-bool-context]
+                        && (DstIsAligned || MaxSizeAtCompileTime == Dynamic),
+                           ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:57:41: warning: enum constant in boolean context [-Wint-in-bool-context]
+     MaySliceVectorize  = MightVectorize && DstHasDirectAccess
+                          ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:96:50: warning: enum constant in boolean context [-Wint-in-bool-context]
+                 ? ( bool(MayUnrollCompletely) && bool(DstIsAligned) ? int(CompleteUnrolling) : int(NoUnrolling) )
+                                                  ^~~~~~~~~~~~~~~~~~
+In file included from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Core:284:0,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/Dense:1,
+                 from /gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/TP2/sparsemv_mpi.cpp:17:
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h: In instantiation of 'static void Eigen::internal::assign_impl<Derived1, Derived2, 3, 0, Version>::run(Derived1&, const Derived2&) [with Derived1 = Eigen::Matrix<int, -1, 1>; Derived2 = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >; int Version = 0]':
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:500:85:   required from 'Derived& Eigen::DenseBase<Derived>::lazyAssign(const Eigen::DenseBase<OtherDerived>&) [with OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >; Derived = Eigen::Matrix<int, -1, 1>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:414:30:   required from 'Derived& Eigen::PlainObjectBase<Derived>::lazyAssign(const Eigen::DenseBase<OtherDerived>&) [with OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >; Derived = Eigen::Matrix<int, -1, 1>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:520:123:   required from 'static Derived& Eigen::internal::assign_selector<Derived, OtherDerived, false, false>::run(Derived&, const OtherDerived&) [with Derived = Eigen::Matrix<int, -1, 1>; OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:621:72:   required from 'Derived& Eigen::PlainObjectBase<Derived>::_set_noalias(const Eigen::DenseBase<OtherDerived>&) [with OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >; Derived = Eigen::Matrix<int, -1, 1>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/PlainObjectBase.h:606:114:   [ skipping 2 instantiation contexts, use -ftemplate-backtrace-limit=0 to disable ]
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Matrix.h:172:24:   required from 'Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols>& Eigen::Matrix<_Scalar, _Rows, _Cols, _Options, _MaxRows, _MaxCols>::operator=(const Eigen::MatrixBase<OtherDerived>&) [with OtherDerived = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<int>, Eigen::Matrix<int, -1, 1> >; _Scalar = int; int _Rows = -1; int _Cols = 1; int _Options = 0; int _MaxRows = -1; int _MaxCols = 1]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:334:20:   required from 'Derived& Eigen::DenseBase<Derived>::setConstant(const Scalar&) [with Derived = Eigen::Matrix<int, -1, 1>; Eigen::DenseBase<Derived>::Scalar = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/CwiseNullaryOp.h:501:21:   required from 'Derived& Eigen::DenseBase<Derived>::setZero() [with Derived = Eigen::Matrix<int, -1, 1>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:949:5:   required from 'void Eigen::internal::set_from_triplets(const InputIterator&, const InputIterator&, SparseMatrixType&, int) [with InputIterator = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; SparseMatrixType = Eigen::SparseMatrix<double>]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/SparseCore/SparseMatrix.h:1013:30:   required from 'void Eigen::SparseMatrix<_Scalar, _Flags, _Index>::setFromTriplets(const InputIterators&, const InputIterators&) [with InputIterators = __gnu_cxx::__normal_iterator<Eigen::Triplet<double>*, std::vector<Eigen::Triplet<double> > >; _Scalar = double; int _Options = 0; _Index = int]'
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/src/MatrixVector/MatrixGenerator.h:65:59:   required from here
+/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/contrib/eigen/3.4/include/Eigen/src/Core/Assign.h:402:79: warning: enum constant in boolean context [-Wint-in-bool-context]
+     const Index alignedStart = assign_traits<Derived1,Derived2>::DstIsAligned ? 0
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+                              : internal::first_aligned(&dst.coeffRef(0), size);
+                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+make[2]: *** [src/TP2/CMakeFiles/sparsemv_mpi.exe.dir/build.make:63: src/TP2/CMakeFiles/sparsemv_mpi.exe.dir/sparsemv_mpi.cpp.o] Error 1
+make[2]: Leaving directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make[1]: *** [CMakeFiles/Makefile2:339: src/TP2/CMakeFiles/sparsemv_mpi.exe.dir/all] Error 2
+make[1]: Leaving directory '/home/gext/dimitrios.tsitsos/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/build'
+make: *** [Makefile:130: all] Error 2
