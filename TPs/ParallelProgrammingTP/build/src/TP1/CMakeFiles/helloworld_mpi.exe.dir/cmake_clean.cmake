@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/helloworld_mpi.exe.dir/helloworld_mpi.cpp.o"
-  "helloworld_mpi.exe.pdb"
   "helloworld_mpi.exe"
+  "helloworld_mpi.exe.pdb"
 )
 
 # Per-language clean rules from dependency scanning.
