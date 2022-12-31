@@ -67,6 +67,15 @@ class CSRMatrix
       }
       m_kcol[nrows] = k ;
     }
+	
+	void setFromvectors (int nrows, std::vector<int> & row_ptr, std::vector<int> & col_idx,std::vector<double> & values)
+	{
+		m_nrows=nrows;
+		m_nnz = col_idx.size();
+		m_kcol=row_ptr;
+		m_cols=col_idx;
+		m_values=values; 
+	}
 
     void mult(VectorType const& x, VectorType& y) const
     {
@@ -92,6 +101,23 @@ class CSRMatrix
          // todo OPENMP
       }
     }
+	
+	
+	int* get_kcol()
+	{
+		return m_kcol.data();
+	}
+	
+	int* get_cols()
+	{
+		return m_cols.data();
+	}
+	
+	double* get_values()
+	{
+		return m_values.data();
+	}
+	std::size_t get_nnz(){return m_nnz;}
   private:
     // number of lines
     std::size_t         m_nrows = 0;

@@ -1,0 +1,14 @@
+mean fps : 51.9892 mode :1 nb_threads :1
+mean fps : 97.562 mode :1 nb_threads :2
+mean fps : 185.633 mode :1 nb_threads :4
+mean fps : 343.982 mode :1 nb_threads :8
+mean fps : 499.239 mode :1 nb_threads :12
+mean fps : 442.184 mode :1 nb_threads :16
+mean fps : 618.563 mode :1 nb_threads :24
+mean fps : 51.1821 mode :2 nb_threads :1
+mean fps : 94.3026 mode :2 nb_threads :2
+mean fps : 177.967 mode :2 nb_threads :4
+mean fps : 316.075 mode :2 nb_threads :8
+mean fps : 395.025 mode :2 nb_threads :12
+mean fps : 425.179 mode :2 nb_threads :16
+mean fps : 456.623 mode :2 nb_threads :24

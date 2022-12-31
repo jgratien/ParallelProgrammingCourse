@@ -87,6 +87,7 @@ int main(int argc, char** argv)
     {
       Timer::Sentry sentry(timer,"EigenDenseMV") ;
       y = matrix*x ;
+	  
     }
 
     double normy = PPTP::norm2(y) ;
