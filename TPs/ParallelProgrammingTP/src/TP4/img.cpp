@@ -46,7 +46,8 @@ int main( int argc, char** argv )
 
     std::string img_file = vm["file"].as<std::string>() ;
     Mat image;
-    image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);   // Read the file
+    //image = imread(img_file.c_str(), CV_LOAD_IMAGE_COLOR);   // Read the file
+    image = imread(img_file.c_str(), cv::IMREAD_COLOR);   // Read the file
 
     if(! image.data )                              // Check for invalid input
     {
@@ -159,7 +160,8 @@ int main( int argc, char** argv )
     {
 
       Mat gray_image;
-      cvtColor(image,gray_image,CV_BGR2GRAY);
+      //cvtColor(image,gray_image,CV_BGR2GRAY);
+      cvtColor(image,gray_image,cv::COLOR_BGR2RGB);
       imwrite("./Gray_Image.jpg",gray_image) ;
 
       cout<<"NB CHANNELS : "<<gray_image.channels()<<std::endl ;

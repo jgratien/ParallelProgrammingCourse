@@ -2,28 +2,24 @@
 
 FIND_PROGRAM(MPI_EXEC_NAME mpiexec
   PATHS
- $ENV{MPI_ROOT}
- PATH_SUFFIXES
-    bin #   bin64
+  $ENV{MPI_ROOT}
+  PATH_SUFFIXES
+  bin #   bin64
   NO_DEFAULT_PATH
 )
 
 FIND_PATH(MPI_INCLUDE_DIR mpi.h
-  PATHS
-  $ENV{MPI_ROOT}
-  PATH_SUFFIXES
-   include #include64
-  NO_DEFAULT_PATH
-)
+          PATHS $ENV{MPI_ROOT}
+          PATH_SUFFIXES include lib/x86_64-linux-gnu/openmpi/include #include64
+          NO_DEFAULT_PATH
+         )
 
 foreach(_lib mpi mpi_cxx)
   find_library(LIB_SUB_${_lib} ${_lib}
-  PATHS
-  $ENV{MPI_ROOT}
-  PATH_SUFFIXES
-    lib
-  NO_DEFAULT_PATH
-)
+               PATHS $ENV{MPI_ROOT}
+               PATH_SUFFIXES lib lib/x86_64-linux-gnu
+               NO_DEFAULT_PATH
+              )
   if(LIB_SUB_${_lib})
     set(MPI_LIBRARY ${MPI_LIBRARY} ${LIB_SUB_${_lib}})
   else(LIB_SUB_${_lib})

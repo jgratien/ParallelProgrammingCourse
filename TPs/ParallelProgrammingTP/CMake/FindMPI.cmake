@@ -18,7 +18,7 @@ FIND_PATH(MPI_INCLUDE_DIR mpi.h
   PATHS 
   $ENV{MPI_ROOT}
   PATH_SUFFIXES
-   include64
+  include include64
   NO_DEFAULT_PATH
 )
 
@@ -26,7 +26,7 @@ FIND_LIBRARY(MPI_LIBRARY NAMES libmpi.so
   PATHS 
   $ENV{MPI_ROOT}
   PATH_SUFFIXES
-   lib64
+  lib64 lib/x86_64-linux-gnu
   NO_DEFAULT_PATH
 )
 

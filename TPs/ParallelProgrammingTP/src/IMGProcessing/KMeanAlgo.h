@@ -46,6 +46,7 @@ namespace PPTP
 		{
 			std::cout<<"ComputeSegmentation"<<std::endl ;
               using namespace cv ;
+		          int icount = 0 ;
 		      switch(m_nb_channels)
 		      {
 		        case 1:
@@ -61,7 +62,6 @@ namespace PPTP
 		          break ;
 		        case 3:
 		          Mat_<Vec3b> _I = image;
-		          int icount = 0 ;
 		          for(std::size_t i=0;i<image.rows;++i)
 		          {
 		            for(int j=0;j<image.cols;++j)
