@@ -1,0 +1,18 @@
+build:
+  tags:
+    - Docker-2
+  image: docker:20.10.18-dind
+  script:
+    - mkdir ${HOME}/.docker
+    - echo "${DOCKER_AUTH_CONFIG}" > ${HOME}/.docker/config.json
+    - chmod 600 ${HOME}/.docker/config.json
+    - cd TPs/ParallelProgrammingTP/docker
+    - docker build -t gratienj/parallelprogramming-tp-ubuntu2204:1.0.0 .
+    - docker tag gratienj/parallelprogramming-tp-ubuntu2204:1.0.0 gratienj/parallelprogramming-tp-ubuntu2204:latest
+    - docker push gratienj/parallelprogramming-tp-ubuntu2204:1.0.0
+    - docker push gratienj/parallelprogramming-tp-ubuntu2204:latest
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: on_success
+
+
