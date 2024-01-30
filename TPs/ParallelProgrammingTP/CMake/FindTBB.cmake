@@ -11,42 +11,42 @@ endif()
 if(NOT TBB_FOUND)
 
   find_library(TBB_LIBRARY_DEBUG
-               NAMES tbb_debug
-               HINTS ${TBB_ROOT} ${TBB_LIBRARY_PATH}
-               PATH_SUFFIXES lib lib/intel64/gcc4.4 lib/intel64/cc4.1.0_libc2.4_kernel2.6.16.21
-               ${_TBB_SEARCH_OPTS}
-              )
+    NAMES tbb_debug
+    HINTS ${TBB_ROOT} 
+	PATH_SUFFIXES lib lib/x86_64-linux-gnu lib/intel64/gcc4.4 lib/intel64/cc4.1.0_libc2.4_kernel2.6.16.21
+    ${_TBB_SEARCH_OPTS}
+    )
   mark_as_advanced(TBB_LIBRARY_DEBUG)
 
   find_library(TBB_LIBRARY_RELEASE
-               NAMES tbb
-               HINTS ${TBB_ROOT} ${TBB_LIBRARY_PATH}
-               PATH_SUFFIXES lib lib/intel64/gcc4.4 lib/intel64/cc4.1.0_libc2.4_kernel2.6.16.21
-               ${_TBB_SEARCH_OPTS}
-              )
+    NAMES tbb
+    HINTS ${TBB_ROOT} 
+	PATH_SUFFIXES lib lib/x86_64-linux-gnu lib/intel64/gcc4.4 lib/intel64/cc4.1.0_libc2.4_kernel2.6.16.21
+    ${_TBB_SEARCH_OPTS}
+    )
   mark_as_advanced(TBB_LIBRARY_RELEASE)
   message(status "TBB LIB : ${TBB_LIBRARY_RELEASE}")
 
   find_library(TBB_MAIN_LIBRARY_DEBUG
-               NAMES tbb_main
-               HINTS ${TBB_ROOT} 
-	       PATH_SUFFIXES lib/Debug lib lib/intel64/gcc4.4
-               ${_TBB_SEARCH_OPTS}
-              )
+    NAMES tbb_main
+    HINTS ${TBB_ROOT} 
+		PATH_SUFFIXES lib/Debug lib lib/intel64/gcc4.4
+    ${_TBB_SEARCH_OPTS}
+    )
   mark_as_advanced(TBB_MAIN_LIBRARY_DEBUG)
 
-  find_path(TBB_INCLUDE_DIR tbb/tbb_thread.h
-            HINTS ${TBB_ROOT} 
-            PATH_SUFFIXES include
-            ${_TBB_SEARCH_OPTS}
-           )
+  find_path(TBB_INCLUDE_DIR tbb/tbb.h
+    HINTS ${TBB_ROOT} 
+		PATH_SUFFIXES include
+    ${_TBB_SEARCH_OPTS}
+    )
   mark_as_advanced(TBB_INCLUDE_DIR)
   message(status "TBB INC : ${TBB_INCLUDE_DIR}")
   
   if(NOT TBB_LIBRARY_RELEASE)
     find_path(TBB_LIB_DIR libtbb.so
-              HINTS ${TBB_ROOT} ${TBB_LIBRARY_PATH}
-              #PATH_SUFFIXES lib lib/intel64/gcc4.4
+              HINTS ${TBB_ROOT} 
+              PATH_SUFFIXES lib lib/intel64/gcc4.4 lib/x86_64-linux-gnu
               ${_TBB_SEARCH_OPTS}
               )
     if(TBB_LIB_DIR)
