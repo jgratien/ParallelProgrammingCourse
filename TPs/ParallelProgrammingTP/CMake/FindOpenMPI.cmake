@@ -2,17 +2,17 @@
 
 FIND_PROGRAM(MPI_EXEC_NAME mpiexec
   PATHS
-  /usr
+ $ENV{MPI_ROOT} 
  PATH_SUFFIXES
- bin #   bin64
-  NO_DEFAULT_PATH
+ bin  bin64
+ NO_DEFAULT_PATH
 )
 
 FIND_PATH(MPI_INCLUDE_DIR mpi.h
   PATHS
   $ENV{MPI_ROOT}
   PATH_SUFFIXES
-  include #include64
+  include include64
   NO_DEFAULT_PATH
 )
 
@@ -21,7 +21,7 @@ foreach(_lib mpi mpi_cxx)
   PATHS
   $ENV{MPI_ROOT}
   PATH_SUFFIXES
-  lib
+  lib lib64
   NO_DEFAULT_PATH
 )
   if(LIB_SUB_${_lib})
