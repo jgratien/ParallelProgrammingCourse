@@ -1,0 +1,10 @@
+{
+    "workspaceFolder": "/app/ParallelProgrammingTP",
+    "postAttachCommand": ". /app/ParallelProgrammingTP/rocky8.env",
+    "userEnvProbe": "loginShell",
+    "remoteEnv": { "PATH": "${containerEnv:PATH}:/soft/irsrvsoft1/expl/eb/r11/el_8-x86_64/easybuild/software/CMake/3.28.1-GCCcore-11.2.0/bin" }
+    "extensions": [
+        "ms-vscode.cpptools-extension-pack",
+	"twxs.cmake"
+    ]
+}
