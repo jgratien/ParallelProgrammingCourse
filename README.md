@@ -15,8 +15,12 @@ a QuickSheet for docker main commands is [here](TPs/ParallelProgrammingTP/doc/Do
 
 ```bash
 $ cd TPs/ParallelProgrammingTP
+$ export UID=$(id -u)
+$ export GID=$(id -g)
 $ docker pull gratienj/parallelprogramming-tp-ubuntu2204:latest
 $ docker run -it --rm -v $PWD:/app/ParallelProgrammingTP  gratienj/parallelprogramming-tp-ubuntu2204:latest bash
+# to manage file rights permission you can use --user flag
+$ docker run -it --rm --user $UID:$GID -v $PWD:/app/ParallelProgrammingTP  gratienj/parallelprogramming-tp-ubuntu2204:latest bash
 #root@container
 #root@container > cd app/ParallelProgrammingTP
 #root@container > source ubuntu22.04.env
