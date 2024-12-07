@@ -11,6 +11,14 @@
 namespace PPTP
 {
 
+struct CSRData {
+    std::vector<int> kcol;  // Pointer to the range of m_kcol
+    std::vector<int> cols;   // Pointer to the range of m_cols
+    std::vector<double> values; // Pointer to the range of m_values
+    std::size_t nrows;
+    std::size_t nnz;
+};
+
 class CSRMatrix
 {
   public:
@@ -20,6 +28,7 @@ class CSRMatrix
     CSRMatrix(std::size_t nrows=0)
     : m_nrows(nrows)
     {}
+
     virtual ~CSRMatrix(){}
 
     void setChunkSize(int chunk_size)
@@ -33,6 +42,68 @@ class CSRMatrix
 
     std::size_t nnz() const {
       return m_nnz ;
+    }
+
+    CSRData data() {
+      return CSRData{m_kcol, m_cols, m_values, m_nrows, m_nnz};
+    }
+    
+
+    const int* kcol() const {
+      return m_kcol.data() ;
+    }
+
+    const int* cols() const{
+      return m_cols.data() ;
+    }
+
+    const double* values() const{
+      return m_values.data() ;
+    }
+
+
+    // Method to extract a submatrix
+    CSRMatrix extractSubmatrix(std::size_t start, std::size_t end) const {
+      // Check bounds
+      if (start >= end || end > m_nrows) {
+        throw std::out_of_range("Invalid range for submatrix extraction");
+      }
+
+      // Create new CSRMatrix for the result
+      CSRMatrix submatrix;
+      submatrix.m_nrows = end - start; // Number of rows in the submatrix
+      // Adjust kcols for the submatrix
+      submatrix.m_kcol.resize(submatrix.m_nrows + 1);
+      std::size_t nnz_start = m_kcol[start]; // First non-zero index in the range
+      for (std::size_t i = start; i < end; ++i) {
+        submatrix.m_kcol[i - start] = m_kcol[i] - nnz_start;
+      }
+      submatrix.m_kcol[submatrix.m_nrows] = m_kcol[end] - nnz_start; // Final row pointer
+  
+      // Extract relevant cols and values
+      std::size_t nnz_end = m_kcol[end]; // Last non-zero index in the range
+      submatrix.m_cols.assign(m_cols.begin() + nnz_start, m_cols.begin() + nnz_end);
+      submatrix.m_values.assign(m_values.begin() + nnz_start, m_values.begin() + nnz_end);
+      submatrix.m_nnz = nnz_end - nnz_start;
+
+      return submatrix;
+   }
+
+    void copyCSRMatrixFromData(const std::vector<double>& data) {      
+      // Update matrix metadata
+      m_nrows = static_cast<int>(data[0]);
+      m_nnz = static_cast<int>(data[1]);
+
+      // Resize vectors in the CSRMatrix
+      m_kcol.resize(m_nrows + 1);
+      m_cols.resize(m_nnz);
+      m_values.resize(m_nnz);
+
+      // Copy data from the received struct into the vectors
+      std::copy(data.begin() + 2, data.begin() + 2 + (m_nrows + 1), m_kcol.begin());
+      std::copy(data.begin() + 2 + (m_nrows + 1), data.begin() + 2 + (m_nrows + 1) + m_nnz, m_cols.begin());
+      std::copy(data.begin() + 2 + (m_nrows + 1) + m_nnz, data.end(), m_values.begin());
+
     }
 
     void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries)
