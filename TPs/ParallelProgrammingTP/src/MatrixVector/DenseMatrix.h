@@ -104,6 +104,7 @@ namespace PPTP
       {
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
+
         double const* matrix_ptr = m_values.data() ;
         for(std::size_t irow =0; irow<m_nrows;++irow)
         {
@@ -122,8 +123,18 @@ namespace PPTP
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
 
+        #pragma omp parallel for schedule(static) default(none) shared(x, y, m_values)
+        for (std::size_t irow = 0; irow < m_nrows; ++irow)
         {
-           // TODO OPENMP
+          double const* matrix_ptr = &m_values[irow * m_nrows];
+          double value = 0.0;
+
+          for (std::size_t jcol = 0; jcol < m_nrows; ++jcol)
+          {
+            value += matrix_ptr[jcol] * x[jcol];
+          }
+
+          y[irow] = value;
         }
       }
 
@@ -132,9 +143,34 @@ namespace PPTP
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
 
-        std::size_t nb_task = (m_nrows+m_chunk_size-1)/m_chunk_size ;
+        //std::size_t num_chunks = (m_nrows+m_chunk_size-1)/m_chunk_size ;
+        #pragma omp parallel
         {
-            //TODO TASK OPENMP
+          #pragma omp single
+          {
+            for(std::size_t chunk = 0; chunk < m_nrows; chunk += m_chunk_size)
+            {
+              #pragma omp task
+              {
+
+                std::size_t end = std::min(chunk + m_chunk_size, m_nrows) ;
+
+                for (std::size_t irow = chunk; irow < end; ++irow)
+                {
+                  double const* matrix_ptr = &m_values[irow * m_nrows];
+                  double value = 0.0;
+
+                  for (std::size_t jcol = 0; jcol < m_nrows; ++jcol)
+                  {
+                    value += matrix_ptr[jcol] * x[jcol];
+                  }
+
+                  y[irow] = value;
+                }
+              }
+            }
+          }
+          #pragma omp taskwait
         }
       }
 
@@ -143,42 +179,99 @@ namespace PPTP
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
 
-        std::size_t nb_task = (m_nrows+m_chunk_size-1)/m_chunk_size ;
-        {
+        std::size_t tile_size = m_chunk_size;  // Size of each tile (rows and columns)
+        std::size_t num_tiles_row = (m_nrows + tile_size - 1) / tile_size;
+        std::size_t num_tiles_col = (m_nrows + tile_size - 1) / tile_size;
 
-            {
-              // TODO TASK OPENMP 2D
+        #pragma omp parallel
+        {
+          #pragma omp single
+          {
+            for (std::size_t row_tile = 0; row_tile < num_tiles_row; ++row_tile) {
+                for (std::size_t col_tile = 0; col_tile < num_tiles_col; ++col_tile) {
+                    #pragma omp task
+                    {
+                      std::size_t row_start = row_tile * tile_size;
+                      std::size_t row_end = std::min(row_start + tile_size, m_nrows);
+
+                      std::size_t col_start = col_tile * tile_size;
+                      std::size_t col_end = std::min(col_start + tile_size, m_nrows);
+
+                      for (std::size_t irow = row_start; irow < row_end; ++irow) {
+                        double const* matrix_ptr = &m_values[irow * m_nrows];
+                        double value = 0.0;
+
+                        for (std::size_t jcol = col_start; jcol < col_end; ++jcol) {
+                          value += matrix_ptr[jcol] * x[jcol];
+                        }
+
+                        #pragma omp atomic
+                        y[irow] += value;
+                      }
+                    }
+                }
             }
+          }
         }
       }
 
       void tbbmult(VectorType const& x, VectorType& y) const
       {
-        assert(x.size()>=m_nrows) ;
-        assert(y.size()>=m_nrows) ;
+          assert(x.size() >= m_nrows);
+          assert(y.size() >= m_nrows);
 
-        {
-            //TODO TBB
-        }
+          // Parallelize over the rows of the matrix
+          tbb::parallel_for(std::size_t(0), m_nrows, [&](std::size_t irow) {
+              double value = 0.0;
+              double const* matrix_ptr = &m_values[irow * m_nrows];  // Pointer to the start of row irow
+
+              // Perform the matrix-vector multiplication for the current row
+              for (std::size_t jcol = 0; jcol < m_nrows; ++jcol) {
+                  value += matrix_ptr[jcol] * x[jcol];  // Multiply and accumulate
+              }
+
+              y[irow] = value;  // Store the result in the output vector
+          });
       }
 
+      void tbbrangemult(VectorType const& x, VectorType& y) const {
+        assert(x.size() >= m_nrows);
+        assert(y.size() >= m_nrows);
 
-      void tbbrangemult(VectorType const& x, VectorType& y) const
-      {
-        assert(x.size()>=m_nrows) ;
-        assert(y.size()>=m_nrows) ;
-        {
-            // TODO TBB WITH RANGE
-        }
+        tbb::parallel_for(tbb::blocked_range<std::size_t>(0, m_nrows),
+        [&](const tbb::blocked_range<std::size_t>& r) {
+          for (std::size_t irow = r.begin(); irow < r.end(); ++irow) {
+            double value = 0.0;
+            double const* matrix_ptr = &m_values[irow * m_nrows];
+
+            for (std::size_t jcol = 0; jcol < m_nrows; ++jcol) {
+                value += matrix_ptr[jcol] * x[jcol];
+            }
+
+            y[irow] = value;
+          }
+        });  
       }
 
       void tbbrange2dmult(VectorType const& x, VectorType& y) const
       {
-        assert(x.size()>=m_nrows) ;
-        assert(y.size()>=m_nrows) ;
-        {
-                // TODO TBB RANGE 2D
-        }
+        assert(x.size() >= m_nrows);
+        assert(y.size() >= m_nrows);
+
+        std::size_t block_size = 64;  // Example block size, tune based on your matrix size
+        tbb::parallel_for(tbb::blocked_range2d<std::size_t>(0, m_nrows, 0, m_nrows, block_size, block_size),
+        [&](const tbb::blocked_range2d<std::size_t>& r) {
+          for (std::size_t irow = r.rows().begin(); irow < r.rows().end(); ++irow) {
+            double value = 0.0;
+            double const* matrix_ptr = &m_values[irow * m_nrows];
+
+            for (std::size_t jcol = r.cols().begin(); jcol < r.cols().end(); ++jcol) {
+              value += matrix_ptr[jcol] * x[jcol];
+            }
+
+            y[irow] = value;
+          }
+        });
       }
 
     private:
