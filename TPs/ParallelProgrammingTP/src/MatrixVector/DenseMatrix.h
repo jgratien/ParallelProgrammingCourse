@@ -8,6 +8,7 @@
 #ifndef SRC_MATRIXVECTOR_DENSEMATRIX_H_
 #define SRC_MATRIXVECTOR_DENSEMATRIX_H_
 
+#include "tbb/tbb.h"
 namespace PPTP
 {
 
