@@ -17,6 +17,12 @@ struct CSRData {
     std::vector<double> values; // Pointer to the range of m_values
     std::size_t nrows;
     std::size_t nnz;
+
+    CSRData() : nrows(0), nnz(0) {}
+    CSRData(std::vector<int> n_kcol
+    , std::vector<int> n_cols
+    , std::vector<double> n_values
+    ,std::size_t n_nrows, std::size_t n_nnz) : nrows(n_nrows), nnz(n_nnz), kcol(n_kcol), cols(n_cols), values(n_values) {}
 };
 
 class CSRMatrix
@@ -105,6 +111,23 @@ class CSRMatrix
       std::copy(data.begin() + 2 + (m_nrows + 1) + m_nnz, data.end(), m_values.begin());
 
     }
+
+    void copyCSRMatrixFromCSRData(const PPTP::CSRData& csr_data) {
+        // Update matrix metadata
+        m_nrows = csr_data.nrows;
+        m_nnz = csr_data.nnz;
+
+        // Resize vectors in the CSRMatrix
+        m_kcol.resize(m_nrows + 1);
+        m_cols.resize(m_nnz);
+        m_values.resize(m_nnz);
+
+        // Copy data from CSRData into the vectors
+        std::copy(csr_data.kcol.begin(), csr_data.kcol.end(), m_kcol.begin());
+        std::copy(csr_data.cols.begin(), csr_data.cols.end(), m_cols.begin());
+        std::copy(csr_data.values.begin(), csr_data.values.end(), m_values.begin());
+    }
+
 
     void setFromTriplets(int nrows, std::vector<MatrixEntryType> const& entries)
     {

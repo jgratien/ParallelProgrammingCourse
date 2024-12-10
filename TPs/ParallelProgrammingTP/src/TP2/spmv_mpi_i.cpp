@@ -225,71 +225,67 @@ int main(int argc, char** argv)
 
       {
         Timer::Sentry sentry(timer,"SpMV") ;
-        {
-          matrix.mult(x,y) ;
-        }
+        matrix.mult(x,y) ;
+      }
       double normy = PPTP::norm2(y) ;
       std::cout<<"||y||="<<normy<<std::endl ;
-      }
-      
-
-      Timer::Sentry sentry(timer,"MPI_SpMV") ;
       
       full_data = matrix.data();
 
     }
 
     
+    std::vector<double> y;
     {
+      Timer::Sentry sentry(timer,"SpMV " + std::to_string(world_rank)) ;
       // gloal_matrix_size
       MPI_Bcast(&global_nrows, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
 
       // vector x
       x.resize(global_nrows);
       MPI_Bcast(x.data(), global_nrows, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+      std::vector<int> row_counts(world_size, 0), row_displs(world_size, 0);
+
+      scatterCSRMatrix(full_data, local_data,row_counts,
+                    row_displs, world_rank, world_size, MPI_COMM_WORLD);
+
+      local_matrix.copyCSRMatrixFromCSRData(local_data);
+      
+      // Step 7 : Computing the local multiplication
+      std::vector<double> local_y(local_matrix.nrows());
+      {
+        local_matrix.mult(x,local_y);
+      }    
+
+      // Gather the results back to process 0
+      if (world_rank == 0) {
+          y.resize(full_data.nrows);  // Resize on rank 0 to hold the entire result
+      } 
+
+      MPI_Gatherv(
+          local_y.data(),             // Local buffer
+          local_y.size(),             // Number of elements to send
+          MPI_DOUBLE,                 // Data type
+          y.data(),                   // Global buffer (on rank 0)
+          row_counts.data(),          // Counts of rows per process
+          row_displs.data(),          // Displacements
+          MPI_DOUBLE,                 // Data type
+          0,                          // Root process
+          MPI_COMM_WORLD                       // Communicator
+      );
     }
-
-    std::vector<int> row_counts(world_size, 0), row_displs(world_size, 0);
-
-    scatterCSRMatrix(full_data, local_data,row_counts,
-                   row_displs, world_rank, world_size, MPI_COMM_WORLD);
-
-    local_matrix.copyCSRMatrixFromCSRData(local_data);
-    
-    // Step 7 : Computing the local multiplication
-    std::vector<double> local_y(local_matrix.nrows());
-    {
-      local_matrix.mult(x,local_y);
-    }    
-
-    // Gather the results back to process 0
-    std::vector<double> y;
-    if (world_rank == 0) {
-        y.resize(full_data.nrows);  // Resize on rank 0 to hold the entire result
-    }
-
-    MPI_Gatherv(
-        local_y.data(),             // Local buffer
-        local_y.size(),             // Number of elements to send
-        MPI_DOUBLE,                 // Data type
-        y.data(),                   // Global buffer (on rank 0)
-        row_counts.data(),          // Counts of rows per process
-        row_displs.data(),          // Displacements
-        MPI_DOUBLE,                 // Data type
-        0,                          // Root process
-        MPI_COMM_WORLD                       // Communicator
-    );
 
     if (world_rank == 0)
     {
       double normy2 = PPTP::norm2(y);
       std::cout<<"||MPI - y||="<<normy2<<std::endl;
     }
+    
   }
 
 
-  if(world_rank == 0)
-    timer.printInfo();
+  timer.printInfo();
 
   MPI_Finalize();
   return 0 ;

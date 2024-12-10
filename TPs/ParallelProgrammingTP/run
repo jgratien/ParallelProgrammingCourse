@@ -15,7 +15,8 @@
 ### usage : oarsub -l core=32 -S ./job_exemple.sh
 
 ### indiquer votre executable
-MONPROG=/gext/jean-marc.gratien/ParallelProgrammingTP/bin/densemv_mpi.exe
+MONPROG_DENSE=./bin/densemv.exe
+MONPROG_SPMV=./bin/spmv_mpi.exe
 ### indiquer votre fichier de donnees
 MYDATA=
 
@@ -38,20 +39,33 @@ MPIRUN="/softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun"
 set -x
 export OMP_NUM_THREADS=1
 
-if [ -f $MONPROG ] ; then
+if [ -f $MONPROG_SPMV ] ; then
   if [ -f $MYDATA ] ; then
   for np in 1 2 4 8 12 16 24
   do
     for nx in 50 100 150 200
     do
-    $MPIRUN -np ${np}  $MONPROG --nx $nx > log-NX${nx}-NPI${np}
+    $MPIRUN -np ${np}  $MONPROG_SPMV --nx $nx > log-NX${nx}-NPI${np}
     done
   done
   else
     echo "ERREUR : data $MYDATA inexistant !!"
   fi
 else
-   echo "ERREUR : programme $MONPROG inexistant !!"
+   echo "ERREUR : programme $MONPROG_SPMV inexistant !!"
+fi
+
+if [ -f $MONPROG_DENSE ] ; then
+  if [ -f $MYDATA ] ; then
+    for nx in 50 100 150 200
+      do
+      $MONPROG_DENSE --nx $nx > log-NX${nx}
+    done
+  else
+    echo "ERREUR : data $MYDATA inexistant !!"
+  fi
+else
+   echo "ERREUR : programme $MONPROG_DENSE inexistant !!"
 fi
 
 
