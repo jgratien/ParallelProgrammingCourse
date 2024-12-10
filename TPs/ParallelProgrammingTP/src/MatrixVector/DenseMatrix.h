@@ -259,7 +259,7 @@ namespace PPTP
         assert(x.size() >= m_nrows);
         assert(y.size() >= m_nrows);
 
-        std::size_t block_size = 64;  // Example block size, tune based on your matrix size
+        std::size_t block_size = 16;  // Example block size, tune based on your matrix size
         tbb::parallel_for(tbb::blocked_range2d<std::size_t>(0, m_nrows, 0, m_nrows, block_size, block_size),
         [&](const tbb::blocked_range2d<std::size_t>& r) {
           for (std::size_t irow = r.rows().begin(); irow < r.rows().end(); ++irow) {
