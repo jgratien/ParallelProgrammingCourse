@@ -256,23 +256,30 @@ namespace PPTP
 
       void tbbrange2dmult(VectorType const& x, VectorType& y) const
       {
-        assert(x.size() >= m_nrows);
-        assert(y.size() >= m_nrows);
+          assert(x.size() >= m_nrows);
+          assert(y.size() >= m_nrows);
 
-        std::size_t block_size = 16;  // Example block size, tune based on your matrix size
-        tbb::parallel_for(tbb::blocked_range2d<std::size_t>(0, m_nrows, 0, m_nrows, block_size, block_size),
-        [&](const tbb::blocked_range2d<std::size_t>& r) {
-          for (std::size_t irow = r.rows().begin(); irow < r.rows().end(); ++irow) {
-            double value = 0.0;
-            double const* matrix_ptr = &m_values[irow * m_nrows];
+          std::size_t block_size = 16;  // Example block size, tune based on your matrix size
+          tbb::parallel_for(
+              tbb::blocked_range2d<std::size_t>(0, m_nrows, block_size, 0, m_nrows, block_size),
+              [&](const tbb::blocked_range2d<std::size_t>& r) {
+                  for (std::size_t irow = r.rows().begin(); irow < r.rows().end(); ++irow) {
+                      double partial_sum = 0.0;  // Local to this block
+                      double const* matrix_ptr = &m_values[irow * m_nrows];
 
-            for (std::size_t jcol = r.cols().begin(); jcol < r.cols().end(); ++jcol) {
-              value += matrix_ptr[jcol] * x[jcol];
-            }
+                      for (std::size_t jcol = r.cols().begin(); jcol < r.cols().end(); ++jcol) {
+                          partial_sum += matrix_ptr[jcol] * x[jcol];
+                      }
 
-            y[irow] = value;
-          }
-        });
+                      // Safely accumulate the result into y[irow]
+                      #pragma omp atomic
+                      y[irow] += partial_sum;
+                  }
+              });
+
+          // Optional: Handle initialization of y before the loop if the atomic operation above accumulates.
+          // This ensures values are initialized to zero:
+          std::fill(y.begin(), y.end(), 0.0);
       }
 
     private:
