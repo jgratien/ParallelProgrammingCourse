@@ -182,7 +182,7 @@ namespace PPTP
 
         std::fill(y.begin(), y.end(), 0.0); // Ensure y is initialized
 
-        std::size_t tile_size = std::max(m_chunk_size, m_nrows / 8); // Dynamically tune tile size
+        std::size_t tile_size = std::max(static_cast<std::size_t>(m_chunk_size), m_nrows / 8); // Dynamically tune tile size
         std::size_t num_tiles_row = (m_nrows + tile_size - 1) / tile_size;
 
         #pragma omp parallel
