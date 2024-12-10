@@ -175,46 +175,49 @@ namespace PPTP
         }
       }
 
-      void omptilemult(VectorType const& x, VectorType& y) const
+      void omptilemult(VectorType const& x, VectorType& y) const 
       {
-        assert(x.size()>=m_nrows) ;
-        assert(y.size()>=m_nrows) ;
+        assert(x.size() >= m_nrows);
+        assert(y.size() >= m_nrows);
 
-        std::size_t tile_size = m_chunk_size;  // Size of each tile (rows and columns)
+        std::fill(y.begin(), y.end(), 0.0); // Ensure y is initialized
+
+        std::size_t tile_size = std::max(m_chunk_size, m_nrows / 8); // Dynamically tune tile size
         std::size_t num_tiles_row = (m_nrows + tile_size - 1) / tile_size;
-        std::size_t num_tiles_col = (m_nrows + tile_size - 1) / tile_size;
 
         #pragma omp parallel
         {
+          std::vector<double> local_y(m_nrows, 0.0); // Private y for each thread
+
           #pragma omp single
           {
-            for (std::size_t row_tile = 0; row_tile < num_tiles_row; ++row_tile) {
-                for (std::size_t col_tile = 0; col_tile < num_tiles_col; ++col_tile) {
-                    #pragma omp task
-                    {
-                      std::size_t row_start = row_tile * tile_size;
-                      std::size_t row_end = std::min(row_start + tile_size, m_nrows);
+              for (std::size_t row_tile = 0; row_tile < num_tiles_row; ++row_tile) {
+                  std::size_t row_start = row_tile * tile_size;
+                  std::size_t row_end = std::min(row_start + tile_size, m_nrows);
 
-                      std::size_t col_start = col_tile * tile_size;
-                      std::size_t col_end = std::min(col_start + tile_size, m_nrows);
-
+                  #pragma omp task
+                  {
                       for (std::size_t irow = row_start; irow < row_end; ++irow) {
-                        double const* matrix_ptr = &m_values[irow * m_nrows];
-                        double value = 0.0;
+                          double const* matrix_ptr = &m_values[irow * m_nrows];
+                          double value = 0.0;
 
-                        for (std::size_t jcol = col_start; jcol < col_end; ++jcol) {
-                          value += matrix_ptr[jcol] * x[jcol];
-                        }
+                          for (std::size_t jcol = 0; jcol < m_nrows; ++jcol) {
+                              value += matrix_ptr[jcol] * x[jcol];
+                          }
 
-                        #pragma omp atomic
-                        y[irow] += value;
+                          local_y[irow] += value;
                       }
-                    }
-                }
-            }
+                  }
+              }
+          }
+
+          #pragma omp critical
+          for (std::size_t i = 0; i < m_nrows; ++i) {
+              y[i] += local_y[i];
           }
         }
       }
+
 
       void tbbmult(VectorType const& x, VectorType& y) const
       {
