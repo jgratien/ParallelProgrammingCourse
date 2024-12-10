@@ -123,7 +123,7 @@ namespace PPTP
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
 
-        #pragma omp parallel for schedule(static) default(none) shared(x, y, m_values)
+        #pragma omp parallel for schedule(static) default(none) shared(x, y)
         for (std::size_t irow = 0; irow < m_nrows; ++irow)
         {
           double const* matrix_ptr = &m_values[irow * m_nrows];
