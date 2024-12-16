@@ -1,0 +1,33 @@
+image: mahammedelsharkawy/angrybirdsimage-project:latest
+
+stages:
+  - build
+  - test
+
+build:
+    stage: build
+    script:
+
+      - echo "Building..."
+      - mkdir build
+      - cd build
+      - conan profile detect
+      - conan install .. --build=missing
+      - cmake -DCMAKE_TOOLCHAIN_FILE=Release/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release ..
+      - cmake --build .
+
+    artifacts:
+      paths:
+        - build
+
+test:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - echo "Running test..."
+    - cd build
+    - ctest --output-on-failure
+
+
+

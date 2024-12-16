@@ -1,10 +1,3 @@
-/*
- * CSRMatrix.h
- *
- *  Created on: Sep 20, 2018
- *      Author: gratienj
- */
-
 #ifndef SRC_MATRIXVECTOR_CSRMATRIX_H_
 #define SRC_MATRIXVECTOR_CSRMATRIX_H_
 
@@ -90,8 +83,23 @@ class CSRMatrix
       assert(y.size()>=m_nrows) ;
       {
          // todo OPENMP
+        #pragma omp parallel_for
+        for(std::size_t irow =0; irow<m_nrows;++irow)
+        {
+          double value = 0 ;
+          for( int k = m_kcol[irow]; k < m_kcol[irow+1];++k)
+          {
+            value += m_values[k]*x[m_cols[k]] ;
+          }
+          y[irow] = value ;
+        }
       }
     }
+
+    const std::vector<int>& kcol() const { return m_kcol; }
+    const std::vector<int>& cols() const { return m_cols; }
+    const std::vector<double>& values() const { return m_values; }
+  
   private:
     // number of lines
     std::size_t         m_nrows = 0;

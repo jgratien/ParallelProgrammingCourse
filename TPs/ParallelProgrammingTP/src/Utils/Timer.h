@@ -59,6 +59,11 @@ class Timer
       }
       std::cout<<"================================"<<std::endl ;
     }
+    
+    const std::map<std::string, double>& getCounters() const {
+    return m_counters;
+    }
+
 
   private :
     std::map<std::string,double> m_counters ;
