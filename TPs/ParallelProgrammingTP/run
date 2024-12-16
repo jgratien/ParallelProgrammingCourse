@@ -57,9 +57,12 @@ fi
 
 if [ -f $MONPROG_DENSE ] ; then
   if [ -f $MYDATA ] ; then
-    for nx in 50 100 150 200
-      do
-      $MONPROG_DENSE --nx $nx > log-NX${nx}
+    for np in 1 2 4 8 12 16 24
+    do
+      for nx in 50 100 150 200
+        do
+        $MONPROG_DENSE --nx $nx --nb-threads $np> log-NX${nx}-NT${np}
+      done
     done
   else
     echo "ERREUR : data $MYDATA inexistant !!"
