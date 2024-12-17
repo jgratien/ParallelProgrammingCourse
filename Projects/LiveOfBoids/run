@@ -1,0 +1,24 @@
+#!/bin/bash
+
+MONPROG=./src/freebirds
+
+echo DEBUT
+date
+rm -rf OAR.*
+rm -rf boids.log
+touch boids.log
+if [ -f $MONPROG ] ; then
+    for np in 1 2 4 8 12 16 24
+    do
+      for boids in 100 500 1000 2000 5000 10000
+        do
+        $MONPROG --numAgents $boids --numPredators 0 --numPreys 0  --nbThreads $np >> boids.log
+      done
+    done
+else
+   echo "ERREUR : programme $MONPROG inexistant !!"
+fi
+
+
+date
+echo FIN

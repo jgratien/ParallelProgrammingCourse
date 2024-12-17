@@ -22,7 +22,8 @@ MYDATA=
 
 
 ### en execution standand, rien a changer ci-apres
-
+rm -rf *.out 
+rm -rf log-NX*
 echo DEBUT
 date
 

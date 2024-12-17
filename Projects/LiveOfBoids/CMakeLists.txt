@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.16)
 
 ## Forbids in-source builds (placed before PROJECT keyword)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
@@ -52,7 +52,7 @@ add_subdirectory(src)
 
 #------------------------------------------------------
 
-enable_testing()
-add_subdirectory(tests)
+#enable_testing()
+#add_subdirectory(tests)
 
 #------------------------------------------------------

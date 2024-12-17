@@ -1,2 +1,0 @@
-add_library(libGLX "glx.cpp" "glx.hpp" "GraphicalManager.hpp" "GraphicalManager.cpp" "graphics.hpp" "graphics.cpp" "oglTypes.hpp")
-target_link_libraries(libGLX PUBLIC glfw::glfw glad::glad opencv::opencv myControllers)
