@@ -8,6 +8,11 @@
 #ifndef SRC_MATRIXVECTOR_CSRMATRIX_H_
 #define SRC_MATRIXVECTOR_CSRMATRIX_H_
 
+#include <mpi.h>
+#include <vector>
+#include <tuple>
+#include <map>
+#include <cassert>
 namespace PPTP
 {
 
@@ -26,11 +31,9 @@ class CSRMatrix
     {
       m_chunk_size = chunk_size ;
     }
-
     std::size_t nrows() const {
       return m_nrows ;
     }
-
     std::size_t nnz() const {
       return m_nnz ;
     }
@@ -83,16 +86,7 @@ class CSRMatrix
       }
     }
 
-
-    void ompmult(VectorType const& x, VectorType& y) const
-    {
-      assert(x.size()>=m_nrows) ;
-      assert(y.size()>=m_nrows) ;
-      {
-         // todo OPENMP
-      }
-    }
-  private:
+  public:
     // number of lines
     std::size_t         m_nrows = 0;
 

@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/img.exe.dir/img.cpp.o"
-  "img.exe.pdb"
   "img.exe"
+  "img.exe.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

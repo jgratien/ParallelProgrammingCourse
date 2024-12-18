@@ -8,6 +8,7 @@
 #ifndef SRC_MATRIXVECTOR_DENSEMATRIX_H_
 #define SRC_MATRIXVECTOR_DENSEMATRIX_H_
 
+#include "tbb/tbb.h"
 namespace PPTP
 {
 
@@ -119,12 +120,24 @@ namespace PPTP
 
       void ompmult(VectorType const& x, VectorType& y) const
       {
-        assert(x.size()>=m_nrows) ;
-        assert(y.size()>=m_nrows) ;
-
-        {
-           // TODO OPENMP
-        }
+           // OpenMP
+	   assert(x.size()>=m_nrows) ;
+           assert(y.size()>=m_nrows) ;
+           
+	   
+	   
+           #pragma omp parallel for
+	   for(std::size_t irow =0; irow<m_nrows;++irow)
+           {
+	       double value = 0 ;
+	       double const* matr = m_values.data()+irow*m_nrows;
+               for( std::size_t k = 0; k < m_nrows;++k)
+               {
+                   value += matr[k]*x[k] ;
+               }
+               y[irow] = value ;
+           }
+	   
       }
 
       void omptaskmult(VectorType const& x, VectorType& y) const
@@ -133,24 +146,67 @@ namespace PPTP
         assert(y.size()>=m_nrows) ;
 
         std::size_t nb_task = (m_nrows+m_chunk_size-1)/m_chunk_size ;
+        #pragma omp parallel shared(x,y)
         {
-            //TODO TASK OPENMP
+
+          #pragma omp single
+          for(std::size_t i=0;i<nb_task;++i)
+          {
+            #pragma omp task
+            {
+              std::size_t debut = i*m_chunk_size ;
+              std::size_t fin = std::min(debut+m_chunk_size,m_nrows) ;
+              for(std::size_t irow =debut; irow<fin;++irow)
+              {
+                double const* ptr_matrix = &m_values[irow*m_nrows] ;
+                double value = 0 ;
+                for(std::size_t jcol =0; jcol<m_nrows;++jcol)
+                {
+                  value += ptr_matrix[jcol]*x[jcol] ;
+                }
+                y[irow] = value ;
+                ptr_matrix += m_nrows ;
+              }
+            }
+          }
         }
       }
 
       void omptilemult(VectorType const& x, VectorType& y) const
       {
-        assert(x.size()>=m_nrows) ;
-        assert(y.size()>=m_nrows) ;
+    	assert(x.size() >= m_nrows);
+    	assert(y.size() >= m_nrows);
 
-        std::size_t nb_task = (m_nrows+m_chunk_size-1)/m_chunk_size ;
-        {
+    	std::size_t nb_task = (m_nrows + m_chunk_size - 1) / m_chunk_size;
 
-            {
-              // TODO TASK OPENMP 2D
-            }
-        }
-      }
+    	#pragma omp parallel shared(x, y)
+    	{
+           #pragma omp single
+           {
+               for (std::size_t i = 0; i < nb_task; ++i) {
+                   for (std::size_t j = 0; j < nb_task; ++j) {
+                    #pragma omp task
+                    {
+                        std::size_t i_begin = i * m_chunk_size;
+                        std::size_t i_end = std::min(i_begin + m_chunk_size, m_nrows);
+                        std::size_t j_begin = j * m_chunk_size;
+                        std::size_t j_end = std::min(j_begin + m_chunk_size, m_ncols);
+
+                        for (std::size_t irow = i_begin; irow < i_end; ++irow) {
+                            double const* matrix_ptr = &m_values[irow * m_ncols];
+                            double value = 0;
+                            for (std::size_t jcol = j_begin; jcol < j_end; ++jcol) {
+                                value += matrix_ptr[jcol] * x[jcol];
+                            }
+                            #pragma omp atomic
+                            y[irow] += value;
+                        }
+                    }
+                 }
+             }
+         }
+       }
+     }
 
       void tbbmult(VectorType const& x, VectorType& y) const
       {
@@ -158,7 +214,7 @@ namespace PPTP
         assert(y.size()>=m_nrows) ;
 
         {
-            //TODO TBB
+            
         }
       }
 
@@ -167,19 +223,46 @@ namespace PPTP
       {
         assert(x.size()>=m_nrows) ;
         assert(y.size()>=m_nrows) ;
+	double const* matr = m_values.data();
         {
-            // TODO TBB WITH RANGE
+		tbb::parallel_for(std::size_t(0),m_nrows, [&](std::size_t irow){
+			    double value = 0;
+			    for ( std::size_t k = 0; k < m_nrows ; ++k ){
+			    	value += matr[irow*m_nrows + k]*x[k];
+			    }
+			    y[irow] = value;
+			    } );
         }
       }
 
-      void tbbrange2dmult(VectorType const& x, VectorType& y) const
-      {
-        assert(x.size()>=m_nrows) ;
-        assert(y.size()>=m_nrows) ;
-        {
-                // TODO TBB RANGE 2D
-        }
-      }
+    void tbbrange2dmult(VectorType const& x, VectorType& y) const
+    {
+       assert(x.size() >= m_nrows);
+       assert(y.size() >= m_nrows);
+
+       tbb::spin_mutex mutex;
+
+       tbb::parallel_for(
+           tbb::blocked_range2d<std::size_t>(0, m_nrows, m_chunk_size, 0, m_nrows, m_chunk_size),
+            [&](const tbb::blocked_range2d<std::size_t>& range)
+           {
+               for (std::size_t i = range.rows().begin(); i < range.rows().end(); ++i)
+               {
+                   const double* row_start = &m_values[i * m_nrows];
+                   double row_sum = 0.0;
+
+                   for (std::size_t j = range.cols().begin(); j < range.cols().end(); ++j)
+                   {
+                       row_sum += row_start[j] * x[j];
+                   }
+
+                   {
+                       tbb::spin_mutex::scoped_lock lock(mutex);
+                       y[i] += row_sum;
+                   }
+                }
+           });
+    }
 
     private:
       // number of lines

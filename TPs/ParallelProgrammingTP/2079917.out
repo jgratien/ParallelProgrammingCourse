@@ -1,0 +1,75 @@
+DEBUT
+Mon Dec 16 10:25:42 CET 2024
+execution sur 24 coeurs
+sur les nodes n-in8 n-in8 n-in8 n-in8 n-in8 n-in8 n-in8 n-in8 n-in8 n-in8 n-in8 n-in8 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9 n-in9
++ export OMP_NUM_THREADS=1
++ OMP_NUM_THREADS=1
++ '[' -f /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe ']'
++ '[' -f ']'
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 1 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 1 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 1 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 1 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 2 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 2 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 2 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 2 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 4 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 4 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 4 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 4 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 8 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 8 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 8 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 8 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 12 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 12 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 12 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 12 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 16 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 16 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 16 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 16 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 200
++ for np in 1 2 4 8 12 16 24
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 24 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 50
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 24 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 100
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 24 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 150
++ for nx in 50 100 150 200
++ /softs/mpi/openmpi-1.10.7/gcc-7.3.0/bin/mpirun -np 24 /gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe --nx 200
++ date
+Mon Dec 16 10:25:51 CET 2024
++ echo FIN
+FIN

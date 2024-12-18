@@ -1,0 +1,1 @@
+. "/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/build/Release/generators/conanbuildenv-release-x86_64.sh"

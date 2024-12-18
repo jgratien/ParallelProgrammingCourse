@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/my_libraries.dir/Grid.cpp.o"
+  "CMakeFiles/my_libraries.dir/Grid.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/agents/Agent.cpp.o"
+  "CMakeFiles/my_libraries.dir/agents/Agent.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/agents/Bird.cpp.o"
+  "CMakeFiles/my_libraries.dir/agents/Bird.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/agents/Eagle.cpp.o"
+  "CMakeFiles/my_libraries.dir/agents/Eagle.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/agents/Prey.cpp.o"
+  "CMakeFiles/my_libraries.dir/agents/Prey.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/config.cpp.o"
+  "CMakeFiles/my_libraries.dir/config.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/laws/Alignment.cpp.o"
+  "CMakeFiles/my_libraries.dir/laws/Alignment.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/laws/Avoidance.cpp.o"
+  "CMakeFiles/my_libraries.dir/laws/Avoidance.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/laws/Cohesion.cpp.o"
+  "CMakeFiles/my_libraries.dir/laws/Cohesion.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/laws/Hunting.cpp.o"
+  "CMakeFiles/my_libraries.dir/laws/Hunting.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/laws/Law.cpp.o"
+  "CMakeFiles/my_libraries.dir/laws/Law.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/laws/Separation.cpp.o"
+  "CMakeFiles/my_libraries.dir/laws/Separation.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/main.cpp.o"
+  "CMakeFiles/my_libraries.dir/main.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/utils/MathUtils.cpp.o"
+  "CMakeFiles/my_libraries.dir/utils/MathUtils.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/utils/Vec2.cpp.o"
+  "CMakeFiles/my_libraries.dir/utils/Vec2.cpp.o.d"
+  "CMakeFiles/my_libraries.dir/utils/utils.cpp.o"
+  "CMakeFiles/my_libraries.dir/utils/utils.cpp.o.d"
+  "libmy_libraries.a"
+  "libmy_libraries.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/my_libraries.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

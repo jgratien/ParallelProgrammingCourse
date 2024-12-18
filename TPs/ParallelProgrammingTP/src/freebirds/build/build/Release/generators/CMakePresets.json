@@ -1,0 +1,38 @@
+{
+    "version": 3,
+    "vendor": {
+        "conan": {}
+    },
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 15,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "conan-release",
+            "displayName": "'conan-release' config",
+            "description": "'conan-release' configure using 'Unix Makefiles' generator",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "toolchainFile": "generators/conan_toolchain.cmake",
+            "binaryDir": "/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/build/Release"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "conan-release",
+            "configurePreset": "conan-release",
+            "jobs": 20
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "conan-release",
+            "configurePreset": "conan-release"
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/CMakeFiles/coverage.dir
+/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/CMakeFiles/coverage-report.dir
+/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/CMakeFiles/clang-format.dir
+/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/CMakeFiles/edit_cache.dir
+/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/CMakeFiles/rebuild_cache.dir
+/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/src/CMakeFiles/my_libraries.dir
+/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/src/CMakeFiles/freebirds.dir
+/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/src/CMakeFiles/edit_cache.dir
+/home/nsnidi/Parallel_Programming/Parallel_Programming/src/freebirds/build/src/CMakeFiles/rebuild_cache.dir

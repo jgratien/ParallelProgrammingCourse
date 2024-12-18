@@ -1,0 +1,23 @@
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+# customized using https://zed0.co.uk/clang-format-configurator/
+---
+BasedOnStyle: 'Google'
+UseTab: 'Never'
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: true
+BreakBeforeBraces: Allman  # Change to Allman for new line before braces
+SpaceBeforeParens: ControlStatements
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBinaryOperators: All
+BreakInheritanceList: BeforeComma
+ColumnLimit: 120
+CompactNamespaces: false
+FixNamespaceComments: true
+IndentWidth: 4
+SpacesInParentheses: false
+SpaceAfterCStyleCast: true

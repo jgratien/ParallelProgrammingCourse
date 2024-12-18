@@ -15,7 +15,7 @@
 ### usage : oarsub -l core=32 -S ./job_exemple.sh
 
 ### indiquer votre executable
-MONPROG=/gext/jean-marc.gratien/ParallelProgrammingTP/bin/densemv_mpi.exe
+MONPROG=/gext/nabil.snidi/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe
 ### indiquer votre fichier de donnees
 MYDATA=
 

@@ -32,7 +32,7 @@ int main(int argc, char** argv)
   }
 
   // Initialize MPI
-  // MPI_Init(argc,arcv) ;
+  MPI_Init(&argc,&argv) ;
 
 
   PPTP::Timer timer ;
@@ -42,16 +42,37 @@ int main(int argc, char** argv)
 
     //#pragma omp ....CREATE PARALLEL SECTION
     {
-      int my_rank = 0 ;
-      int nb_procs = 1 ;
+      int my_rank = 4;
+      int nb_procs = 4 ;
+      int token = 0;
+      MPI_Status status;
+      MPI_Comm_size(MPI_COMM_WORLD, &nb_procs) ;
+      MPI_Comm_rank(MPI_COMM_WORLD, &my_rank) ;
       // get nb procs
       // get process rank
-      std::cout<<"Hello world ("<<my_rank<<","<<nb_procs<<")"<<std::endl ;
+
+      if (my_rank == 0 ){
+	      token += my_rank;
+	      MPI_Send(&token,1,MPI_INT, my_rank + 1, 0, MPI_COMM_WORLD);
+	      MPI_Recv(&token,1,MPI_INT, nb_procs - 1, 0, MPI_COMM_WORLD, &status);
+	} else if (my_rank == nb_procs - 1){
+		MPI_Recv(&token, 1, MPI_INT, my_rank -1 ,0,MPI_COMM_WORLD,&status);
+		token += my_rank;
+              MPI_Send(&token,1,MPI_INT, 0, 0, MPI_COMM_WORLD);	      
+	}
+      else {
+	      MPI_Recv(&token,1,MPI_INT, my_rank - 1, 0, MPI_COMM_WORLD,&status);
+	      token += my_rank;
+	      MPI_Send(&token,1, MPI_INT, my_rank + 1, 0, MPI_COMM_WORLD);
+	}   
+
+
+      std::cout<<"Hello world ("<<my_rank<<","<<nb_procs<<") token ="<<token<<std::endl ;
     }
   }
   timer.printInfo() ;
 
   // Finalyze MPI
-  // MPI_Finalize() ;
+  MPI_Finalize() ;
   return 0 ;
 }

@@ -1,0 +1,35 @@
+mode 0 : Sequential
+mode 1 : OpenMP
+mode 2 : TBB
+
+
+
+Simulation completed in mode 1 with 4 threads, 2000 birds, in 3.69531 ms.
+Simulation completed in mode 1 with 8 threads, 2000 birds, in 3.54877 ms.
+Simulation completed in mode 0 with 4 threads, 1000 birds, in 1.25948 ms.
+Simulation completed in mode 0 with 4 threads, 2000 birds, in 3.75198 ms.
+Simulation completed in mode 0 with 4 threads, 5000 birds, in 23.4876 ms.
+Simulation completed in mode 1 with 1 threads, 1000 birds, in 1.22912 ms.
+Simulation completed in mode 1 with 2 threads, 1000 birds, in 1.20796 ms.
+Simulation completed in mode 1 with 4 threads, 1000 birds, in 1.24868 ms.
+Simulation completed in mode 1 with 12 threads, 1000 birds, in 1.32815 ms.
+Simulation completed in mode 1 with 16 threads, 1000 birds, in 1.28377 ms.
+Simulation completed in mode 1 with 24 threads, 1000 birds, in 1.23707 ms.
+Simulation completed in mode 1 with 1 threads, 2000 birds, in 3.88963 ms.
+Simulation completed in mode 1 with 2 threads, 2000 birds, in 3.88998 ms.
+Simulation completed in mode 1 with 4 threads, 2000 birds, in 3.78676 ms.
+Simulation completed in mode 1 with 8 threads, 2000 birds, in 3.83782 ms.
+Simulation completed in mode 1 with 12 threads, 2000 birds, in 3.52274 ms.
+Simulation completed in mode 1 with 16 threads, 2000 birds, in 3.71114 ms.
+Simulation completed in mode 1 with 24 threads, 2000 birds, in 3.7676 ms.
+Simulation completed in mode 1 with 1 threads, 5000 birds, in 20.3392 ms.
+Simulation completed in mode 1 with 2 threads, 5000 birds, in 20.7354 ms.
+Simulation completed in mode 1 with 4 threads, 5000 birds, in 23.273 ms.
+Simulation completed in mode 1 with 8 threads, 5000 birds, in 23.141 ms.
+Simulation completed in mode 1 with 16 threads, 5000 birds, in 23.7257 ms.
+Simulation completed in mode 2 with 1 threads, 5000 birds, in 6.41993 ms.
+Simulation completed in mode 2 with 2 threads, 5000 birds, in 9.38843 ms.
+Simulation completed in mode 2 with 4 threads, 5000 birds, in 6.30704 ms.
+Simulation completed in mode 2 with 8 threads, 5000 birds, in 6.31808 ms.
+Simulation completed in mode 2 with 16 threads, 5000 birds, in 6.55708 ms.
+Simulation completed in mode 2 with 24 threads, 5000 birds, in 6.69155 ms.

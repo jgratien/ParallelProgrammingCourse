@@ -1,0 +1,22 @@
+#!/usr/bin/bash
+
+#find . -type f \( -name "*.h" -o -name "*.c" -o -name "*.[thc]pp" \) -exec clang-format -style=file -verbose -i {} \;
+MODE="Debug"
+
+# Check the argument passed to the script
+if [[ "$1" == "" ]]; then
+    cd build
+
+elif [[ "$1" == "clean" ]]; then
+    rm -rf build
+    conan install . -of . --build=missing -c tools.system.package_manager:mode=install -s build_type="$MODE"
+    cd build
+    cmake -DCMAKE_TOOLCHAIN_FILE="$MODE"/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE="$MODE" ..
+    
+else
+    echo "Usage: ./build-proj [ |clean]"
+    exit 1
+fi
+
+cmake --build .
+./src/freebirds
