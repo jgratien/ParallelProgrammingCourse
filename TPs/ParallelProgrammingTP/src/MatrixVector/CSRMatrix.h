@@ -31,6 +31,18 @@ class CSRMatrix
       return m_nrows ;
     }
 
+    int* kcol() {
+      return m_kcol.data() ;
+    }
+
+    int* cols() {
+      return m_cols.data() ;
+    }
+
+    double* values() {
+      return m_values.data() ;
+    }
+
     std::size_t nnz() const {
       return m_nnz ;
     }
