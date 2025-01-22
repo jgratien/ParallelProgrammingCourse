@@ -55,7 +55,7 @@ int main(int argc, char** argv)
   if(nb_threads>0)
   {
     omp_set_num_threads(nb_threads) ;
-    tbb::task_scheduler_init init(nb_threads);
+    //tbb::task_scheduler_init init(nb_threads);
   }
   int nb_procs     = omp_get_num_procs() ;
   std::cout<<"NB PROCS     :"<<nb_procs<<std::endl ;

@@ -1,0 +1,57 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+# Precompiled Headers
+*.gch
+*.pch
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+# Fortran module files
+*.mod
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+#latex
+*.out
+*.aux
+*.log
+*.toc
+
+#emacs temporary files
+*~
+
+#eclipse
+.cproject
+.project
+.externalToolBuilders
+.settings
+
+# Visual studio
+*.suo
+*.vshost.exe
+*.vshost.exe.manifest
+*.vshost.exe.config
+
+# build directories
+release*
+debug*
+Release*
+Debug*
+
+.vscode
+.vs
+/build
+/out
+
+# CMake files
+CMakeUserPresets.json
+cmake-build-debug
+cmake-build-release
+.idea

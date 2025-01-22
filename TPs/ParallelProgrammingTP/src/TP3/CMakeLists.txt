@@ -1,4 +1,4 @@
 
 GEN_EXE(lu)
-GEN_EXE(wave)
+#GEN_EXE(wave)
 
