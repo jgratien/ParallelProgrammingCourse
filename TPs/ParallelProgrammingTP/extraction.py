@@ -5,7 +5,6 @@ Improved SpMV MPI Performance Analysis Tool
 -------------------------------------------
 Analyzes SpMV benchmark logs, accurately extracting metrics, and generates clear visualizations.
 
-Author: Your Name
 Date: March 28, 2025
 """
 
