@@ -20,10 +20,10 @@ output_csv = "spmv_results.csv"
 plots_dir = "spmv_plots"
 
 # Improved Regex patterns
-norm_y_pattern = r"\|\|y\|\|\s*=\s*([\d\.eE+-]+)"
-norm_y2_pattern = r"\|\|y2\|\|\s*=\s*([\d\.eE+-]+)"
-mpispvm_pattern = r"MPISpMV:\s*([\d\.eE+-]+)"
-spvm_pattern = r"SpMV:\s*([\d\.eE+-]+)"
+norm_y_pattern   = r"\|\|y\|\|\s*=\s*([\d\.eE\+\-]+)"
+norm_y2_pattern  = r"\|\|y2\|\|\s*=\s*([\d\.eE\+\-]+)"
+mpispvm_pattern  = r"MPISpMV:\s*([\d\.eE\+\-]+)"
+spvm_pattern     = r"SpMV:\s*([\d\.eE\+\-]+)"
 filename_pattern = r"log-NX(\d+)-NPI(\d+)"
 
 # Ensure output directories exist
