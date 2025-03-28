@@ -14,7 +14,7 @@
 ### Or with: oarsub -l core=32 -S ./job_exemple.sh
 
 ### Set your executable path
-MONPROG=/gext/sshubhankar/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe
+MONPROG=/gext/shubhankar.shubhanka/Shubh/ParallelProgrammingCourse/TPs/ParallelProgrammingTP/bin/sparseemv_mpi2.exe
 ### Set your data file (if needed)
 MYDATA=
 
