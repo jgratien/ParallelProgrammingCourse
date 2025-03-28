@@ -6,8 +6,6 @@ SpMV MPI Performance Analysis Tool
 This script analyzes performance data from sparse matrix-vector multiplication 
 benchmark logs, extracting metrics and generating visualizations.
 
-Author: Your Name
-Date: March 27, 2025
 """
 
 import os
