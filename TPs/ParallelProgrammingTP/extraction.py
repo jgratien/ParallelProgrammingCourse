@@ -127,7 +127,7 @@ if not df.empty:
         min_idx = subset["MPI_SpMV_Time"].idxmin()
         min_npi = subset.loc[min_idx, "NPI"]
         min_time = subset.loc[min_idx, "MPI_SpMV_Time"]
-        ax.annotate(f"{min_time:.2e}s",        oarstat -u $USER 
+        ax.annotate(f"{min_time:.2e}s",
                    xy=(min_npi, min_time),
                    xytext=(5, 5),
                    textcoords='offset points',
