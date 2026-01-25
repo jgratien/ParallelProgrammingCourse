@@ -56,6 +56,7 @@ int main(int argc, char** argv)
   {
     omp_set_num_threads(nb_threads) ;
     //tbb::task_scheduler_init init(nb_threads);
+    tbb::global_control global_control = tbb::global_control(tbb::global_control::max_allowed_parallelism,nb_threads) ;
   }
   int nb_procs     = omp_get_num_procs() ;
   std::cout<<"NB PROCS     :"<<nb_procs<<std::endl ;

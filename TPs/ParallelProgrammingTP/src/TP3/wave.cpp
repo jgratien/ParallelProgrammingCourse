@@ -12,11 +12,12 @@
 #include <boost/program_options/cmdline.hpp>
 #include <boost/program_options/variables_map.hpp>
 #include "omp.h"
-#include "tbb/tbb.h"
+#include "tbb/tbb.h" 
 
 #include <string>
 #include <vector>
 #include <fstream>
+#include <atomic>
 
 #include "Utils/Timer.h"
 
@@ -26,13 +27,13 @@ class Tile
     int m_id = -1 ;
     int m_nb_children = 0 ;
     int m_parent_counter = 0 ;
-    tbb::atomic<int> m_tbb_parent_counter ;
+    std::atomic<int> m_tbb_parent_counter ;
 
     int m_nb_parents = 0 ;
     std::vector<int> m_children_id;
 
     int m_launcher_counter = 0 ;
-    tbb::atomic<int> m_tbb_launcher_counter ;
+    std::atomic<int> m_tbb_launcher_counter ;
 
     void init(int id, int nx)
     {
@@ -201,12 +202,12 @@ int main(int argc, char** argv)
       tile_list[i].initCounter() ;
 
     std::cout<<"Parallel TBB Graph Wave computation"<<std::endl ;
-    tbb::atomic<int> nb_tbb_task_executed ;
+    std::atomic<int> nb_tbb_task_executed ;
     nb_tbb_task_executed = 0 ;
     PPTP::Timer::Sentry sentry(timer,"TBBWaveGraph") ;
     int id = 0 ;
-    tbb::parallel_do( &id,&id+1,
-                      [&]( const int& id, tbb::parallel_do_feeder<int>&feeder )
+    tbb::parallel_for_each( &id,&id+1,
+                      [&]( const int& id, tbb::feeder<int>&feeder )
                       {
                         tile_list[id].execute() ;
                         ++nb_tbb_task_executed ;
