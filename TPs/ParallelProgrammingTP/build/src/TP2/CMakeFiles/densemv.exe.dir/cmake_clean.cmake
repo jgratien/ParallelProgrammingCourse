@@ -1,7 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/densemv.exe.dir/densemv.cpp.o"
-  "densemv.exe.pdb"
+  "CMakeFiles/densemv.exe.dir/densemv.cpp.o.d"
   "densemv.exe"
+  "densemv.exe.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

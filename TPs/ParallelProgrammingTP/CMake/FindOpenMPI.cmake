@@ -2,7 +2,7 @@
 
 FIND_PROGRAM(MPI_EXEC_NAME mpiexec
   PATHS
- $ENV{MPI_ROOT} 
+ $ENV{MPI_ROOT} /usr
  PATH_SUFFIXES
  bin  bin64
  NO_DEFAULT_PATH
@@ -32,6 +32,7 @@ foreach(_lib mpi mpi_cxx)
 
 endforeach(_lib)
 
+message(status "MPI FOUND : ${MPI_LIBRARY} ${MPI_INCLUDE_DIR}")
 
 SET( MPI_FOUND "NO" )
 IF(MPI_INCLUDE_DIR)
